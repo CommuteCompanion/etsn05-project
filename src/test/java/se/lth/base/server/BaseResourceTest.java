@@ -27,6 +27,7 @@ public class BaseResourceTest extends JerseyTest {
 
     private static final String IN_MEM_DRIVER_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
 
+    //test
     static {
         Config.instance().setDatabaseDriver(IN_MEM_DRIVER_URL);
     }
