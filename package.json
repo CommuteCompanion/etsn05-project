@@ -1,0 +1,23 @@
+{
+  "name": "etsn05-project",
+  "version": "1.0.0",
+  "description": "ETSN05 Project Group 1",
+  "main": "src/main/resources/webassets/index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "puppeteer": "^1.8.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antondelorme/etsn05-project.git"
+  },
+  "author": "Anton Delorme",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antondelorme/etsn05-project/issues"
+  },
+  "homepage": "https://github.com/antondelorme/etsn05-project#readme"
+}
