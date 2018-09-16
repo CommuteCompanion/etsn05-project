@@ -22,10 +22,10 @@ tomcat
 *.sar
 *.class
 
-# Maven 
+# Maven
 target/
 
-# IntelliJ project files 
+# IntelliJ project files
 *.iml
 *.iws
 *.ipr
@@ -35,6 +35,9 @@ target/
 .settings/
 .classpath
 .project
+
+# Node.js
+node_modules/
 
 # NetBeans specific
 nbproject/private/
