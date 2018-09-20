@@ -21,7 +21,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
                     resultSet.getString("car_model"),
                     resultSet.getInt("car_year"),
                     resultSet.getString("car_color"),
-                    resultSet.getString("car_lincese_plate"),
+                    resultSet.getString("car_license_plate"),
                     resultSet.getInt("car_number_of_seats"),
                     resultSet.getBoolean("opt_luggage"),
                     resultSet.getBoolean("opt_winter_tires"),
@@ -34,6 +34,19 @@ public class DriveDataAccess extends DataAccess<Drive> {
 
     public DriveDataAccess(String driverUrl) {
         super(driverUrl, new DriveMapper());
+    }
+    
+    public Drive addDrive(int userId, String start, String stop, long dateTime, String comment, 
+    		String carBrand, String carModel, int carYear, String carColor, String carLicensePlate, int carNumberOfSeats,
+    		boolean optLuggage, boolean optWinterTires, boolean optPets, boolean optBicycle, boolean optSkis) {
+    	long created = System.currentTimeMillis();
+
+    	int driveId = insert("INSERT INTO drive (user_id, start, stop, date_time, comment, car_brand, car_model, car_year, car_color, car_license_plate, car_number_of_seats, opt_luggage, opt_winter_tires, opt_pets, opt_bicycles, opt_skis) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                userId, start, stop, new Date(dateTime), comment, carBrand, carModel, carYear, carColor, carLicensePlate, 
+                carNumberOfSeats, optLuggage, optWinterTires, optPets, optBicycle, optSkis, new Date(created));
+    	
+    	return new Drive(driveId, userId, start, stop, dateTime, comment, carBrand, carModel, carYear, carColor, carLicensePlate, 
+                carNumberOfSeats, optLuggage, optWinterTires, optPets, optBicycle, optSkis, created);
     }
 }
 
