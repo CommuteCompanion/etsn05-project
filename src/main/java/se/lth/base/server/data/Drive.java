@@ -27,7 +27,7 @@ public class Drive {
 
     public Drive(int driveId, int userId, String start, String stop, long dateTime, String comment, 
     		String carBrand, String carModel, int carYear, String carColor, String carLicensePlate, int carNumberOfSeats,
-    		int optLuggage, int optWinterTires, int optPets, int optBicycle, int optSkis, long created) {
+    		boolean optLuggage, boolean optWinterTires, boolean optPets, boolean optBicycle, boolean optSkis, long created) {
     	this.driveId = driveId;
     	this.userId = userId;
     	this.start = start;
@@ -40,11 +40,11 @@ public class Drive {
     	this.carColor = carColor;
     	this.carLicensePlate = carLicensePlate;
     	this.carNumberOfSeats = carNumberOfSeats;
-    	this.optLuggage = optLuggage != 0;
-    	this.optWinterTires = optWinterTires != 0;
-    	this.optPets = optPets != 0;
-    	this.optBicycle = optBicycle != 0;
-    	this.optSkis = optSkis != 0;
+    	this.optLuggage = optLuggage;
+    	this.optWinterTires = optWinterTires;
+    	this.optPets = optPets;
+    	this.optBicycle = optBicycle;
+    	this.optSkis = optSkis;
     	this.created = created;
     }
 
