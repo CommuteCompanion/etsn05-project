@@ -1,4 +1,4 @@
-package se.stalhammar.mail;
+package se.lth.base.server.mail;
 
 import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
@@ -6,7 +6,7 @@ import org.simplejavamail.email.EmailBuilder;
 /**
  * Creates a SimpleEmail object based on a standard predefined email type
  * 
- * @author Jon Stalhammar
+ * @author Group 1 ETSN05 2018
  *
  */
 public class CustomEmail {

@@ -1,4 +1,4 @@
-package se.stalhammar.mail;
+package se.lth.base.server.mail;
 
 import org.simplejavamail.MailException;
 import org.simplejavamail.email.Email;
@@ -9,7 +9,7 @@ import org.simplejavamail.mailer.config.TransportStrategy;
 /**
  * Wrapper class for SimpleMail mail handler
  * 
- * @author Jon Stalhammar
+ * @author Group 1 ETSN05 2018
  *
  */
 public class MailHandler {

@@ -1,4 +1,4 @@
-package se.stalhammar.mail;
+package se.lth.base.server.mail;
 
 import org.simplejavamail.MailException;
 
