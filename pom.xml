@@ -39,7 +39,6 @@
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -55,7 +54,6 @@
             <artifactId>jetty-util</artifactId>
             <version>${jetty.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
@@ -88,6 +86,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.simplejavamail</groupId>
+            <artifactId>simple-java-mail</artifactId>
+            <version>5.0.3</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.25</version>
@@ -112,7 +115,6 @@
     <build>
         <finalName>base-server</finalName>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -135,8 +137,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
-
 </project>
