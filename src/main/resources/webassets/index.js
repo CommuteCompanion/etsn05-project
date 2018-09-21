@@ -7,10 +7,6 @@ base.mainController = (function() {
             partial: 'hello/hello.html',
             controller: base.helloController
         },
-        'foo': {
-            partial: 'foo/foo.html',
-            controller: base.fooController
-        },
         'admin': {
             partial: 'admin/user-admin.html',
             controller: base.userAdminController
