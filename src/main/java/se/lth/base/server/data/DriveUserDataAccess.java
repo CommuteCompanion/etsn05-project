@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 import se.lth.base.server.database.DataAccess;
+import se.lth.base.server.database.DataAccessException;
+import se.lth.base.server.database.ErrorType;
 import se.lth.base.server.database.Mapper;
 
 /**
@@ -61,6 +63,17 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     
     public boolean acceptDriveUser(int driveId, int userId) {
     	return execute("UPDATE drive_user SET accepted = ? WHERE drive_id = ? AND user_id = ?", IS_ACCEPTED, driveId, userId) > 0;
+    }
+    
+    public int getNumberOfUsersInDrive(int driveId) {
+    	ResultSet result = openQuery("COUNT (*) FROM drive_user WHERE drive_id = ?", driveId);
+    	
+    	try {
+    		result.next();
+    		return result.getInt(1);
+    	} catch (SQLException e) {
+    		throw new DataAccessException(ErrorType.NOT_FOUND);
+    	}
     }
 }
 
