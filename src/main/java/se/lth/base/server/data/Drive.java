@@ -22,7 +22,8 @@ public class Drive {
     	optWinterTires, 
     	optPets, 
     	optBicycle, 
-    	optSkis;
+    	optSkis,
+    	completed;
     private final long dateTime, created;
 
     public Drive(int driveId, int userId, String start, String stop, long dateTime, String comment, 
@@ -46,6 +47,7 @@ public class Drive {
     	this.optBicycle = optBicycle;
     	this.optSkis = optSkis;
     	this.created = created;
+    	this.completed = false;
     }
 
 	public int getDriveId() {
@@ -111,6 +113,10 @@ public class Drive {
 	public boolean getOptSkis() {
 		return optSkis;
 	}
+	
+	public boolean getCompleted() {
+		return completed;
+	}
 
 	public long getDateTime() {
 		return dateTime;
@@ -119,8 +125,6 @@ public class Drive {
 	public long getCreated() {
 		return created;
 	}
-
-    
 }
 
 
