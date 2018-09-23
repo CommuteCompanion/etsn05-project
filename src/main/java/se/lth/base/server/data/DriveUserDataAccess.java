@@ -14,6 +14,8 @@ import se.lth.base.server.database.Mapper;
  *
  */
 public class DriveUserDataAccess extends DataAccess<DriveUser> {
+	public static final boolean IS_ACCEPTED = true;
+	
 	private static final class DriveMapper implements Mapper<DriveUser> {
         @Override
         public DriveUser map(ResultSet resultSet) throws SQLException {
@@ -55,6 +57,10 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     
     public boolean deleteDriveUser(int driveId, int userId) {
         return execute("DELETE FROM drive_user WHERE drive_id = ? AND user_id = ?", driveId, userId) > 0;
+    }
+    
+    public boolean acceptDriveUser(int driveId, int userId) {
+    	return execute("UPDATE drive_user SET accepted = ? WHERE drive_id = ? AND user_id = ?", IS_ACCEPTED, driveId, userId) > 0;
     }
 }
 
