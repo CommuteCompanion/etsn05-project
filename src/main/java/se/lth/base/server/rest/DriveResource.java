@@ -70,28 +70,32 @@ public class DriveResource {
     	return driveDao.updateDrive(drive.getDriveId(),  drive.getStart(), drive.getStop(), drive.getDateTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarYear(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggage(), drive.getOptWinterTires(), drive.getOptPets(), drive.getOptBicycle(), drive.getOptSkis());
     }
     
-    @Path("{id}")
+    @Path("{driveId}")
     @GET
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public DriveWrap getDrive(@PathParam("id") int driveId) throws URISyntaxException {
+    public DriveWrap getDrive(@PathParam("driveId") int driveId) throws URISyntaxException {
     	Drive drive = driveDao.getDrive(driveId);
     	List<DriveUser> users = driveUserDao.getDriveUsersForDrive(driveId);
     	List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(driveId);
-    	List<DriveReport> reports = new ArrayList<DriveReport>();
-    	
-    	if (user.getRole().clearanceFor(Role.ADMIN)) {
-    		reports = driveReportDao.getDriveReportsForDrive(driveId);
-    	}
+    	List<DriveReport> reports = user.getRole().clearanceFor(Role.ADMIN) ? driveReportDao.getDriveReportsForDrive(driveId) : new ArrayList<DriveReport>();
     	
     	return new DriveWrap(drive, milestones, users, reports);
     }
     
-    @Path("{id}")
+    @Path("{driveId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
-    public void deleteUser(@PathParam("{id}") int driveId) {
-    	
+    public void deleteUser(@PathParam("{driveId}") int driveId) {
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+    		driveDao.deleteDrive(driveId);
     }
     
+    @Path("{driveId}/user")
+    @POST
+    @RolesAllowed(Role.Names.USER)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public void addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
+    	driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED);
+    }
 }
