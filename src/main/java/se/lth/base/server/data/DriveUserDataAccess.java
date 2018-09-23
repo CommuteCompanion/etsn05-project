@@ -43,11 +43,11 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     			driveId, userId);
     }
     
-    public List<DriveUser> getDriveUserForDrive(int driveId) {
+    public List<DriveUser> getDrivesUserForDrive(int driveId) {
     	return query("SELECT drive_id, user_id, start, stop, driver, accepted FROM drive_user WHERE drive_id = ?", driveId);
     }
     
-    public boolean deleteDrive(int driveId, int userId) {
+    public boolean deleteDriveUser(int driveId, int userId) {
         return execute("DELETE FROM drive_user WHERE drive_id = ? AND user_id = ?", driveId, userId) > 0;
     }
 }
