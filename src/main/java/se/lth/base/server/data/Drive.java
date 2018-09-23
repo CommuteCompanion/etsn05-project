@@ -132,7 +132,7 @@ public class Drive {
 		return carColor;
 	}
 
-	public boolean isOptLuggage() {
+	public boolean getOptLuggage() {
 		return optLuggage;
 	}
 

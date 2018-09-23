@@ -32,7 +32,7 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
 	}
 	
 	public DriveMilestone updateMilestone(int milestoneId, String milestone) {
-		execute("UPDATE drive_milestone SET milestone = ? WHERE milestoneId = ?", milestone, milestoneId);
+		execute("UPDATE drive_milestone SET milestone = ? WHERE milestone_id = ?", milestone, milestoneId);
 		return getMilestone(milestoneId);
 	}
 	
@@ -40,7 +40,7 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
 		return queryFirst("SELECT milestone_id, drive_id, milestone FROM drive_milestone WHERE milestone_id = ?", milestoneId);
 	}
 	
-	public List<DriveMilestone> getMilestoneForDrive(int driveId) {
+	public List<DriveMilestone> getMilestonesForDrive(int driveId) {
 		return query("SELECT milestone_id, drive_id, milestone FROM drive_milestone WHERE drive_id = ?", driveId);
 	}
 	

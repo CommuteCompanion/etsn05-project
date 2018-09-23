@@ -49,7 +49,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     			driveId, userId);
     }
     
-    public List<DriveUser> getDrivesUserForDrive(int driveId) {
+    public List<DriveUser> getDriveUsersForDrive(int driveId) {
     	return query("SELECT drive_id, user_id, start, stop, driver, accepted FROM drive_user WHERE drive_id = ?", driveId);
     }
     

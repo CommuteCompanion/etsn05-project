@@ -29,7 +29,7 @@ public class DriveReportDataAccess extends DataAccess<DriveReport> {
     }
     
     public DriveReport addDriveReport(int driveId, int reportedByUserId, String reportMessage) {
-    	int reportId = insert("INSERT INTO drive_user (drive_id, reported_by_user_id, report_message) VALUES (?,?,?)",
+    	int reportId = insert("INSERT INTO drive_report (drive_id, reported_by_user_id, report_message) VALUES (?,?,?)",
     			driveId, reportedByUserId, reportMessage);
     	
     	return new DriveReport(reportId, driveId, reportedByUserId, reportMessage);
