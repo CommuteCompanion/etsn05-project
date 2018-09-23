@@ -15,6 +15,8 @@ import se.lth.base.server.database.Mapper;
  *g
  */
 public class DriveDataAccess extends DataAccess<Drive> {
+	public static final boolean IS_COMPLETED = true;
+	
 	private static final class DriveMapper implements Mapper<Drive> {
         @Override
         public Drive map(ResultSet resultSet) throws SQLException {
@@ -35,7 +37,8 @@ public class DriveDataAccess extends DataAccess<Drive> {
                     resultSet.getBoolean("opt_pets"),
                     resultSet.getBoolean("opt_bicycle"),
                     resultSet.getBoolean("opt_skis"),
-                    resultSet.getObject("created", Date.class).getTime());
+                    resultSet.getObject("created", Date.class).getTime(),
+                    resultSet.getBoolean("completed"));
         }
     }
 
@@ -53,7 +56,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
                 carNumberOfSeats, optLuggage, optWinterTires, optPets, optBicycle, optSkis, new Date(created));
     	
     	return new Drive(driveId, userId, start, stop, dateTime, comment, carBrand, carModel, carYear, carColor, carLicensePlate, 
-                carNumberOfSeats, optLuggage, optWinterTires, optPets, optBicycle, optSkis, created);
+                carNumberOfSeats, optLuggage, optWinterTires, optPets, optBicycle, optSkis, created, !IS_COMPLETED);
     }
     
     public Drive updateDrive(int driveId, String start, String stop, long dateTime, String comment, 
@@ -78,6 +81,10 @@ public class DriveDataAccess extends DataAccess<Drive> {
     
     public boolean deleteDrive(int driveId) {
         return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
+    }
+    
+    public boolean completeDrive(int driveId) {
+    	return execute("UPDATE drive SET completed = ? WHERE drive_id = ?", IS_COMPLETED, driveId) > 0;
     }
 }
 
