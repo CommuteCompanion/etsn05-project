@@ -16,7 +16,7 @@ import se.lth.base.server.database.Mapper;
  *
  */
 public class DriveUserDataAccess extends DataAccess<DriveUser> {
-	public static final boolean IS_ACCEPTED = true;
+	public static final boolean IS_ACCEPTED = true, HAS_RATED = true;
 	
 	private static final class DriveMapper implements Mapper<DriveUser> {
         @Override
@@ -26,7 +26,8 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
             		resultSet.getString("start"),
             		resultSet.getString("stop"),
             		resultSet.getBoolean("driver"),
-            		resultSet.getBoolean("accepted"));
+            		resultSet.getBoolean("accepted"),
+            		resultSet.getBoolean("rated"));
         }
     }
 
@@ -38,7 +39,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     	insert("INSERT INTO drive_user (drive_id, user_id, start, stop, driver, accepted) VALUES (?,?,?,?,?,?)",
                 driveId, userId, start, stop, driver, accepted);
     	
-    	return new DriveUser(driveId, userId, start, stop, driver, accepted);
+    	return new DriveUser(driveId, userId, start, stop, driver, accepted, !HAS_RATED);
     }
     
     public DriveUser updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted) {
