@@ -62,12 +62,12 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
     
     public Drive getDrive(int driveId) {
-    	return queryFirst("SELECT user_id, start, stop, date_time, comment, car_brand, car_model, car_year, car_color, car_license_plate, car_number_of_seats, opt_luggage, opt_winter_tires, opt_pets, opt_bicycles, opt_skis WHERE drive_id = ?", 
+    	return queryFirst("SELECT drive_id, user_id, start, stop, date_time, comment, car_brand, car_model, car_year, car_color, car_license_plate, car_number_of_seats, opt_luggage, opt_winter_tires, opt_pets, opt_bicycles, opt_skis WHERE drive_id = ?", 
     			driveId);
     }
     
     public List<Drive> getDrives() {
-    	return query("SELECT user_id, start, stop, date_time, comment, car_brand, car_model, car_year, car_color, car_license_plate, car_number_of_seats, opt_luggage, opt_winter_tires, opt_pets, opt_bicycles, opt_skis");
+    	return query("SELECT drive_id, user_id, start, stop, date_time, comment, car_brand, car_model, car_year, car_color, car_license_plate, car_number_of_seats, opt_luggage, opt_winter_tires, opt_pets, opt_bicycles, opt_skis");
     }
     
     public boolean deleteDrive(int driveId) {

@@ -1,25 +1,24 @@
 package se.lth.base.server.data;
 
 public class Milestone {
-	private final int driveId;
-	private final String start;
-	private final String stop;
+	private final int milestoneId, driveId;
+	private final String milestone;
 	
-	public Milestone(int driveId, String start, String stop) {
+	public Milestone(int milestoneId, int driveId, String milestone) {
+		this.milestoneId = milestoneId;
 		this.driveId = driveId;
-		this.start = start;
-		this.stop = stop;
+		this.milestone = milestone;
+	}
+	
+	public int getMilestoneId() {
+		return milestoneId;
 	}
 	
 	public int getDriveId() {
 		return driveId;
 	}
 	
-	public String getStart() {
-		return start;
-	}
-	
-	public String getStop() {
-		return stop;
+	public String getMilestone() {
+		return milestone;
 	}
 }
