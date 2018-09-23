@@ -98,4 +98,21 @@ public class DriveResource {
     public void addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
     	driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED);
     }
+    
+    @Path("{driveId/user/{userId}")
+    @PUT
+    @RolesAllowed(Role.Names.USER)
+    public void acceptUserInDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
+    	DriveUser driveUser = driveUserDao.getDriveUser(driveId, userId);
+    	driveUserDao.updateDriveUser(driveId, userId, driveUser.getStart(), driveUser.getStop(), driveUser.isDriver(), IS_ACCEPTED);
+    }
+    
+    @Path("{driveId/user/{userId}")
+    @DELETE
+    @RolesAllowed(Role.Names.USER)
+    public void removeUserFromDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
+    	driveUserDao.deleteDriveUser(driveId, userId);
+    }
+    
+    
 }
