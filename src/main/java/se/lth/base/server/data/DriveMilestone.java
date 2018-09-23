@@ -1,10 +1,10 @@
 package se.lth.base.server.data;
 
-public class Milestone {
+public class DriveMilestone {
 	private final int milestoneId, driveId;
 	private final String milestone;
 	
-	public Milestone(int milestoneId, int driveId, String milestone) {
+	public DriveMilestone(int milestoneId, int driveId, String milestone) {
 		this.milestoneId = milestoneId;
 		this.driveId = driveId;
 		this.milestone = milestone;

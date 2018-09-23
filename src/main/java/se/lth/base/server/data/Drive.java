@@ -28,7 +28,7 @@ public class Drive {
     	optSkis,
     	completed;
     private final long dateTime, created;
-    private List<Milestone> milestones;
+    private List<DriveMilestone> milestones;
 
     public Drive(int driveId, int userId, String start, String stop, long dateTime, String comment, 
     		String carBrand, String carModel, int carYear, String carColor, String carLicensePlate, int carNumberOfSeats,
@@ -52,17 +52,17 @@ public class Drive {
     	this.optSkis = optSkis;
     	this.created = created;
     	this.completed = false;
-    	this.milestones = new ArrayList<Milestone>();
+    	this.milestones = new ArrayList<DriveMilestone>();
     }
     
-    public void setMilestones(List<Milestone> milestones) {
+    public void setMilestones(List<DriveMilestone> milestones) {
     	this.milestones.clear();
 
-    	for (Milestone m : milestones)
+    	for (DriveMilestone m : milestones)
     		this.milestones.add(m);
     }
     
-    public List<Milestone> getMilestones() {
+    public List<DriveMilestone> getMilestones() {
     	return milestones;
     }
 
