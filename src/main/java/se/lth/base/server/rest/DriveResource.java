@@ -104,17 +104,22 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public DriveUser addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
+    	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId))
     	return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED);
+    	
+    	throw new WebApplicationException("No available seats left", Status.PRECONDITION_FAILED);
     }
     
     @Path("{driveId/user/{userId}")
     @PUT
     @RolesAllowed(Role.Names.USER)
     public DriveUser acceptUserInDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
-    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
     		driveUserDao.acceptDriveUser(driveId, userId);
+    		return driveUserDao.getDriveUser(driveId, userId);	
+    	}
     	
-    	return driveUserDao.getDriveUser(driveId, userId);	
+    	throw new WebApplicationException("Only driver allowed to accept passengers", Status.UNAUTHORIZED);
     }
     
     @Path("{driveId/user/{userId}")
@@ -123,15 +128,36 @@ public class DriveResource {
     public void removeUserFromDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
     	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
     		driveUserDao.deleteDriveUser(driveId, userId);
+    	
+    	throw new WebApplicationException("Only driver allowed to remove passengers", Status.UNAUTHORIZED);
     }
     
     @Path("{driveId/complete}")
     @PUT
     @RolesAllowed(Role.Names.USER)
     public Drive completeDrive(@PathParam("{driveId}") int driveId) {
-    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
     		driveDao.completeDrive(driveId);
+    		return driveDao.getDrive(driveId);
+    	}
     	
-    	return driveDao.getDrive(driveId);
+    	throw new WebApplicationException("Only driver allowed to accepte passengers", Status.UNAUTHORIZED);
+    }
+    
+    // This needs to be update later, need a DTO for this
+    @Path("{driveId/rate")
+    @POST
+    @RolesAllowed(Role.Names.USER)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public void rateUsers(@PathParam("{driveId") int driveId) {
+    	// Implement
+    }
+    
+    @Path("{driveId}/report")
+    @POST
+    @RolesAllowed(Role.Names.USER)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public DriveReport reportDrive(@PathParam("{driveId}") int driveId, DriveReport driveReport) {
+    	return driveReportDao.addDriveReport(driveId, user.getId(), driveReport.getReportMessage());
     }
 }
