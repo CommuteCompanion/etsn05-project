@@ -30,6 +30,7 @@ public class Drive {
     private final long dateTime, created;
     private List<DriveMilestone> milestones;
     private List<DriveUser> users;
+    private List<DriveReport> reports;
 
     public Drive(int driveId, int userId, String start, String stop, long dateTime, String comment, 
     		String carBrand, String carModel, int carYear, String carColor, String carLicensePlate, int carNumberOfSeats,
@@ -55,6 +56,7 @@ public class Drive {
     	this.completed = false;
     	this.milestones = new ArrayList<DriveMilestone>();
     	this.users = new ArrayList<DriveUser>();
+    	this.reports = new ArrayList<DriveReport>();
     }
     
     public void setMilestones(List<DriveMilestone> milestones) {
@@ -77,6 +79,17 @@ public class Drive {
     
     public List<DriveUser> getUsers() {
     	return users;
+    }
+    
+    public void setReports(List<DriveReport> reports) {
+    	this.reports.clear();
+    	
+    	for (DriveReport r : reports)
+    		this.reports.add(r);
+    }
+    
+    public List<DriveReport> getReports() {
+    	return reports;
     }
 
 	public int getDriveId() {
