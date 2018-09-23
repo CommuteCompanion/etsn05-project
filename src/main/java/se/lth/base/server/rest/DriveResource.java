@@ -18,6 +18,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
+
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,11 +65,15 @@ public class DriveResource {
         return new DriveWrap(drive, milestones, users, reports);
     }
     
+    @Path("{driveId}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public Drive putDrive(Drive drive) throws URISyntaxException {
-    	return driveDao.updateDrive(drive.getDriveId(),  drive.getStart(), drive.getStop(), drive.getDateTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarYear(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggage(), drive.getOptWinterTires(), drive.getOptPets(), drive.getOptBicycle(), drive.getOptSkis());
+    public Drive putDrive(@PathParam("{driveId}") int driveId, Drive drive) throws URISyntaxException {
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+    		return driveDao.updateDrive(driveId,  drive.getStart(), drive.getStop(), drive.getDateTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarYear(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggage(), drive.getOptWinterTires(), drive.getOptPets(), drive.getOptBicycle(), drive.getOptSkis());
+    	
+    	throw new WebApplicationException("Only driver allowed to update drive", Status.UNAUTHORIZED);
     }
     
     @Path("{driveId}")
@@ -86,33 +92,46 @@ public class DriveResource {
     @Path("{driveId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
-    public void deleteUser(@PathParam("{driveId}") int driveId) {
+    public void deleteDrive(@PathParam("{driveId}") int driveId) {
     	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
     		driveDao.deleteDrive(driveId);
+    	
+    	throw new WebApplicationException("Only driver allowed to delete drive", Status.UNAUTHORIZED);
     }
     
     @Path("{driveId}/user")
     @POST
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
-    	driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED);
+    public DriveUser addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
+    	return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED);
     }
     
     @Path("{driveId/user/{userId}")
     @PUT
     @RolesAllowed(Role.Names.USER)
-    public void acceptUserInDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
-    	DriveUser driveUser = driveUserDao.getDriveUser(driveId, userId);
-    	driveUserDao.updateDriveUser(driveId, userId, driveUser.getStart(), driveUser.getStop(), driveUser.isDriver(), IS_ACCEPTED);
+    public DriveUser acceptUserInDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+    		driveUserDao.acceptDriveUser(driveId, userId);
+    	
+    	return driveUserDao.getDriveUser(driveId, userId);	
     }
     
     @Path("{driveId/user/{userId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
     public void removeUserFromDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
-    	driveUserDao.deleteDriveUser(driveId, userId);
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+    		driveUserDao.deleteDriveUser(driveId, userId);
     }
     
-    
+    @Path("{driveId/complete}")
+    @PUT
+    @RolesAllowed(Role.Names.USER)
+    public Drive completeDrive(@PathParam("{driveId}") int driveId) {
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+    		driveDao.completeDrive(driveId);
+    	
+    	return driveDao.getDrive(driveId);
+    }
 }
