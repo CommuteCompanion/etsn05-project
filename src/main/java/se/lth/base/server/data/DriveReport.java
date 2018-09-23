@@ -1,5 +1,11 @@
 package se.lth.base.server.data;
 
+/**
+ * Data class for a drive report
+ *
+ * @author Group 1 ETSN05 2018
+ * @see DriveReportDataAccess
+ */
 public class DriveReport {
 	private final int reportId, driveId, reportedByUserId;
 	private final String reportMessage;

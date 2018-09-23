@@ -6,6 +6,12 @@ import java.util.List;
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.Mapper;
 
+/**
+ * Data access class for a drive milestone
+ * 
+ * @author Group 1 ETSN05 2018
+ *
+ */
 public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
 	private static final class MilestoneMapper implements Mapper<DriveMilestone> {
 		@Override

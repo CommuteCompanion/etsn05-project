@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Data class for a Drive
+ * Data class for a drive
  *
  * @author Group 1 ETSN05 2018
- * @see DriveDataAcess (not created yet)
+ * @see DriveDataAccess
  */
 public class Drive {
     private final int driveId,

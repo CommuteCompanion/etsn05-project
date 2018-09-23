@@ -7,6 +7,12 @@ import java.util.List;
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.Mapper;
 
+/**
+ * Data access class for a drive report
+ * 
+ * @author Group 1 ETSN05 2018
+ *
+ */
 public class DriveReportDataAccess extends DataAccess<DriveReport> {
 	private static final class DriveMapper implements Mapper<DriveReport> {
         @Override

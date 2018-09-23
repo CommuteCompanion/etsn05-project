@@ -1,5 +1,11 @@
 package se.lth.base.server.data;
 
+/**
+ * Data class for a drive user
+ *
+ * @author Group 1 ETSN05 2018
+ * @see DriveUserDataAccess
+ */
 public class DriveUser {
 	private final int driveId, userId;
 	private final String start, stop;
