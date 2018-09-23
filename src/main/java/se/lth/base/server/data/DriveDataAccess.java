@@ -3,6 +3,7 @@ package se.lth.base.server.data;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.Mapper;
@@ -47,6 +48,30 @@ public class DriveDataAccess extends DataAccess<Drive> {
     	
     	return new Drive(driveId, userId, start, stop, dateTime, comment, carBrand, carModel, carYear, carColor, carLicensePlate, 
                 carNumberOfSeats, optLuggage, optWinterTires, optPets, optBicycle, optSkis, created);
+    }
+    
+    public Drive updateDrive(int driveId, String start, String stop, long dateTime, String comment, 
+    		String carBrand, String carModel, int carYear, String carColor, String carLicensePlate, int carNumberOfSeats,
+    		boolean optLuggage, boolean optWinterTires, boolean optPets, boolean optBicycle, boolean optSkis) {
+
+    	execute("UPDATE drive SET start = ?, stop = ?, date_time = ?, comment = ?, car_brand = ?, car_model = ?, car_year = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage = ?, opt_winter_tires = ?, opt_pets = ?, opt_bicycles = ?, opt_skis = ? WHERE drive_id = ?)",
+                start, stop, new Date(dateTime), comment, carBrand, carModel, carYear, carColor, carLicensePlate, 
+                carNumberOfSeats, optLuggage, optWinterTires, optPets, optBicycle, optSkis, driveId);
+    	
+    	return getDrive(driveId);
+    }
+    
+    public Drive getDrive(int driveId) {
+    	return queryFirst("SELECT user_id, start, stop, date_time, comment, car_brand, car_model, car_year, car_color, car_license_plate, car_number_of_seats, opt_luggage, opt_winter_tires, opt_pets, opt_bicycles, opt_skis WHERE drive_id = ?", 
+    			driveId);
+    }
+    
+    public List<Drive> getDrives() {
+    	return query("SELECT user_id, start, stop, date_time, comment, car_brand, car_model, car_year, car_color, car_license_plate, car_number_of_seats, opt_luggage, opt_winter_tires, opt_pets, opt_bicycles, opt_skis");
+    }
+    
+    public boolean deleteDrive(int driveId) {
+        return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
     }
 }
 
