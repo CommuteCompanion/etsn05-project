@@ -141,16 +141,21 @@ public class DriveResource {
     		return driveDao.getDrive(driveId);
     	}
     	
-    	throw new WebApplicationException("Only driver allowed to accepte passengers", Status.UNAUTHORIZED);
+    	throw new WebApplicationException("Only driver allowed to accept passengers", Status.UNAUTHORIZED);
     }
     
-    // This needs to be update later, need a DTO for this
     @Path("{driveId/rate")
     @POST
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public void rateUsers(@PathParam("{driveId") int driveId) {
-    	// Implement
+    	if (!driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
+    		// Need a UserRate and updated User data object for this, doing this later
+    		// Should return a UserRate object
+    		// Should add a method in DriveUserAccess to has rated
+    	}
+    	
+    	throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
     }
     
     @Path("{driveId}/report")
