@@ -12,7 +12,7 @@ import se.lth.base.server.database.Mapper;
  * Data access class for a drive
  * 
  * @author Group 1 ETSN05 2018
- *
+ *g
  */
 public class DriveDataAccess extends DataAccess<Drive> {
 	private static final class DriveMapper implements Mapper<Drive> {
