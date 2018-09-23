@@ -31,11 +31,11 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
 	}
 	
 	public DriveMilestone getMilestone(int milestoneId) {
-		return queryFirst("SELECT milestone_id, drive_id, milestone WHERE milestone_id = ?", milestoneId);
+		return queryFirst("SELECT milestone_id, drive_id, milestone FROM drive_milestone WHERE milestone_id = ?", milestoneId);
 	}
 	
 	public List<DriveMilestone> getMilestoneForDrive(int driveId) {
-		return query("SELECT milestone_id, drive_id, milestone WHERE drive_id = ?", driveId);
+		return query("SELECT milestone_id, drive_id, milestone FROM drive_milestone WHERE drive_id = ?", driveId);
 	}
 	
 	public boolean deleteMilestone(int milestoneId) {
