@@ -1,5 +1,8 @@
 package se.lth.base.server.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Data class for a Drive
  *
@@ -25,6 +28,7 @@ public class Drive {
     	optSkis,
     	completed;
     private final long dateTime, created;
+    private List<Milestone> milestones;
 
     public Drive(int driveId, int userId, String start, String stop, long dateTime, String comment, 
     		String carBrand, String carModel, int carYear, String carColor, String carLicensePlate, int carNumberOfSeats,
@@ -48,6 +52,18 @@ public class Drive {
     	this.optSkis = optSkis;
     	this.created = created;
     	this.completed = false;
+    	this.milestones = new ArrayList<Milestone>();
+    }
+    
+    public void setMilestones(List<Milestone> milestones) {
+    	this.milestones.clear();
+
+    	for (Milestone m : milestones)
+    		this.milestones.add(m);
+    }
+    
+    public List<Milestone> getMilestones() {
+    	return milestones;
     }
 
 	public int getDriveId() {
