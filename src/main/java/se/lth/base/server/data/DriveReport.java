@@ -1,12 +1,12 @@
 package se.lth.base.server.data;
 
 public class DriveReport {
-	private final int reportId, driverId, reportedByUserId;
+	private final int reportId, driveId, reportedByUserId;
 	private final String reportMessage;
 	
-	public DriveReport(int reportId, int driverId, int reportedByUserId, String reportMessage) {
+	public DriveReport(int reportId, int driveId, int reportedByUserId, String reportMessage) {
 		this.reportId = reportId;
-		this.driverId = driverId;
+		this.driveId = driveId;
 		this.reportedByUserId = reportedByUserId;
 		this.reportMessage = reportMessage;
 	}
@@ -15,8 +15,8 @@ public class DriveReport {
 		return reportId;
 	}
 	
-	public int getDriverId() {
-		return driverId;
+	public int getDriveId() {
+		return driveId;
 	}
 	
 	public int getReportedByUserId() {
