@@ -9,15 +9,16 @@ package se.lth.base.server.data;
 public class DriveUser {
 	private final int driveId, userId;
 	private final String start, stop;
-	private final boolean driver, accepted;
+	private final boolean driver, accepted, rated;
 	
-	public DriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted) {
+	public DriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
 		this.driveId = driveId;
 		this.userId = userId;
 		this.start = start;
 		this.stop = stop;
 		this.driver = driver;
 		this.accepted = accepted;
+		this.rated = rated;
 	}
 	
 	public int getDriveId() {
@@ -42,5 +43,9 @@ public class DriveUser {
 	
 	public boolean isAccepted() {
 		return accepted;
+	}
+	
+	public boolean hasRated() {
+		return rated;
 	}
 }
