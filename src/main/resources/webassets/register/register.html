@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CommuteCompanion - Registration</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="register.css">
+</head>
+<body class="text-center">
+    <form class="form-register" id="login-form">
+        <img class="mb-4" src="/logo.svg" alt="" width="160" height="100">
+        <h1 class="h3 mb-3 font-weight-normal">Welcome to Commute Companion!</h1>
+        <p>Commute Companion is a world leading rideshare network. Join our future!</p>
+        <input id="username" type="text" class="form-control" placeholder="Username" required>
+        <input id="password" type="password" class="form-control" placeholder="Password" required>
+        <p>And everything else that needs to be added.......</p>
+        <button id="register" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+        <a href="/login/login.html" class="btn btn-lg btn-primary btn-block" role="button">Go back</a>
+    </form>
+    <script src="/rest.js"></script>
+    <script src="register.js"></script>
+    <script type="application/javascript">
+        base.registerController.initOnLoad();
+    
+    </script>
+</body> 
+</html>
