@@ -121,4 +121,7 @@ pom.xml.tag
 .sass-cache/
 
 # Ignore "main" CSS files
-src/main/resources/webassets/css/
+src/main/resources/webassets/css/*
+
+# Save the folder
+!src/main/resources/webassets/css/.gitkeep
