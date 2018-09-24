@@ -1,6 +1,4 @@
 -- This is the schema file that the database is initialized with. It is specific to the H2 SQL dialect.
--- Author: Pontus Ericsson
-
 
 -- User roles describe what each user can do on a generic level.
 CREATE TABLE user_role(role_id TINYINT,
