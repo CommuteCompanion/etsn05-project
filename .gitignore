@@ -119,3 +119,6 @@ pom.xml.tag
 # Sass Cache
 
 .sass-cache/
+
+# Ignore "main" CSS files
+src/main/resources/webassets/css/
