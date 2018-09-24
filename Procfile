@@ -1,0 +1,1 @@
+web: java -cp target/classes:target/dependency/* se.lth.base.server.BaseServer
