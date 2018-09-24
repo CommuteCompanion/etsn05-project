@@ -39,20 +39,18 @@ CREATE TABLE drive(drive_id INT AUTO_INCREMENT,
                    comment VARCHAR(255) NOT NULL,
                    car_brand VARCHAR(255) NOT NULL,
                    car_model VARCHAR(255) NOT NULL,
-                   car_year VARCHAR(255) NOT NULL,
                    car_color VARCHAR(255) NOT NULL,
-                   car_licence_plate VARCHAR(255) NOT NULL,
                    car_number_of_seats TINYINT NOT NULL,
                    opt_luggage_size TINYINT NOT NULL DEFAULT 1,
                    opt_winter_tires BOOLEAN NOT NULL DEFAULT FALSE,
                    opt_bicycle BOOLEAN NOT NULL DEFAULT FALSE,
                    opt_pets BOOLEAN NOT NULL DEFAULT FALSE,
-                   PRIMARY KEY(drive_id),
-                   );
+                   PRIMARY KEY(drive_id));
 
-CREATE TABLE drive_milestone(drive_id INT NOT NULL,
+CREATE TABLE drive_milestone(milestone_id INT AUTO_INCREMENT,
+                             drive_id INT NOT NULL,
                              milestone VARCHAR(255) NOT NULL,
-                             order TINYINT NOT NULL,
+                             PRIMARY KEY(milestone_id),
                              FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE);
 
 CREATE TABLE drive_user(drive_id INT NOT NULL,
@@ -73,10 +71,12 @@ CREATE TABLE drive_report(report_id INT AUTO_INCREMENT,
                           FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE,
                           FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
-CREATE TABLE search_filter(user_id INT NOT NULL,
+CREATE TABLE search_filter(filter_id INT AUTO_INCREMENT,
+                           user_id INT NOT NULL,
                            start VARCHAR(255),
                            stop VARCHAR(255),
                            departure_time TIMESTAMP,
+                           PRIMARY KEY(filter_id),
                            FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
