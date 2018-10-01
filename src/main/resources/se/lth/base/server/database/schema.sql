@@ -19,7 +19,7 @@ CREATE TABLE user(user_id INT AUTO_INCREMENT,
                   driving_license BOOLEAN NOT NULL DEFAULT FALSE,
                   rating_total_score INT NOT NULL DEFAULT 0,
                   number_of_ratings INT NOT NULL DEFAULT 0,
-                  warning VARCHAR(255) NOT NULL,
+                  warning VARCHAR(255),
                   PRIMARY KEY (user_id),
                   FOREIGN KEY (role_id) REFERENCES user_role (role_id));
 
@@ -49,6 +49,7 @@ CREATE TABLE drive(drive_id INT AUTO_INCREMENT,
 CREATE TABLE drive_milestone(milestone_id INT AUTO_INCREMENT,
                              drive_id INT NOT NULL,
                              milestone VARCHAR(255) NOT NULL,
+                             departure_time TIMESTAMP NOT NULL,
                              PRIMARY KEY(milestone_id),
                              FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE);
 
@@ -80,5 +81,5 @@ CREATE TABLE search_filter(filter_id INT AUTO_INCREMENT,
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
 INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, phone_number, email, gender, date_of_birth, warning)
-    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Adminsson', '0701234567', 'admin@a.a', 1, CURRENT_TIMESTAMP(), 'No warning'),
-           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0', 'test@test', 1, CURRENT_TIMESTAMP(), 'Warning for reckless driving');
+    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 'admin@admin', 1, CURRENT_TIMESTAMP(), 'No warning'),
+           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 'test@test', 1, CURRENT_TIMESTAMP(), 'Warning');
