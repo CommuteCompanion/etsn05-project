@@ -93,6 +93,14 @@ base.rest = (function() {
                 .then(response => response.json())
                 .then(u => objOrError(u, User));
         },
+        registerUser: function(userInformation) {
+            return baseFetch('/rest/user', {
+                method: 'POST',
+                body: JSON.stringify(credentials),
+                headers: jsonHeader})
+            .then(response => response.json())
+            .then(u => objOrError(u, User));
+        }
         deleteUser: function(username) {
             return baseFetch('/rest/user/'+username, {method: 'DELETE'});
         },
