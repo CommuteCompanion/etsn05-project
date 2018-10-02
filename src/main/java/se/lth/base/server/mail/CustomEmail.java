@@ -86,6 +86,7 @@ public class CustomEmail {
             case NEW_PASSENGER_ON_TRIP: {
                 subject = getNewPassengerOnTripSubject();
                 body = getNewPassengerOnTripBody();
+                break;
             }
             case BOOKING_CONFIRMED: {
                 subject = getBookingConfirmedSubject();
