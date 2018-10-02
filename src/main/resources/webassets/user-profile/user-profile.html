@@ -1,6 +1,6 @@
 <h1>Account settings</h1>
 <div class="row">
-    <form id="user-form" class="col-md-6">
+    <form id="user-form" class="col-md-7">
         <div id="user-settings" class="form-group">
             <div class="row">
                 <label for="set-username" class="col-md-4">Username</label>
@@ -19,19 +19,26 @@
                 </div>
            </div>
            <div class="row">
-                <label for="set-password-repeat" class="col-md-4">Repeat new password</label>
+                <label for="set-password-repeat" class="col-md-4">Confirm new password</label>
                 <div class="col-md-8">
-                    <input type="password" class="form-control" id="set-password-repeat" 
+                    <input type="password" class="form-control" id="set-password-confirm" 
                        pattern=".{8,}">        
                 </div>       
             </div>
             <p>Continue to add rows when added to database.</p>
-            <button id="submit-user" type="submit" class="w-100 btn btn-primary">Submit</button>
+            <div class="row">
+                <div class="col-6">
+                    <button id="submit-user" type="submit" class="w-100 btn btn-primary">Submit</button>
+                </div>
+                <div class="col-6">
+                    <button id="reset-user" type="reset" class="w-100 btn btn-secondary">Reset</button>
+                </div>
+            </div>
         </div>
     </form>
-    <div id="user-settings-information" class="col-md-6">
+    <div id="user-settings-information" class="col-md-5">
         <p>Diverse härlig info om vårt superfantastiska värdsförändrande projekt commute companion. Lorem ipsum osv.</p>
+        <p>Kontakta oss på commutecompanion@gmail.com. Woop</p>
         <button id="delete-account" type="button" class="w-100 btn btn-danger">Delete account</button>
-        </div>
     </div>
 </div>
