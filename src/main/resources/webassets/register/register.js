@@ -1,4 +1,7 @@
 var base = base || {};
+base.changeLocation = function(url) {
+    window.location.replace(url);
+};
 base.registerController = (function() {
     var controller = {
         submitUser: function(submitEvent) {
@@ -8,7 +11,6 @@ base.registerController = (function() {
             var role = "USER";
             var credentials ={username, password, role};
             base.rest.addUser(credentials).then(function(user) {
-                console.log(user);
                 if (user.error) {
                     alert(user.message);
                 } else {
