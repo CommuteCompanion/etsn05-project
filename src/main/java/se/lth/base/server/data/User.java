@@ -7,35 +7,35 @@ public class User implements Principal {
 
     public static User NONE = new User(0, Role.NONE, "-", "-", "-", "0", "-", 0, Timestamp.valueOf("2018-01-01 00:00:00"), false, 0, 0, "-");
 
-    private final int user_id;
+    private final int userId;
     private final Role role;
     private final String username;
-    private final String first_name;
-    private final String last_name;
-    private final String phone_number;
+    private final String firstName;
+    private final String lastName;
+    private final String phoneNumber;
     private final String email;
     private final int gender;
-    private final Timestamp date_of_birth;
-    private final Boolean driving_licence;
-    private final int rating_total_score;
-    private final int number_of_ratings;
+    private final Timestamp dateOfBirth;
+    private final Boolean drivingLicence;
+    private final int ratingTotalScore;
+    private final int numberOfRatings;
     private final String warning;
 
-    public User(int user_id, Role role, String username, String first_name, String last_name, String phone_number,
-			String email, int gender, Timestamp date_of_birth, Boolean driving_licence, int rating_total_score,
-			int number_of_ratings, String warning) {
-		this.user_id = user_id;
+    public User(int userId, Role role, String username, String firstName, String lastName, String phoneNumber,
+			String email, int gender, Timestamp dateOfBirth, Boolean drivingLicence, int ratingTotalScore,
+			int numberOfRatings, String warning) {
+		this.userId = userId;
 		this.role = role;
 		this.username = username;
-		this.first_name = first_name;
-		this.last_name = last_name;
-		this.phone_number = phone_number;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.gender = gender;
-		this.date_of_birth = date_of_birth;
-		this.driving_licence = driving_licence;
-		this.rating_total_score = rating_total_score;
-		this.number_of_ratings = number_of_ratings;
+		this.dateOfBirth = dateOfBirth;
+		this.drivingLicence = drivingLicence;
+		this.ratingTotalScore = ratingTotalScore;
+		this.numberOfRatings = numberOfRatings;
 		this.warning = warning;
 	}
 
@@ -44,7 +44,7 @@ public class User implements Principal {
     }
 
     public int getId() {
-        return user_id;
+        return userId;
     }
 
     @Override
@@ -52,16 +52,16 @@ public class User implements Principal {
         return username;
     }
 	
-	public String getFirst_name() {
-		return first_name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public String getLast_name() {
-		return last_name;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public String getPhone_number() {
-		return phone_number;
+	public String getPhoneNumber() {
+		return phoneNumber;
 	}
 
 	public String getEmail() {
@@ -72,25 +72,23 @@ public class User implements Principal {
 		return gender;
 	}
 
-	public Timestamp getDate_of_birth() {
-		return date_of_birth;
+	public Timestamp getDateOfBirth() {
+		return dateOfBirth;
 	}
 
-	public Boolean getDriving_licence() {
-		return driving_licence;
+	public Boolean getDrivingLicence() {
+		return drivingLicence;
 	}
 
-	public int getRating_total_score() {
-		return rating_total_score;
+	public int getRatingTotalScore() {
+		return ratingTotalScore;
 	}
 
-	public int getNumber_of_ratings() {
-		return number_of_ratings;
+	public int getNumberOfRatings() {
+		return numberOfRatings;
 	}
 
 	public String getWarning() {
-		if (warning != null)
-			return warning;
-		return " ";
+		return warning;
 	}
 }

@@ -42,12 +42,12 @@ public class UserDataAccess extends DataAccess<User> {
      * @param credentials of the new user, containing name, role, and password.
      * @throws DataAccessException if duplicated username or too short user names.
      */
-    public User addUser(Credentials credentials, String first_name, String last_name, String phone, String email, int gender, Timestamp date_of_birth, boolean driving_license) {
+    public User addUser(Credentials credentials, String firstName, String lastName, String phoneNumber, String email, int gender, Timestamp dateOfBirth, boolean drivingLicense) {
         long salt = Credentials.generateSalt();
         int userId = insert("INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, phone_number, email, gender, date_of_birth, driving_license) VALUES ((" +
                         "SELECT role_id FROM user_role WHERE user_role.role=?),?,?,?,?,?,?,?,?,?,?)",
-                credentials.getRole().name(), credentials.getUsername(), salt, credentials.generatePasswordHash(salt),first_name, last_name, phone, email, gender, date_of_birth, driving_license);
-        return new User(userId, credentials.getRole(), credentials.getUsername(), first_name, last_name, phone, email, gender, date_of_birth, driving_license, 0, 0, null);
+                credentials.getRole().name(), credentials.getUsername(), salt, credentials.generatePasswordHash(salt),firstName, lastName, phoneNumber, email, gender, dateOfBirth, drivingLicense);
+        return new User(userId, credentials.getRole(), credentials.getUsername(), firstName, lastName, phoneNumber, email, gender, dateOfBirth, drivingLicense, 0, 0, null);
     }
 
     public User updateUser(int userId, Credentials credentials) {
