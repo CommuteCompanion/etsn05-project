@@ -110,7 +110,7 @@ public class DriveResource {
     	throw new WebApplicationException("No available seats left", Status.PRECONDITION_FAILED);
     }
     
-    @Path("{driveId/user/{userId}")
+    @Path("{driveId}/user/{userId}")
     @PUT
     @RolesAllowed(Role.Names.USER)
     public DriveUser acceptUserInDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
@@ -122,7 +122,7 @@ public class DriveResource {
     	throw new WebApplicationException("Only driver allowed to accept passengers", Status.UNAUTHORIZED);
     }
     
-    @Path("{driveId/user/{userId}")
+    @Path("{driveId}/user/{userId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
     public void removeUserFromDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
