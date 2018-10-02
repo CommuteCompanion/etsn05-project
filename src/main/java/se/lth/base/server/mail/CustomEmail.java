@@ -24,6 +24,10 @@ import java.util.stream.Collectors;
  * @author Group 1 ETSN05 2018
  */
 public class CustomEmail {
+    private final static String TITLE = "title", PREVIEW = "preview", INTRO = "intro",
+    BUTTON = "button", OUTRO = "outro", WEBSITE_LINK = "http://www.yourcommutecompanion.herokuapp.com",
+    EMAIL_TEMPLATE = "email-template.html";
+
     private final DriveWrap driveWrap;
     private final EmailType emailType;
     private List<Recipient> recipients;
@@ -130,7 +134,7 @@ public class CustomEmail {
         return subjectAndBody;
     }
 
-    // Helper methods fo tech HTML email template
+    // Helper methods to fetch HTML email template
     private String getResource(String resourceName) {
         InputStream inputStream = CustomEmail.class.getResourceAsStream(resourceName);
         InputStreamReader streamReader = new InputStreamReader(inputStream);
@@ -154,23 +158,36 @@ public class CustomEmail {
     }
 
     private String getButton(String link, String text) {
-        Map<String, String> buttonReplacements = new HashMap<>();
-        buttonReplacements.put("buttonLink", link);
-        buttonReplacements.put("buttonText", text);
-        return parseResource(getResource("button-template.html"), buttonReplacements);
+        Map<String, String> buttonContent = new HashMap<>();
+        buttonContent.put("buttonLink", link);
+        buttonContent.put("buttonText", text);
+        return parseResource(getResource("button-template.html"), buttonContent);
     }
 
+    // TODO: Customize after user functionality has been expanded
     // ---------- STANDARD EMAILS BELOW --------------
     private String getWelcomeSubject() {
-        return "";
+        return "Jon, Welcome to CommuteCompanion";
     }
 
     private String getWelcomeBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getWelcomeSubject());
+        content.put(PREVIEW, "Jon, welcome to CommuteCompanion. Please visit our website to find or post trips.");
+
+        StringBuilder intro = new StringBuilder();
+        intro.append("<p>Hi Jon,</p>");
+        intro.append("<p>Welcome to CommuteCompanion! Please visit our website to post or find your first trip.</p>");
+
+        content.put(INTRO, intro.toString());
+        content.put(BUTTON, getButton(WEBSITE_LINK, "Get Started Here!"));
+        content.put(OUTRO, "");
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getNewPassengerOnTripSubject() {
-        return "";
+        return "New passenger request for your drive to " + driveWrap.getDrive().getStop();
     }
 
     private String getNewPassengerOnTripBody() {
@@ -178,7 +195,7 @@ public class CustomEmail {
     }
 
     private String getBookingConfirmedSubject() {
-        return "";
+        return "Your booking request is confirmed";
     }
 
     private String getBookingConfirmedBody() {
@@ -186,7 +203,7 @@ public class CustomEmail {
     }
 
     private String getRatingSubject() {
-        return "";
+        return "Please rate your latest trip";
     }
 
     private String getRatingBody() {
@@ -194,7 +211,7 @@ public class CustomEmail {
     }
 
     private String getFilterMatchSubject() {
-        return "";
+        return "A new trip has matched your filter";
     }
 
     private String getFilterMatchBody() {
@@ -202,7 +219,7 @@ public class CustomEmail {
     }
 
     private String getPassengerCancelledTripSubject() {
-        return "";
+        return "A passenger has cancelled their trip";
     }
 
     private String getPassengerCancelledTripBody() {
@@ -210,7 +227,7 @@ public class CustomEmail {
     }
 
     private String getDriverCancelledDriveSubject() {
-        return "";
+        return "Your trip has been cancelled";
     }
 
     private String getDriverCancelledDriveBody() {
@@ -218,7 +235,7 @@ public class CustomEmail {
     }
 
     private String getWarningSubject() {
-        return "";
+        return "A warning has been issued";
     }
 
     private String getWarningBody() {
@@ -226,7 +243,7 @@ public class CustomEmail {
     }
 
     private String getDriverRemovedPassengerSubject() {
-        return "";
+        return "You have been removed from your trip";
     }
 
     private String getDriverRemovedPassengerBody() {
