@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -25,8 +27,8 @@ import java.util.stream.Collectors;
  */
 public class CustomEmail {
     private final static String TITLE = "title", PREVIEW = "preview", INTRO = "intro",
-    BUTTON = "button", OUTRO = "outro", WEBSITE_LINK = "http://www.yourcommutecompanion.herokuapp.com",
-    EMAIL_TEMPLATE = "email-template.html";
+            BUTTON = "button", OUTRO = "outro", WEBSITE_LINK = "http://www.yourcommutecompanion.herokuapp.com",
+            EMAIL_TEMPLATE = "email-template.html";
 
     private final DriveWrap driveWrap;
     private final EmailType emailType;
@@ -45,7 +47,7 @@ public class CustomEmail {
     /**
      * Used to send non drive related emails
      *
-     * @param user User to be warned
+     * @param user      User to be warned
      * @param emailType EmailType defined by se.lth.base.server.mail.EmailType
      */
     public CustomEmail(User user, EmailType emailType) {
@@ -150,8 +152,13 @@ public class CustomEmail {
     }
 
     private String parseResource(String emailTemplate, Map<String, String> replacements) {
-        for (Map.Entry<String, String> e : replacements.entrySet()) {
-            emailTemplate = emailTemplate.replaceAll("{{" + e.getKey() + "}}", e.getValue());
+        // Matches all instances of Mustache wraps
+        Matcher m = Pattern.compile("\\{\\{[A-z]\\w+}}").matcher(emailTemplate);
+
+        while (m.find()) {
+            String mustache = m.group();
+            String replacement = replacements.get(mustache);
+            emailTemplate.replaceAll("{{" + mustache + "}}", replacement == null ? "" : replacement);
         }
 
         return emailTemplate;
@@ -181,7 +188,6 @@ public class CustomEmail {
 
         content.put(INTRO, intro.toString());
         content.put(BUTTON, getButton(WEBSITE_LINK, "Get Started Here!"));
-        content.put(OUTRO, "");
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -191,7 +197,10 @@ public class CustomEmail {
     }
 
     private String getNewPassengerOnTripBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getNewPassengerOnTripSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getBookingConfirmedSubject() {
@@ -199,7 +208,10 @@ public class CustomEmail {
     }
 
     private String getBookingConfirmedBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getBookingConfirmedSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getRatingSubject() {
@@ -207,7 +219,10 @@ public class CustomEmail {
     }
 
     private String getRatingBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getRatingSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getFilterMatchSubject() {
@@ -215,7 +230,10 @@ public class CustomEmail {
     }
 
     private String getFilterMatchBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getFilterMatchSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getPassengerCancelledTripSubject() {
@@ -223,7 +241,10 @@ public class CustomEmail {
     }
 
     private String getPassengerCancelledTripBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getPassengerCancelledTripSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getDriverCancelledDriveSubject() {
@@ -231,7 +252,10 @@ public class CustomEmail {
     }
 
     private String getDriverCancelledDriveBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getDriverCancelledDriveSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getWarningSubject() {
@@ -239,7 +263,10 @@ public class CustomEmail {
     }
 
     private String getWarningBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getWarningSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 
     private String getDriverRemovedPassengerSubject() {
@@ -247,6 +274,9 @@ public class CustomEmail {
     }
 
     private String getDriverRemovedPassengerBody() {
-        return "";
+        Map<String, String> content = new HashMap<>();
+        content.put(TITLE, getDriverRemovedPassengerSubject());
+
+        return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
 }
