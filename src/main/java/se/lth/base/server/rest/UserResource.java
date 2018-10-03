@@ -109,7 +109,7 @@ public class UserResource {
     }
 
     @Path("{id}")
-    @RolesAllowed(Role.Names.ADMIN)
+    @RolesAllowed(Role.Names.USER)
     @PUT
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
