@@ -15,14 +15,6 @@ import java.util.List;
  *
  */
 public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
-	public DriveMilestone addMilestone(int driveId, String milestone, Timestamp departureTime) {
-		int milestoneId = insert("INSERT INTO drive_milestone (drive_id, order, stop) VALUES(?,?,?,?)");
-		return new DriveMilestone(milestoneId, driveId, milestone, departureTime);
-	}
-
-	public DriveMilestoneDataAccess(String driverUrl) {
-		super(driverUrl, new MilestoneMapper());
-	}
 
 	private static final class MilestoneMapper implements Mapper<DriveMilestone> {
 		@Override
@@ -32,6 +24,15 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
 					resultSet.getString("milestone"),
 					resultSet.getTimestamp("departure_time"));
 		}
+	}
+
+	public DriveMilestoneDataAccess(String driverUrl) {
+		super(driverUrl, new MilestoneMapper());
+	}
+
+	public DriveMilestone addMilestone(int driveId, String milestone, Timestamp departureTime) {
+		int milestoneId = insert("INSERT INTO drive_milestone (drive_id, order, stop, departure_time) VALUES(?,?,?,?)");
+		return new DriveMilestone(milestoneId, driveId, milestone, departureTime);
 	}
 
 	public DriveMilestone updateMilestone(int milestoneId, String milestone) {
