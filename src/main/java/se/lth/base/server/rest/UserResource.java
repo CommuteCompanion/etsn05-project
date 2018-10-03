@@ -84,7 +84,7 @@ public class UserResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    @RolesAllowed(Role.Names.ADMIN)
+    @PermitAll
     public User createUser(Credentials credentials) {
         if (!credentials.hasPassword() || !credentials.validPassword()) {
             throw new WebApplicationException("Password too short", Response.Status.BAD_REQUEST);
