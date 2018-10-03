@@ -51,7 +51,7 @@ CREATE TABLE drive_milestone(milestone_id INT AUTO_INCREMENT,
                              milestone_name VARCHAR(255) NOT NULL,
                              departure_time TIMESTAMP NOT NULL,
                              PRIMARY KEY(milestone_id),
-                             );
+                             FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE);
 
 CREATE TABLE drive_user(drive_id INT NOT NULL,
                         user_id INT NOT NULL,
