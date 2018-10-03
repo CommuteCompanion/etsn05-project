@@ -15,14 +15,13 @@ CREATE TABLE user(user_id INT AUTO_INCREMENT,
                   phone_number VARCHAR(255) NOT NULL,
                   email VARCHAR(255) NOT NULL,
                   gender TINYINT NOT NULL,
-                  date_of_birth TIMESTAMP NOT NULL,
+                  date_of_birth DATE NOT NULL,
                   driving_license BOOLEAN NOT NULL DEFAULT FALSE,
                   rating_total_score INT NOT NULL DEFAULT 0,
                   number_of_ratings INT NOT NULL DEFAULT 0,
-                  warning VARCHAR(255) NOT NULL,
+                  warning INT NOT NULL DEFAULT 1,
                   PRIMARY KEY (user_id),
-                  FOREIGN KEY (role_id) REFERENCES user_role (role_id),
-                  CHECK (LENGTH(username) >= 4)); -- ensures that username have 4 or more characters
+                  FOREIGN KEY (role_id) REFERENCES user_role (role_id));
 
 -- Sessions are indexed by large random numbers instead of a sequence of integers, because they could otherwise
 -- be guessed by a malicious user.
@@ -39,21 +38,19 @@ CREATE TABLE drive(drive_id INT AUTO_INCREMENT,
                    comment VARCHAR(255) NOT NULL,
                    car_brand VARCHAR(255) NOT NULL,
                    car_model VARCHAR(255) NOT NULL,
-                   car_year VARCHAR(255) NOT NULL,
                    car_color VARCHAR(255) NOT NULL,
-                   car_licence_plate VARCHAR(255) NOT NULL,
                    car_number_of_seats TINYINT NOT NULL,
                    opt_luggage_size TINYINT NOT NULL DEFAULT 1,
                    opt_winter_tires BOOLEAN NOT NULL DEFAULT FALSE,
                    opt_bicycle BOOLEAN NOT NULL DEFAULT FALSE,
                    opt_pets BOOLEAN NOT NULL DEFAULT FALSE,
-                   PRIMARY KEY(drive_id),
-                   );
+                   PRIMARY KEY(drive_id));
 
 CREATE TABLE drive_milestone(milestone_id INT AUTO_INCREMENT,
                              drive_id INT NOT NULL,
                              milestone VARCHAR(255) NOT NULL,
                              order TINYINT NOT NULL,
+                             departure_time TIMESTAMP NOT NULL,
                              PRIMARY KEY(milestone_id),
                              FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE);
 
@@ -73,7 +70,7 @@ CREATE TABLE drive_report(report_id INT AUTO_INCREMENT,
                           report_message VARCHAR(255) NOT NULL,
                           PRIMARY KEY(report_id),
                           FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE,
-                          FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
+                          FOREIGN KEY(reported_by_user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
 CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT
                            user_id INT NOT NULL,
@@ -84,6 +81,6 @@ CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT
                            FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
-INSERT INTO user (role_id, username, salt, password_hash)
-    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59'),
-           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd');
+INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, phone_number, email, gender, date_of_birth)
+    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 'admin@admin', 1, CURRENT_TIMESTAMP()),
+           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 'test@test', 1, CURRENT_TIMESTAMP());

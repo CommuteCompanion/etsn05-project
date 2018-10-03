@@ -116,6 +116,22 @@
         <finalName>base-server</finalName>
         <plugins>
             <plugin>
+                <groupId>nl.geodienstencentrum.maven</groupId>
+                <artifactId>sass-maven-plugin</artifactId>
+                <version>3.5.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>update-stylesheets</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sassSourceDirectory>src/main/resources/webassets/custom_scss</sassSourceDirectory>
+                    <destination>src/main/resources/webassets/css</destination>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>com.heroku.sdk</groupId>
                 <artifactId>heroku-maven-plugin</artifactId>
                 <version>2.0.6</version>
