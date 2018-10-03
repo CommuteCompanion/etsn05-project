@@ -50,9 +50,11 @@ CREATE TABLE drive(drive_id INT AUTO_INCREMENT,
                    PRIMARY KEY(drive_id),
                    );
 
-CREATE TABLE drive_milestone(drive_id INT NOT NULL,
+CREATE TABLE drive_milestone(milestone_id INT AUTO_INCREMENT,
+                             drive_id INT NOT NULL,
                              milestone VARCHAR(255) NOT NULL,
                              order TINYINT NOT NULL,
+                             PRIMARY KEY(milestone_id),
                              FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE);
 
 CREATE TABLE drive_user(drive_id INT NOT NULL,
@@ -73,10 +75,12 @@ CREATE TABLE drive_report(report_id INT AUTO_INCREMENT,
                           FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE,
                           FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
-CREATE TABLE search_filter(user_id INT NOT NULL,
+CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT
+                           user_id INT NOT NULL,
                            start VARCHAR(255),
                            stop VARCHAR(255),
                            departure_time TIMESTAMP,
+                           PRIMARY KEY(search_filter_id),
                            FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
