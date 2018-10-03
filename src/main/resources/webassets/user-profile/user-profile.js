@@ -41,6 +41,7 @@ base.userProfileController = (function() {
                         alert(user.message);
                     } else {
                         view.render();
+                        document.getElementById('username').textContent = username;
                     }
                 });
             } else {
