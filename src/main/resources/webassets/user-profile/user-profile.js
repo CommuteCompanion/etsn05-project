@@ -22,9 +22,7 @@ base.userProfileController = (function() {
         deleteUser: function() {
             base.rest.deleteUser(model.user.id)
                 .then(base.rest.logout())
-                .then(function() {
-                    window.location.replace('/');
-                });
+                .then(window.location.replace('/'));
         },
         submitUser: function(submitEvent) {
             submitEvent.preventDefault;
