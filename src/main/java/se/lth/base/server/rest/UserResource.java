@@ -127,6 +127,7 @@ public class UserResource {
     @RolesAllowed(Role.Names.USER)
     @DELETE
     public void deleteUser(@PathParam("id") int userId) {
+        
         if (!userDao.deleteUser(userId)) {
             throw new WebApplicationException("User not found", Response.Status.NOT_FOUND);
         }
