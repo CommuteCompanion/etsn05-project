@@ -49,7 +49,6 @@ CREATE TABLE drive(drive_id INT AUTO_INCREMENT,
 CREATE TABLE drive_milestone(milestone_id INT AUTO_INCREMENT,
                              drive_id INT NOT NULL,
                              milestone_name VARCHAR(255) NOT NULL,
-                             milestone_order TINYINT NOT NULL,
                              departure_time TIMESTAMP NOT NULL,
                              PRIMARY KEY(milestone_id),
                              );
