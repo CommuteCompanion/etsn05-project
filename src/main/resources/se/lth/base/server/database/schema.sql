@@ -19,7 +19,7 @@ CREATE TABLE user(user_id INT AUTO_INCREMENT,
                   driving_license BOOLEAN NOT NULL DEFAULT FALSE,
                   rating_total_score INT NOT NULL DEFAULT 0,
                   number_of_ratings INT NOT NULL DEFAULT 0,
-                  warning VARCHAR(255),
+                  warning INT NOT NULL DEFAULT 1,
                   PRIMARY KEY (user_id),
                   FOREIGN KEY (role_id) REFERENCES user_role (role_id));
 
@@ -80,6 +80,6 @@ CREATE TABLE search_filter(filter_id INT AUTO_INCREMENT,
                            FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
-INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, phone_number, email, gender, date_of_birth, warning)
-    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 'admin@admin', 1, CURRENT_TIMESTAMP(), 'No warning'),
-           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 'test@test', 1, CURRENT_TIMESTAMP(), 'Warning');
+INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, phone_number, email, gender, date_of_birth)
+    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 'admin@admin', 1, CURRENT_TIMESTAMP()),
+           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 'test@test', 1, CURRENT_TIMESTAMP());
