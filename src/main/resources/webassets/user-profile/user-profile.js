@@ -20,9 +20,11 @@ base.userProfileController = (function() {
     };
     var controller = {
         deleteUser: function() {
-            base.rest.deleteUser(model.user.id).then(function() {
-                base.rest.logout();
-            });
+            base.rest.deleteUser(model.user.id)
+                .then(base.rest.logout())
+                .then(function() {
+                    window.location.replace('/');
+                });
         },
         submitUser: function(submitEvent) {
             submitEvent.preventDefault;
