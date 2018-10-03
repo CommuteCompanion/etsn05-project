@@ -188,14 +188,6 @@ public class UserResourceTest extends BaseResourceTest {
         assertEquals(TEST.getRole(), responseTest.getRole());
     }
 
-    @Test(expected = WebApplicationException.class)
-    public void dontDeleteYourself() {
-        login(ADMIN_CREDENTIALS);
-        target("user")
-                .path(Integer.toString(ADMIN.getId()))
-                .request()
-                .delete(Void.class);
-    }
 
     @Test(expected = NotFoundException.class)
     public void deleteTestUser() {
