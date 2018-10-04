@@ -4,14 +4,16 @@ import org.simplejavamail.email.Email;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.email.Recipient;
 import org.slf4j.LoggerFactory;
-import se.lth.base.server.data.DriveWrap;
-import se.lth.base.server.data.User;
+import se.lth.base.server.Config;
+import se.lth.base.server.data.*;
 
 import javax.mail.Message;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +34,7 @@ public class CustomEmail {
 
     private final DriveWrap driveWrap;
     private final EmailType emailType;
+    private final User singleUser;
     private List<Recipient> recipients;
 
     /**
@@ -59,13 +62,8 @@ public class CustomEmail {
         this.driveWrap = driveWrap;
         this.emailType = emailType;
         this.recipients = new ArrayList<>();
-
-        if (user != null) {
-            // TODO: Add user attributes when implemented
-            recipients.add(new Recipient("name", "email", Message.RecipientType.TO));
-        }
+        this.singleUser = user;
     }
-
 
     public Email getEmail() {
         Map<String, String> subjectAndBody = getSubjectAndBody();
@@ -79,7 +77,7 @@ public class CustomEmail {
                 .buildEmail();
     }
 
-    public Map<String, String> getSubjectAndBody() {
+    private Map<String, String> getSubjectAndBody() {
         String subject = "", body = "";
         Map<String, String> subjectAndBody = new HashMap<>();
 
@@ -151,17 +149,18 @@ public class CustomEmail {
         return "Error: could not read email template";
     }
 
-    private String parseResource(String emailTemplate, Map<String, String> replacements) {
+    private String parseResource(String template, Map<String, String> replacements) {
         // Matches all instances of Mustache wraps
-        Matcher m = Pattern.compile("\\{\\{[A-z]\\w+}}").matcher(emailTemplate);
+        Matcher m = Pattern.compile("\\{\\{[A-z]\\w+}}").matcher(template);
 
         while (m.find()) {
-            String mustache = m.group();
-            String replacement = replacements.get(mustache);
-            emailTemplate.replaceAll("{{" + mustache + "}}", replacement == null ? "" : replacement);
+            String mustacheValue = m.group().substring(2,m.group().length() - 2);
+            String replacement = replacements.get(mustacheValue);
+            System.out.println(replacement);
+            template = template.replaceAll("\\{\\{" + mustacheValue + "}}", replacement == null ? "" : replacement);
         }
 
-        return emailTemplate;
+        return template;
     }
 
     private String getButton(String link, String text) {
@@ -171,23 +170,33 @@ public class CustomEmail {
         return parseResource(getResource("button-template.html"), buttonContent);
     }
 
-    // TODO: Customize after user functionality has been expanded
     // ---------- STANDARD EMAILS BELOW --------------
     private String getWelcomeSubject() {
-        return "Jon, Welcome to CommuteCompanion";
+        return singleUser.getFirstName() + ", welcome to CommuteCompanion";
     }
 
     private String getWelcomeBody() {
+        String firstName = singleUser.getFirstName();
         Map<String, String> content = new HashMap<>();
+
+        // Title
         content.put(TITLE, getWelcomeSubject());
-        content.put(PREVIEW, "Jon, welcome to CommuteCompanion. Please visit our website to find or post trips.");
 
-        StringBuilder intro = new StringBuilder();
-        intro.append("<p>Hi Jon,</p>");
-        intro.append("<p>Welcome to CommuteCompanion! Please visit our website to post or find your first trip.</p>");
+        // Preview
+        String preview = firstName + ", welcome to CommuteCompanion. Please visit our website to find or post trips.";
+        content.put(PREVIEW, preview);
 
-        content.put(INTRO, intro.toString());
-        content.put(BUTTON, getButton(WEBSITE_LINK, "Get Started Here!"));
+        // Intro
+        String intro = "<p>Hi " + firstName + ",</p>";
+        intro += "<p>Welcome to CommuteCompanion! Please visit our website to post or find your first trip.</p>";
+        content.put(INTRO, intro);
+
+        // Action button
+        content.put(BUTTON, getButton(WEBSITE_LINK, "Get Started Here"));
+
+        // Add recipient
+        String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -198,7 +207,41 @@ public class CustomEmail {
 
     private String getNewPassengerOnTripBody() {
         Map<String, String> content = new HashMap<>();
+        DriveUser lastPassenger = null, driver = null;
+        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(departureTime);
+
+        // Fetch the driver and last passenger added
+        for (DriveUser u : driveWrap.getUsers()) {
+            if (u.isDriver()) {
+                driver = u;
+            }
+
+            lastPassenger = u;
+        }
+
+        // Get the user data
+        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+        assert driver != null;
+        User driverU = userDao.getUser(driver.getUserId());
+
+        // Title
         content.put(TITLE, getNewPassengerOnTripSubject());
+
+        // Intro
+        String intro = "<p>Hi " + driverU.getFirstName() + ",</p>";
+        intro += "<p>A passenger has requested to travel with you from <i>";
+        intro += lastPassenger.getStart() + "</i> to <i>" + lastPassenger.getStop();
+        intro += "</i> on your drive from <i>" + driver.getStart() + "</i> to <i>";
+        intro += driver.getStop() + "</i> on " + formattedDepartureTime + ".</p>";
+        content.put(INTRO, intro);
+
+        // Action button
+        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Drive"));
+
+        // Add recipient
+        String fullName = driverU.getFirstName() + " " + driverU.getLastName();
+        recipients.add(new Recipient(fullName, driverU.getEmail(), Message.RecipientType.TO));
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -209,7 +252,41 @@ public class CustomEmail {
 
     private String getBookingConfirmedBody() {
         Map<String, String> content = new HashMap<>();
+        DriveUser acceptedPassenger = null, driver = null;
+
+        // Fetch the driver and last passenger added
+        for (DriveUser u : driveWrap.getUsers()) {
+            if (u.isDriver()) {
+                driver = u;
+            }
+
+            acceptedPassenger = u;
+        }
+
+        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+
+        // Get the user data
+        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+        assert driver != null;
+        User driverU = userDao.getUser(driver.getUserId());
+
+        // Title
         content.put(TITLE, getBookingConfirmedSubject());
+
+        // Intro
+        String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
+        intro += "<p>Your booking request with " + driverU.getFirstName() + " from <i>";
+        intro += acceptedPassenger.getStart() + "</i> to <i>" + acceptedPassenger.getStop();
+        intro += "</i> on " + formattedDepartureTime + " has been accepted.</p>";
+        content.put(INTRO, intro);
+
+        // Action button
+        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Trip"));
+
+        // Add recipient
+        String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -220,9 +297,36 @@ public class CustomEmail {
 
     private String getRatingBody() {
         Map<String, String> content = new HashMap<>();
+        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+        DriveUser driver = null;
+
+        // Fetch the driver and last passenger added
+        for (DriveUser u : driveWrap.getUsers()) {
+            User user = userDao.getUser(u.getUserId());
+            String fullName = user.getFirstName() + " " + user.getLastName();
+            recipients.add(new Recipient(fullName, user.getEmail(), Message.RecipientType.TO));
+            if (u.isDriver()) {
+                driver = u;
+            }
+        }
+
+        // Get the user data
+        assert driver != null;
+        User driverU = userDao.getUser(driver.getUserId());
+
+        // Title
         content.put(TITLE, getRatingSubject());
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        // Intro
+        String intro = "<p>Hi,</p>";
+        intro += "<p>We hope your ride with " + driverU.getFirstName() + " was satisfactory. ";
+        intro += "Please take a minute to tell your fellow CommuteCompanioners about it.</p>";
+        content.put(INTRO, intro);
+
+        // Action button
+        content.put(BUTTON, getButton(WEBSITE_LINK, "Rate Your Trip"));
+
+        return parseResource(getResource(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId()), content);
     }
 
     private String getFilterMatchSubject() {
@@ -231,7 +335,24 @@ public class CustomEmail {
 
     private String getFilterMatchBody() {
         Map<String, String> content = new HashMap<>();
+
+        // Title
         content.put(TITLE, getFilterMatchSubject());
+
+        // Intro
+        // TODO: Expand the details in this message when SearchFilterDTO is created
+        String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
+        intro += "<p>A new trip matching one of your search filters has been posted to CommuteCompanion. ";
+        intro += "Check it out by clicking the button below.</p>";
+        content.put(INTRO, intro);
+
+        // Action button
+        // TODO: Set correct deep link when SearchFilterDTO is created
+        content.put(BUTTON, getButton(WEBSITE_LINK, "Go to Trip"));
+
+        // Add recipient
+        String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -242,7 +363,41 @@ public class CustomEmail {
 
     private String getPassengerCancelledTripBody() {
         Map<String, String> content = new HashMap<>();
-        content.put(TITLE, getPassengerCancelledTripSubject());
+        DriveUser lastPassenger = null, driver = null;
+        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(departureTime);
+
+        // Fetch the driver and last passenger added
+        for (DriveUser u : driveWrap.getUsers()) {
+            if (u.isDriver()) {
+                driver = u;
+            }
+
+            lastPassenger = u;
+        }
+
+        // Get the user data
+        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+        assert driver != null;
+        User driverU = userDao.getUser(driver.getUserId());
+
+        // Title
+        content.put(TITLE, getNewPassengerOnTripSubject());
+
+        // Intro
+        String intro = "<p>Hi " + driverU.getFirstName() + ",</p>";
+        intro += "<p>A passenger has cancelled their trip with you from <i>";
+        intro += lastPassenger.getStart() + "</i> to <i>" + lastPassenger.getStop();
+        intro += "</i> on your drive from <i>" + driver.getStart()+ "</i> to <i>";
+        intro += driver.getStop() + "</i> on " + formattedDepartureTime + ".</p>";
+        content.put(INTRO, intro);
+
+        // Action button
+        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Drive"));
+
+        // Add recipient
+        String fullName = driverU.getFirstName() + " " + driverU.getLastName();
+        recipients.add(new Recipient(fullName, driverU.getEmail(), Message.RecipientType.TO));
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -253,7 +408,34 @@ public class CustomEmail {
 
     private String getDriverCancelledDriveBody() {
         Map<String, String> content = new HashMap<>();
-        content.put(TITLE, getDriverCancelledDriveSubject());
+        DriveUser driver = null;
+        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+
+        // Fetch the driver and last passenger added
+        for (DriveUser u : driveWrap.getUsers()) {
+            if (u.isDriver()) {
+                driver = u;
+            } else {
+                User user = userDao.getUser(u.getUserId());
+                String fullName = user.getFirstName() + " " + user.getLastName();
+                recipients.add(new Recipient(fullName, user.getEmail(), Message.RecipientType.TO));
+            }
+        }
+
+        assert driver != null;
+        User driverU = userDao.getUser(driver.getUserId());
+
+        // Title
+        content.put(TITLE, getFilterMatchSubject());
+
+        // Intro
+        String intro = "<p>Hi,</p>";
+        intro += "<p>Your trip with " + driverU.getFirstName() + " on ";
+        intro += formattedDepartureTime + " has been cancelled by the driver. ";
+        intro += "We apologize for the inconvenience.</p>";
+        content.put(INTRO, intro);
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -264,7 +446,19 @@ public class CustomEmail {
 
     private String getWarningBody() {
         Map<String, String> content = new HashMap<>();
-        content.put(TITLE, getWarningSubject());
+
+        // Title
+        content.put(TITLE, getFilterMatchSubject());
+
+        // Intro
+        String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
+        intro += "<p>You have been issued a warning by the CommuteCompanion admins. ";
+        intro += "Please be sure to always adhere to common sense when on CommuteCompanion.</p>";
+        content.put(INTRO, intro);
+
+        // Add recipient
+        String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }
@@ -275,7 +469,42 @@ public class CustomEmail {
 
     private String getDriverRemovedPassengerBody() {
         Map<String, String> content = new HashMap<>();
-        content.put(TITLE, getDriverRemovedPassengerSubject());
+        DriveUser removedPassenger = null, driver = null;
+
+        // Fetch the driver and last passenger added
+        for (DriveUser u : driveWrap.getUsers()) {
+            if (u.isDriver()) {
+                driver = u;
+            }
+
+            if (u.getUserId() == singleUser.getId()) {
+                removedPassenger = u;
+            }
+        }
+
+        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+
+        assert driver != null;
+        assert removedPassenger != null;
+
+        // Get the user data
+        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+        User driverU = userDao.getUser(driver.getUserId());
+
+        // Title
+        content.put(TITLE, getBookingConfirmedSubject());
+
+        // Intro
+        String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
+        intro += "<p>The driver " + driverU.getFirstName() + " has removed you from your trip on ";
+        intro += formattedDepartureTime + " from <i>" + removedPassenger.getStart() + "</i> to <i>";
+        intro += removedPassenger.getStop() + "</i>. We apologize for the inconvenience.</p>";
+        content.put(INTRO, intro);
+
+        // Add recipient
+        String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return parseResource(getResource(EMAIL_TEMPLATE), content);
     }

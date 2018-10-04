@@ -5,7 +5,6 @@ import org.simplejavamail.email.Email;
 import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
-import se.lth.base.server.data.Drive;
 import se.lth.base.server.data.DriveWrap;
 import se.lth.base.server.data.User;
 
@@ -56,23 +55,24 @@ public class MailHandler {
      *
      * @param driveWrap DriveWrap DTO object
      */
-	public void notifyDriverNewPassangerOnTrip(DriveWrap driveWrap) {
+	public void notifyDriverNewPassengerOnTrip(DriveWrap driveWrap) {
 	    sendMail(new CustomEmail(driveWrap,EmailType.NEW_PASSENGER_ON_TRIP).getEmail());
     }
 
     /**
-     * Send an email to the last passenger with accepted option set to TRUE
+     * Send an email to a specified user
      *
      * @param driveWrap DriveWrap DTO object
+     * @param user Passenger to be notified
      */
-    public void notifyPassengerBookingConfirmed(DriveWrap driveWrap) {
-        sendMail(new CustomEmail(driveWrap,EmailType.BOOKING_CONFIRMED).getEmail());
+    public void notifyPassengerBookingConfirmed(DriveWrap driveWrap, User user) {
+        sendMail(new CustomEmail(driveWrap,EmailType.BOOKING_CONFIRMED, user).getEmail());
     }
 
     /**
      * Sends an email to all users in drive to rate the drive
      *
-     * @param driveWrap
+     * @param driveWrap DriveWrap DTO
      */
     public void sendLinkToRatingScreen(DriveWrap driveWrap) {
         sendMail(new CustomEmail(driveWrap,EmailType.RATING).getEmail());
