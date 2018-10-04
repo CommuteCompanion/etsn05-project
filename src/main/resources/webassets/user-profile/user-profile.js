@@ -20,7 +20,7 @@ base.userProfileController = (function() {
     };
     var controller = {
         deleteUser: function() {
-            base.rest.deleteUser(model.user.id)
+            base.rest.deleteUser(model.user.userId)
                 .then(base.rest.logout())
                 .then(window.location.replace('/'));
         },
@@ -29,7 +29,7 @@ base.userProfileController = (function() {
             var username = document.getElementById('set-username').value;
             var password = document.getElementById('set-password').value;
             var repeatPassword = document.getElementById('set-password-confirm').value;
-            var id = model.user.id;
+            var id = model.user.userId;
             var role = model.user.role.name;
             credentials = {username, password, role};
             if (password === '') {
