@@ -12,7 +12,7 @@ base.userProfileController = (function() {
                 document.getElementById('set-username').value = model.user.username;
             });  
         },
-        resetEdit: function() {
+        clearChanges: function() {
             view.render();
             document.getElementById('set-password').value = '';
             document.getElementById('set-password-confirm').value = '';
@@ -51,7 +51,7 @@ base.userProfileController = (function() {
         },
         load: function() {
             document.getElementById('user-form').onsubmit = controller.submitUser;
-            document.querySelector('#reset-user').onclick = view.resetEdit;
+            document.querySelector('#clear-changes').onclick = view.clearChanges;
             document.querySelector('#delete-account').onclick = controller.deleteUser;
             view.render();
         },
