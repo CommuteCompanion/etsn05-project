@@ -81,12 +81,13 @@ public class Credentials {
 
     private String nameSanitizer(String name) {
         // Strip illegal chars and make lowercase
-        name = name.trim().replaceAll("[^-A-zÅÄÖåäö]", "").toLowerCase();
+        name = name.trim().replaceAll("[^\\s-A-zÅÄÖåäö]", "").toLowerCase();
         StringBuilder sb = new StringBuilder(name);
         Pattern p = Pattern.compile("[\\s+-]");
         Matcher m = p.matcher(name);
 
         // Capitalize first character in every word in first name
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
         while (m.find()) {
             int charPos = m.start() + 1;
             sb.setCharAt(charPos, Character.toUpperCase(sb.charAt(charPos)));
