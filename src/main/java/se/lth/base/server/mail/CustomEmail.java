@@ -77,7 +77,7 @@ public class CustomEmail {
                 .to(recipients)
                 .withSubject(subjectAndBody.get("subject"))
                 .withHTMLText(subjectAndBody.get("body"))
-                .withPlainText("Please view this email in a modern email client!")
+                .withPlainText("Please templates this email in a modern email client!")
                 .buildEmail();
     }
 

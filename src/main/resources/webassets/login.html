@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CommuteCompanion</title>
+    <link rel="stylesheet" href="css/custom/main.css">
+    <link rel="icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 text-center">
+            <form id="login-form">
+                <img class="mb-4" src="images/logo.svg" alt="" width="160" height="100">
+                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <input id="username" type="text" class="form-control" placeholder="Username" required>
+                <input id="password" type="password" class="form-control" placeholder="Password" required>
+                <div class="checkbox mb-3">
+                    <label>
+                        <input id="remember" type="checkbox">Remember me
+                    </label>
+                </div>
+                <button id="login" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <a href="register.html" class="btn btn-lg btn-primary btn-block" role="button">Register</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="js/custom/rest.js"></script>
+<script src="js/custom/login.js"></script>
+<script type="application/javascript">
+    base.loginController.initOnLoad();
+
+
+</script>
+</body>
+</html>
