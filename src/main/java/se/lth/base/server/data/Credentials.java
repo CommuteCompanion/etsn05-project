@@ -2,14 +2,20 @@ package se.lth.base.server.data;
 
 import com.google.gson.annotations.Expose;
 
+
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -27,25 +33,17 @@ public class Credentials {
     @Expose(serialize = false)
     private final String password;
     private final Role role;
+    private final User user;
 
-    public Credentials(String username, String password, Role role) {
+    public Credentials(String username, String password, Role role, User user) {
         this.username = username;
         this.password = password;
         this.role = role;
+        this.user = user;
     }
 
     static long generateSalt() {
         return new SecureRandom().nextLong();
-    }
-
-    public static void main(String[] args) {
-        long s1 = generateSalt();
-        long s2 = generateSalt();
-        System.out.println(s1);
-        System.out.println(new Credentials("Admin", "password", Role.ADMIN).generatePasswordHash(s1));
-
-        System.out.println(s2);
-        System.out.println(new Credentials("Test", "password", Role.USER).generatePasswordHash(s2));
     }
 
     public String getUsername() {
@@ -56,8 +54,63 @@ public class Credentials {
         return role;
     }
 
-    public boolean validPassword() {
-        return this.password.length() >= 8;
+    public User getUser() {
+        return user;
+    }
+
+    public void validate() {
+        if (user == null) {
+            throw new WebApplicationException("No user data", Response.Status.BAD_REQUEST);
+        }
+
+        String firstName = this.user.getFirstName();
+        if (firstName == null || firstName.trim().length() < 2) {
+            throw new WebApplicationException("First name too short", Response.Status.BAD_REQUEST);
+        }
+
+        String lastName = this.user.getFirstName();
+        if (lastName == null || lastName.trim().length() < 2) {
+            throw new WebApplicationException("Last name too short", Response.Status.BAD_REQUEST);
+        }
+
+        Date dateOfBirth = this.user.getDateOfBirth();
+        if (dateOfBirth == null) {
+            throw new WebApplicationException("No date of birth", Response.Status.BAD_REQUEST);
+        }
+
+        long currentAge = new Date().getTime() - dateOfBirth.getTime();
+        long legalAge = 1000 * 60 * 60 * 24 * 365 * 18;
+        if (currentAge < legalAge) {
+            throw new WebApplicationException("User not over 18 years old", Response.Status.BAD_REQUEST);
+        }
+
+        if (this.user.getDrivingLicence() == null) {
+            throw new WebApplicationException("Driving license not specified", Response.Status.BAD_REQUEST);
+        }
+
+        String email = this.user.getEmail();
+        if (email != null) {
+            try {
+                InternetAddress emailAddr = new InternetAddress(email);
+            } catch (AddressException e) {
+                throw new WebApplicationException("Email not valid", Response.Status.BAD_REQUEST);
+            }
+
+            String[] tokens = email.split("@");
+            if (tokens.length != 2 ||
+                    tokens[0] != null || tokens[0].trim().length() > 0 ||
+                    tokens[1] != null || tokens[1].trim().length() > 0) {
+                throw new WebApplicationException("Email not valid", Response.Status.BAD_REQUEST);
+            }
+
+        } else {
+            throw new WebApplicationException("No email specified", Response.Status.BAD_REQUEST);
+        }
+
+        String password = this.password;
+        if (password == null || password.length() < 8 || ) {
+            throw new WebApplicationException("Password not secure enough", Response.Status.BAD_REQUEST);
+        }
     }
 
     public boolean hasPassword() {
