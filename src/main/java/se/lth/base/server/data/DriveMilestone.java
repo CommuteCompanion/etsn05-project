@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 /**
  * Data class for a drive milestone
  *
- * @author Group 1 ETSN05 2018
+ * @author Group 1 ETSN05 2018 
  * @see DriveMilestoneDataAccess
  */
 public class DriveMilestone {
