@@ -36,6 +36,17 @@ public class UserDataAccess extends DataAccess<User> {
         super(driverUrl, new UserMapper());
     }
 
+    public User getUser(int userId) {
+        return queryFirst("SELECT user_id, role, username, first_name, last_name, phone_number, email, gender, date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, user_role " +
+                "WHERE user.user_id = ? AND user.role_id = user_role.role_id", userId);
+    }
+
+    public User getUserByUserName(String username) {
+        return queryFirst("SELECT user_id, role, username, first_name, last_name, phone_number, email, gender," +
+                "date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, user_role " +
+                "WHERE user.username = ? AND user.role_id = user_role.role_id", username);
+    }
+
     /**
      * Add a new user to the system.
      *
@@ -67,10 +78,6 @@ public class UserDataAccess extends DataAccess<User> {
         return getUser(userId);
     }
 
-    public User getUser(int userId) {
-        return queryFirst("SELECT user_id, role, username, first_name, last_name, phone_number, email, gender, date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, user_role " +
-                "WHERE user.user_id = ? AND user.role_id = user_role.role_id", userId);
-    }
 
     public boolean deleteUser(int userId) {
         return execute("DELETE FROM user WHERE user_id = ?", userId) > 0;

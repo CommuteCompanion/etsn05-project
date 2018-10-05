@@ -1,12 +1,12 @@
 package se.lth.base.server.data;
 
+import se.lth.base.server.database.DataAccess;
+import se.lth.base.server.database.Mapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
-
-import se.lth.base.server.database.DataAccess;
-import se.lth.base.server.database.Mapper;
 
 /**
  * Data access class for a drive
@@ -71,6 +71,10 @@ public class DriveDataAccess extends DataAccess<Drive> {
     
     public List<Drive> getDrives() {
     	return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycles, opt_pets FROM drive");
+    }
+
+    public List<Drive> getDrivesForUser(int userId) {
+        return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycles, opt_pets  FROM drives WHERE user_id = ? JOIN drive_users ON (drive_id)", userId);
     }
     
     public boolean deleteDrive(int driveId) {
