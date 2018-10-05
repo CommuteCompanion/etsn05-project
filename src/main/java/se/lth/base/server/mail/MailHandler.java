@@ -8,6 +8,7 @@ import org.simplejavamail.mailer.config.TransportStrategy;
 import se.lth.base.server.data.DriveWrap;
 import se.lth.base.server.data.User;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class MailHandler {
      *
      * @param user User to welcome
      */
-    public void welcomeUser(User user) {
+    public void welcomeUser(User user) throws IOException {
         sendMail(new CustomEmail(user,EmailType.WELCOME).getEmail());
     }
 
@@ -55,7 +56,7 @@ public class MailHandler {
      *
      * @param driveWrap DriveWrap DTO object
      */
-	public void notifyDriverNewPassengerOnTrip(DriveWrap driveWrap) {
+	public void notifyDriverNewPassengerOnTrip(DriveWrap driveWrap) throws IOException {
 	    sendMail(new CustomEmail(driveWrap,EmailType.NEW_PASSENGER_ON_TRIP).getEmail());
     }
 
@@ -65,7 +66,7 @@ public class MailHandler {
      * @param driveWrap DriveWrap DTO object
      * @param user Passenger to be notified
      */
-    public void notifyPassengerBookingConfirmed(DriveWrap driveWrap, User user) {
+    public void notifyPassengerBookingConfirmed(DriveWrap driveWrap, User user) throws IOException {
         sendMail(new CustomEmail(driveWrap,EmailType.BOOKING_CONFIRMED, user).getEmail());
     }
 
@@ -74,7 +75,7 @@ public class MailHandler {
      *
      * @param driveWrap DriveWrap DTO
      */
-    public void sendLinkToRatingScreen(DriveWrap driveWrap) {
+    public void sendLinkToRatingScreen(DriveWrap driveWrap) throws IOException {
         sendMail(new CustomEmail(driveWrap,EmailType.RATING).getEmail());
     }
 
@@ -89,7 +90,7 @@ public class MailHandler {
      * @param driveWrap DriveWrap DTO
      * @param passenger Passenger that has been removed from drive
      */
-    public void notifyDriverPassengerCancelledTrip(DriveWrap driveWrap, User passenger) {
+    public void notifyDriverPassengerCancelledTrip(DriveWrap driveWrap, User passenger) throws IOException {
         sendMail(new CustomEmail(driveWrap, EmailType.PASSENGER_CANCELLED_TRIP, passenger).getEmail());
     }
 
@@ -99,7 +100,7 @@ public class MailHandler {
      * @param driveWrap DriveWrap DTO
      * @param passenger Passenger that has been removed from drive
      */
-    public void notifyPassengerDriverRemovedPassenger(DriveWrap driveWrap, User passenger) {
+    public void notifyPassengerDriverRemovedPassenger(DriveWrap driveWrap, User passenger) throws IOException {
         sendMail(new CustomEmail(driveWrap, EmailType.DRIVER_REMOVED_PASSENGER, passenger).getEmail());
     }
 
@@ -108,7 +109,7 @@ public class MailHandler {
      *
      * @param driveWrap DriveWrap DTO
      */
-    public void notifyPassengersDriverCancelledDrive(DriveWrap driveWrap) {
+    public void notifyPassengersDriverCancelledDrive(DriveWrap driveWrap) throws IOException {
         sendMail(new CustomEmail(driveWrap, EmailType.DRIVER_CANCELLED_DRIVE).getEmail());
     }
 
@@ -117,7 +118,7 @@ public class MailHandler {
      *
      * @param user User to be warned
      */
-    public void notifyUserHasBeenWarned(User user) {
+    public void notifyUserHasBeenWarned(User user) throws IOException {
         sendMail(new CustomEmail(user, EmailType.WARNING).getEmail());
     }
 }

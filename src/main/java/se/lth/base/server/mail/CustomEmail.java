@@ -28,9 +28,13 @@ import java.util.stream.Collectors;
  * @author Group 1 ETSN05 2018
  */
 public class CustomEmail {
-    private final static String TITLE = "title", PREVIEW = "preview", INTRO = "intro",
-            BUTTON = "button", OUTRO = "outro", WEBSITE_LINK = "http://www.yourcommutecompanion.herokuapp.com",
-            EMAIL_TEMPLATE = "email-template.html";
+    private final static String TITLE = "title";
+    private final static String PREVIEW = "preview";
+    private final static String INTRO = "intro";
+    private final static String BUTTON = "button";
+    private final static String OUTRO = "outro";
+    private final static String WEBSITE_LINK = "http://www.yourcommutecompanion.herokuapp.com";
+    private final static String EMAIL_TEMPLATE = "email-template.html";
 
     private final DriveWrap driveWrap;
     private final EmailType emailType;
@@ -65,7 +69,7 @@ public class CustomEmail {
         this.singleUser = user;
     }
 
-    public Email getEmail() {
+    public Email getEmail() throws IOException {
         Map<String, String> subjectAndBody = getSubjectAndBody();
 
         return EmailBuilder.startingBlank()
@@ -77,8 +81,9 @@ public class CustomEmail {
                 .buildEmail();
     }
 
-    private Map<String, String> getSubjectAndBody() {
-        String subject = "", body = "";
+    private Map<String, String> getSubjectAndBody() throws IOException {
+        String subject = "";
+        String body = "";
         Map<String, String> subjectAndBody = new HashMap<>();
 
         switch (emailType) {
@@ -135,39 +140,34 @@ public class CustomEmail {
     }
 
     // Helper methods to fetch HTML email template
-    private String getResource(String resourceName) {
+    private String getResource(String resourceName, Map<String, String> replacements) throws IOException {
         InputStream inputStream = CustomEmail.class.getResourceAsStream(resourceName);
         InputStreamReader streamReader = new InputStreamReader(inputStream);
 
-
         try (BufferedReader br = new BufferedReader(streamReader)) {
-            return br.lines().collect(Collectors.joining(System.lineSeparator()));
+            String template = br.lines().collect(Collectors.joining(System.lineSeparator()));
+
+            // Matches all instances of Mustache wraps
+            Matcher m = Pattern.compile("\\{\\{[A-z]\\w+}}").matcher(template);
+
+            while (m.find()) {
+                String mustacheValue = m.group().substring(2,m.group().length() - 2);
+                String replacement = replacements.get(mustacheValue);
+                template = template.replaceAll("\\{\\{" + mustacheValue + "}}", replacement == null ? "" : replacement);
+            }
+
+            return template;
         } catch (IOException e) {
             LoggerFactory.getLogger(CustomEmail.class).error(e.getMessage(), e);
+            throw e;
         }
-
-        return "Error: could not read email template";
     }
 
-    private String parseResource(String template, Map<String, String> replacements) {
-        // Matches all instances of Mustache wraps
-        Matcher m = Pattern.compile("\\{\\{[A-z]\\w+}}").matcher(template);
-
-        while (m.find()) {
-            String mustacheValue = m.group().substring(2,m.group().length() - 2);
-            String replacement = replacements.get(mustacheValue);
-            System.out.println(replacement);
-            template = template.replaceAll("\\{\\{" + mustacheValue + "}}", replacement == null ? "" : replacement);
-        }
-
-        return template;
-    }
-
-    private String getButton(String link, String text) {
+    private String getButton(String link, String text) throws IOException {
         Map<String, String> buttonContent = new HashMap<>();
         buttonContent.put("buttonLink", link);
         buttonContent.put("buttonText", text);
-        return parseResource(getResource("button-template.html"), buttonContent);
+        return getResource("button-template.html", buttonContent);
     }
 
     // ---------- STANDARD EMAILS BELOW --------------
@@ -175,7 +175,7 @@ public class CustomEmail {
         return singleUser.getFirstName() + ", welcome to CommuteCompanion";
     }
 
-    private String getWelcomeBody() {
+    private String getWelcomeBody() throws IOException {
         String firstName = singleUser.getFirstName();
         Map<String, String> content = new HashMap<>();
 
@@ -198,16 +198,17 @@ public class CustomEmail {
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
         recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getNewPassengerOnTripSubject() {
         return "New passenger request for your drive to " + driveWrap.getDrive().getStop();
     }
 
-    private String getNewPassengerOnTripBody() {
+    private String getNewPassengerOnTripBody() throws IOException {
         Map<String, String> content = new HashMap<>();
-        DriveUser lastPassenger = null, driver = null;
+        DriveUser lastPassenger = null;
+        DriveUser driver = null;
         Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
         String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(departureTime);
 
@@ -220,9 +221,12 @@ public class CustomEmail {
             lastPassenger = u;
         }
 
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver is null");
+        }
+
         // Get the user data
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-        assert driver != null;
         User driverU = userDao.getUser(driver.getUserId());
 
         // Title
@@ -243,16 +247,17 @@ public class CustomEmail {
         String fullName = driverU.getFirstName() + " " + driverU.getLastName();
         recipients.add(new Recipient(fullName, driverU.getEmail(), Message.RecipientType.TO));
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getBookingConfirmedSubject() {
         return "Your booking request is confirmed";
     }
 
-    private String getBookingConfirmedBody() {
+    private String getBookingConfirmedBody() throws IOException {
         Map<String, String> content = new HashMap<>();
-        DriveUser acceptedPassenger = null, driver = null;
+        DriveUser acceptedPassenger = null;
+        DriveUser driver = null;
 
         // Fetch the driver and last passenger added
         for (DriveUser u : driveWrap.getUsers()) {
@@ -264,11 +269,14 @@ public class CustomEmail {
         }
 
         Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver is null");
+        }
 
         // Get the user data
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-        assert driver != null;
         User driverU = userDao.getUser(driver.getUserId());
 
         // Title
@@ -278,7 +286,7 @@ public class CustomEmail {
         String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
         intro += "<p>Your booking request with " + driverU.getFirstName() + " from <i>";
         intro += acceptedPassenger.getStart() + "</i> to <i>" + acceptedPassenger.getStop();
-        intro += "</i> on " + formattedDepartureTime + " has been accepted.</p>";
+        intro += "</i> on " + formattedDepartureDate + " has been accepted.</p>";
         content.put(INTRO, intro);
 
         // Action button
@@ -288,14 +296,14 @@ public class CustomEmail {
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
         recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getRatingSubject() {
         return "Please rate your latest trip";
     }
 
-    private String getRatingBody() {
+    private String getRatingBody() throws IOException {
         Map<String, String> content = new HashMap<>();
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
         DriveUser driver = null;
@@ -310,8 +318,10 @@ public class CustomEmail {
             }
         }
 
-        // Get the user data
-        assert driver != null;
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver is null");
+        }
+
         User driverU = userDao.getUser(driver.getUserId());
 
         // Title
@@ -326,14 +336,14 @@ public class CustomEmail {
         // Action button
         content.put(BUTTON, getButton(WEBSITE_LINK, "Rate Your Trip"));
 
-        return parseResource(getResource(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId()), content);
+        return getResource(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), content);
     }
 
     private String getFilterMatchSubject() {
         return "A new trip has matched your filter";
     }
 
-    private String getFilterMatchBody() {
+    private String getFilterMatchBody() throws IOException {
         Map<String, String> content = new HashMap<>();
 
         // Title
@@ -354,16 +364,17 @@ public class CustomEmail {
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
         recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getPassengerCancelledTripSubject() {
         return "A passenger has cancelled their trip";
     }
 
-    private String getPassengerCancelledTripBody() {
+    private String getPassengerCancelledTripBody() throws IOException {
         Map<String, String> content = new HashMap<>();
-        DriveUser lastPassenger = null, driver = null;
+        DriveUser lastPassenger = null;
+        DriveUser driver = null;
         Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
         String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(departureTime);
 
@@ -376,9 +387,12 @@ public class CustomEmail {
             lastPassenger = u;
         }
 
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver is null");
+        }
+
         // Get the user data
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-        assert driver != null;
         User driverU = userDao.getUser(driver.getUserId());
 
         // Title
@@ -399,18 +413,18 @@ public class CustomEmail {
         String fullName = driverU.getFirstName() + " " + driverU.getLastName();
         recipients.add(new Recipient(fullName, driverU.getEmail(), Message.RecipientType.TO));
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getDriverCancelledDriveSubject() {
         return "Your trip has been cancelled";
     }
 
-    private String getDriverCancelledDriveBody() {
+    private String getDriverCancelledDriveBody() throws IOException {
         Map<String, String> content = new HashMap<>();
         DriveUser driver = null;
         Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
 
         // Fetch the driver and last passenger added
@@ -424,7 +438,10 @@ public class CustomEmail {
             }
         }
 
-        assert driver != null;
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver is null");
+        }
+
         User driverU = userDao.getUser(driver.getUserId());
 
         // Title
@@ -433,18 +450,18 @@ public class CustomEmail {
         // Intro
         String intro = "<p>Hi,</p>";
         intro += "<p>Your trip with " + driverU.getFirstName() + " on ";
-        intro += formattedDepartureTime + " has been cancelled by the driver. ";
+        intro += formattedDepartureDate + " has been cancelled by the driver. ";
         intro += "We apologize for the inconvenience.</p>";
         content.put(INTRO, intro);
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getWarningSubject() {
         return "A warning has been issued";
     }
 
-    private String getWarningBody() {
+    private String getWarningBody() throws IOException {
         Map<String, String> content = new HashMap<>();
 
         // Title
@@ -460,33 +477,30 @@ public class CustomEmail {
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
         recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getDriverRemovedPassengerSubject() {
         return "You have been removed from your trip";
     }
 
-    private String getDriverRemovedPassengerBody() {
+    private String getDriverRemovedPassengerBody() throws IOException {
         Map<String, String> content = new HashMap<>();
-        DriveUser removedPassenger = null, driver = null;
+        DriveUser driver = null;
 
         // Fetch the driver and last passenger added
         for (DriveUser u : driveWrap.getUsers()) {
             if (u.isDriver()) {
                 driver = u;
             }
-
-            if (u.getUserId() == singleUser.getId()) {
-                removedPassenger = u;
-            }
         }
 
         Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
 
-        assert driver != null;
-        assert removedPassenger != null;
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver is null");
+        }
 
         // Get the user data
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
@@ -498,14 +512,13 @@ public class CustomEmail {
         // Intro
         String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
         intro += "<p>The driver " + driverU.getFirstName() + " has removed you from your trip on ";
-        intro += formattedDepartureTime + " from <i>" + removedPassenger.getStart() + "</i> to <i>";
-        intro += removedPassenger.getStop() + "</i>. We apologize for the inconvenience.</p>";
+        intro += formattedDepartureDate + ". We apologize for the inconvenience.</p>";
         content.put(INTRO, intro);
 
         // Add recipient
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
         recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
-        return parseResource(getResource(EMAIL_TEMPLATE), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 }
