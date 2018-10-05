@@ -45,7 +45,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
 			boolean optWinterTires, boolean optBicycle, boolean optPets) {
 
     	int driveId = insert("INSERT INTO drive (start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate,"
-    			+ " car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycles, opt_pets) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    			+ " car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, 
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
     	
@@ -57,7 +57,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
 			String carModel, String carColor, String carLicensePlate, int carNumberOfSeats, int optLuggageSize,
 			boolean optWinterTires, boolean optBicycle, boolean optPets) {
 
-    	execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycles = ?, opt_pets = ? WHERE drive_id = ?)",
+    	execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?)",
                 start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, 
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);    	
     	
@@ -65,12 +65,12 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
     
     public Drive getDrive(int driveId) {
-    	return queryFirst("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycles, opt_pets FROM drive WHERE drive_id = ?", 
+    	return queryFirst("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive WHERE drive_id = ?", 
     			driveId);
     }
     
     public List<Drive> getDrives() {
-    	return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycles, opt_pets FROM drive");
+    	return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive");
     }
     
     public boolean deleteDrive(int driveId) {
