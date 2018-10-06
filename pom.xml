@@ -129,8 +129,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sassSourceDirectory>src/main/resources/webassets/custom_scss</sassSourceDirectory>
-                    <destination>src/main/resources/webassets/css</destination>
+                    <sassSourceDirectory>src/main/resources/webassets/scss/custom</sassSourceDirectory>
+                    <destination>src/main/resources/webassets/css/custom</destination>
                 </configuration>
             </plugin>
             <plugin>

@@ -11,7 +11,7 @@ describe('loginController', function() {
     var node;
     // Creates the controller by loading the index.html and put it in the node variable
     beforeEach(function(done) {
-        specHelper.fetchHtml('login/login.html', document.body).then(function(n) {
+        specHelper.fetchHtml('login.html', document.body).then(function(n) {
             node = n;
         }).finally(done);
     });

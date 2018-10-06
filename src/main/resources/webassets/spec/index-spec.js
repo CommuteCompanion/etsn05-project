@@ -97,7 +97,7 @@ describe('mainController', function() {
         spyOn(base.mainController, 'changeRoute');
         base.mainController.load();
         userPromise.then(function() {
-            expect(base.changeLocation).toHaveBeenCalledWith('/login/login.html');
+            expect(base.changeLocation).toHaveBeenCalledWith('/login.html');
         }).finally(done);
     });
 
@@ -112,7 +112,7 @@ describe('mainController', function() {
             spyOn(base.rest, 'logout').and.returnValue(logoutPromise);
             document.getElementById('logout').click();
             logoutPromise.then(function() {
-                expect(base.changeLocation).toHaveBeenCalledWith('/login/login.html');
+                expect(base.changeLocation).toHaveBeenCalledWith('/login.html');
             }).finally(done);
         });
     });
