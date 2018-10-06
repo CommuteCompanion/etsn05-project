@@ -14,105 +14,93 @@ body {
 @import "../vendors/bootstrap/bootstrap";
 
 
-///////DRIVE CSS//////
-
-.top {
-    background-color: white;
+.drive-top {
+    background-color: #fff;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
 
-.mid {
-    background-color: #F8E9A1;
+.drive-mid {
+    background-color: $warning;
 }
 
-.bot {
-    background-color: #A8D0E6; 
+.drive-bot {
+    background-color: $info; 
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
 
-.circle-grade {
+.drive-circle-grade {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     font-size: 20px;
-    color: black;
+    color: #000;
     line-height: 125px;
     text-align: center;
-    background: #A8D0E6;
+    background: $info;
 }
 
-.car-info {
+.drive-car-info {
     border-style: solid;
     border-width: 1px 1px 1px 1px;
     border-radius: 5px;
 }
 
-.buttons {
+.drive-buttons {
     width: 15rem;
 }
 
-.request-button {
+.drive-request-button {
     width: 100%;
 }
 
-.request-col-bot {
-    background-color: white;
+.drive-request-col-bot {
+    background-color: #fff;
     margin-bottom: 20px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-.request-col-top {
-    background-color: #374785;
+.drive-request-col-top {
+    background-color: $secondary;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     color: white;
 }
 
-
-
-////SEARCH CSS//////
-
-
-.test {
+.search-card {
     height: 100%;
-    background-color: #374785;
+    background-color: $secondary;
 }
 
-.col-card {
-    padding-left: 200px;
-    padding-right: 200px;
-}
-
-.card-pc {
+.search-card-pc {
     border-style: solid;
     border-width: 0px 1px 0px 1px;
 }
 
-.card-pc-outer-left {
+.search-card-pc-outer-left {
     border-style: solid;
     border-width: 0px 1px 0px 0px;
     text-align: center;
 }
 
-.card-pc-outer-right {
+.search-card-pc-outer-right {
     border-style: solid;
     border-width: 0px 0px 0px 1px;
 }
 
-.card-body {
+.search-card-body {
     padding: 0px;
 }
 
-.request-btn {
+.search-request-btn {
     margin-top: 50%;
     margin-left: 18%;
     margin-bottom: 15%;
 }
 
-.card-head {
+.search-card-head {
     font-weight: bold;
     font-size: 26px;
 }

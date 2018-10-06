@@ -1,13 +1,11 @@
-var base = base || {};
-base.searchController = (function() {
+window.base = window.base || {};
+window.base.searchController = (() => {
     var controller = {
-        load: function() {
-            base.rest.getDrives().then(function(response) {
-                    console.log(JSON.stringify(response) + "hej");
-            });
+        load: () => {
+            //To be done
         },
-        initOnLoad: function() {
-            document.addEventListener('DOMContentLoaded', base.searchController.load);
+        initOnLoad: () => {
+            document.addEventListener('DOMContentLoaded', window.base.searchController.load);
         }
     };
     return controller;

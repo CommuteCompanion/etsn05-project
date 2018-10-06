@@ -1,18 +1,11 @@
-var base = base || {};
-base.driveController = (function() {
+window.base = window.base || {};
+window.base.driveController = (() => {
     var controller = {
-        load: function() {
-            
-            base.Drive = 
-            base.rest.putDrive(id, drive).then(function(response) {
-                console.log("Driver added");
-            }),
-                base.rest.getDrive().then(function(response) {
-                console.log(response);
-            })
+        load: () => {
+            //To be added
         },
-        initOnLoad: function() {
-            document.addEventListener('DOMContentLoaded', base.driveController.load);
+        initOnLoad: () => {
+            document.addEventListener('DOMContentLoaded', window.base.driveController.load);
         }
     };
     return controller;
