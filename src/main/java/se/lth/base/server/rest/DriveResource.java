@@ -89,6 +89,14 @@ public class DriveResource {
     	return new DriveWrap(drive, milestones, users, reports);
     }
     
+    @Path("all")
+    @GET
+    @RolesAllowed(Role.Names.ADMIN)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Drive> getDrives() {
+        return driveDao.getDrives();
+    }
+    
     @Path("{driveId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
