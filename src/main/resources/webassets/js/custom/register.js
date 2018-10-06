@@ -1,9 +1,8 @@
-var base = base || {};
-base.changeLocation = url => {
-    window.location.replace(url);
-};
+window.base = window.base || {};
 
-base.registerController = (() => {
+window.base.changeLocation = url => window.location.replace(url);
+
+window.base.registerController = (() => {
     const controller = {
         submitUser: submitEvent => {
             submitEvent.preventDefault();
@@ -11,13 +10,13 @@ base.registerController = (() => {
             const username = document.getElementById('register-username').value;
             const role = "USER";
             const credentials ={username, password, role};
-            base.rest.addUser(credentials).then(user => {
+            window.base.rest.addUser(credentials).then(user => {
                 if (user.error) {
                     alert(user.message);
                 } else {
-                    base.rest.login(username, password, false).then(response => {
+                    window.base.rest.login(username, password, false).then(response => {
                         if (response.ok) {
-                            base.changeLocation('/');
+                            window.base.changeLocation('/');
                         } else {
                             alert('Error during login.');
                         }
@@ -29,7 +28,7 @@ base.registerController = (() => {
         },
 
         load: () => document.getElementById('register-form').onsubmit = controller.submitUser,
-        initOnLoad: () => document.addEventListener('DOMContentLoaded', base.registerController.load)
+        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.registerController.load)
     };
     
     return controller;

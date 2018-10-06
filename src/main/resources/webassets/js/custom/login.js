@@ -1,8 +1,8 @@
-var base = base || {};
+window.base = window.base || {};
 
-base.changeLocation = url => window.location.replace(url);
+window.base.changeLocation = url => window.location.replace(url);
 
-base.loginController = (() => {
+window.base.loginController = (() => {
     const view = {
         showFailure: msg => alert(msg)
     };
@@ -15,9 +15,9 @@ base.loginController = (() => {
                 controller.loginUser();
                 return false;
             };
-            base.rest.getUser().then(user => {
+            window.base.rest.getUser().then(user => {
                 if (!user.isNone()) {
-                    base.changeLocation('/');
+                    window.base.changeLocation('/');
                 }
             });
         },
@@ -25,10 +25,10 @@ base.loginController = (() => {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
-            base.rest.login(username, password, remember)
+            window.base.rest.login(username, password, remember)
                 .then(response => {
                     if (response.ok) {
-                        base.changeLocation('/');
+                        window.base.changeLocation('/');
                     } else {
                         document.getElementById('password').value = '';
                         response.json().then(error => view.showFailure(error.message));
@@ -36,7 +36,7 @@ base.loginController = (() => {
                 });
         },
         initOnLoad: () => {
-            document.addEventListener('DOMContentLoaded', base.loginController.load);
+            document.addEventListener('DOMContentLoaded', window.base.loginController.load);
         }
     };
 

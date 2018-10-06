@@ -1,11 +1,12 @@
-var base = base || {};
-base.userProfileController = (() => {
+window.base = window.base || {};
+
+window.base.userProfileController = (() => {
     const model = {
         user: {}
     };
 
     const view = {
-        render: () => base.rest.getUser().then(u => {
+        render: () => window.base.rest.getUser().then(u => {
                 model.user = u;
                 return u;
             }).then(() => document.getElementById('set-username').value = model.user.username),
@@ -16,8 +17,8 @@ base.userProfileController = (() => {
         }
     };
     const controller = {
-        deleteUser: () => base.rest.deleteUser(model.user.userId)
-                .then(base.rest.logout())
+        deleteUser: () => window.base.rest.deleteUser(model.user.userId)
+                .then(window.base.rest.logout())
                 .then(() => window.location.replace('/')),
         submitUser: submitEvent => {
             submitEvent.preventDefault();
@@ -31,7 +32,7 @@ base.userProfileController = (() => {
                 delete credentials.password;
             }
             if (password === repeatPassword) {
-                base.rest.putUser(id, {username, password, role}).then(user => {
+                window.base.rest.putUser(id, {username, password, role}).then(user => {
                     if (user.error) {
                         alert(user.message);
                     } else {
