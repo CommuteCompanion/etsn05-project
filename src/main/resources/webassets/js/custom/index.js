@@ -1,40 +1,40 @@
-var base = base || {};
+window.base = window.base || {}
 
 const BASE_PATH = "templates/";
 
-base.mainController = (() => {
+window.base.mainController = (() => {
     const routingTable = {
         'search': {
             partial: BASE_PATH + 'search.html',
-            controller: base.searchController
+            controller: window.base.searchController
         },
         'create-drive': {
             partial: BASE_PATH + 'create-drive.html',
-            controller: base.createDriveController
+            controller: window.base.createDriveController
         },
         'edit-drive': {
             partial: BASE_PATH + 'edit-drive.html',
-            controller: base.editDriveController
+            controller: window.base.editDriveController
         },
         'drive': {
             partial: BASE_PATH + 'drive.html',
-            controller: base.driveController
+            controller: window.base.driveController
         },
         'my-commutes': {
             partial: BASE_PATH + 'my-commutes.html',
-            controller: base.myCommutesController
+            controller: window.base.myCommutesController
         },
         'manage-users': {
             partial: BASE_PATH + 'manage-users.html',
-            controller: base.manageUsersController
+            controller: window.base.manageUsersController
         },
         'reported-drives': {
             partial: BASE_PATH + 'reported-drives.html',
-            controller: base.reportedDrivesController
+            controller: window.base.reportedDrivesController
         },
         'user-profile': {
             partial: BASE_PATH + 'user-profile.html',
-            controller: base.userProfileController
+            controller: window.base.userProfileController
         },
     };
 
@@ -74,13 +74,13 @@ base.mainController = (() => {
         },
         load: () => {
             document.getElementById('logout').onclick = controller.logout;
-            window.onhashchange = base.mainController.changeRoute;
-            base.mainController.changeRoute();
-            base.rest.getUser().then(user => {
+            window.onhashchange = window.base.mainController.changeRoute;
+            window.base.mainController.changeRoute();
+            window.base.rest.getUser().then(user => {
                 model.user = user;
                 view.renderUsername();
                 if (user.isNone()) {
-                    base.changeLocation('/login.html');
+                    window.base.changeLocation('/login.html');
                 } else if (!user.isAdmin()) {
                     view.hideAdminLinks();
                 } else {
@@ -88,10 +88,10 @@ base.mainController = (() => {
                 }
             });
         },
-        logout: () => base.rest.logout().then(() => base.changeLocation('/login.html')),
-        initOnLoad: () => document.addEventListener("DOMContentLoaded", base.mainController.load)
+        logout: () => window.base.rest.logout().then(() => window.base.changeLocation('/login.html')),
+        initOnLoad: () => document.addEventListener("DOMContentLoaded", window.base.mainController.load)
     };
     return controller;
 })();
 
-base.changeLocation = url => window.location.replace(url);
+window.base.changeLocation = url => window.location.replace(url);

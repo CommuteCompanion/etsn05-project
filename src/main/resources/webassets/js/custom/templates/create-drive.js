@@ -1,5 +1,6 @@
-var base = base || {};
-base.createDriveController = (() => {
+window.base = window.base || {};
+
+window.base.createDriveController = (() => {
     const controller = {
         load: () => {}
     };

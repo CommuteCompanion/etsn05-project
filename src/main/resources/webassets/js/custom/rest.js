@@ -1,9 +1,10 @@
-var base = base || {};
-base.rest = (() => {
+window.base = window.base || {};
+
+window.base.rest = (() => {
     function Role(role) {
         this.name = role;
         this.label = this.name[0] + this.name.toLowerCase().slice(1);
-    };
+    }
 
     function User(json) {
         Object.assign(this, json);
@@ -11,12 +12,12 @@ base.rest = (() => {
         this.json = json;
         this.isAdmin = () => this.role.name === 'ADMIN';
         this.isNone = () => this.role.name === 'NONE';
-    };
+    }
 
     const objOrError = (json, cons) => json.error ? json : new cons(json);
 
-    base.User = User;
-    base.Role = Role;
+    window.base.User = User;
+    window.base.Role = Role;
 
     const baseFetch = (url, config) => {
         config = config || {};

@@ -1,5 +1,6 @@
-var base = base || {};
-base.manageUsersController = (() => {
+window.base = window.base || {};
+
+window.base.manageUsersController = (() => {
     const controller = {
         load: () => {}
     };

@@ -1,5 +1,6 @@
-var base = base || {};
-base.reportedDrivesController = (() => {
+window.base = window.base || {};
+
+window.base.reportedDrivesController = (() => {
     const controller = {
         load: () => {}
     };

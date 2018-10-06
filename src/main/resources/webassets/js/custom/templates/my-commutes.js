@@ -1,5 +1,6 @@
-var base = base || {};
-base.myCommutesController = (() => {
+window.base = window.base || {};
+
+window.base.myCommutesController = (() => {
     const controller = {
         load: () => {}
     };
