@@ -4,9 +4,11 @@ import java.sql.Timestamp;
 
 public class SearchFilter {
 
-    private final int searchFilterId, userId;
-    private String start, stop;
-    private Timestamp departureTime;
+    private final int searchFilterId;
+    private final int userId;
+    private final String start;
+    private final String stop;
+    private final Timestamp departureTime;
 
     public SearchFilter(int searchFilterId, int userId, String start, String stop, Timestamp departureTime) {
         this.searchFilterId = searchFilterId;
@@ -28,23 +30,11 @@ public class SearchFilter {
         return start;
     }
 
-    public void setStart(String start) {
-        this.start = start;
-    }
-
     public String getStop() {
         return stop;
     }
 
-    public void setStop(String stop) {
-        this.stop = stop;
-    }
-
     public Timestamp getDepartureTime() {
         return departureTime;
-    }
-
-    public void setDepartureTime(Timestamp departureTime) {
-        this.departureTime = departureTime;
     }
 }
