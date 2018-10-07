@@ -49,3 +49,94 @@ section .section-title {
     color: #eee;
     font-size: 20px;
 }
+
+.drive-top {
+    background-color: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.drive-mid {
+    background-color: $warning;
+}
+
+.drive-bot {
+    background-color: $info; 
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.drive-circle-grade {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #000;
+    line-height: 125px;
+    text-align: center;
+    background: $info;
+}
+
+.drive-car-info {
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 5px;
+}
+
+.drive-buttons {
+    width: 15rem;
+}
+
+.drive-request-button {
+    width: 100%;
+}
+
+.drive-request-col-bot {
+    background-color: #fff;
+    margin-bottom: 20px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.drive-request-col-top {
+    background-color: $secondary;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: white;
+}
+
+.search-card {
+    height: 100%;
+    background-color: $secondary;
+}
+
+.search-card-pc {
+    border-style: solid;
+    border-width: 0px 1px 0px 1px;
+}
+
+.search-card-pc-outer-left {
+    border-style: solid;
+    border-width: 0px 1px 0px 0px;
+    text-align: center;
+}
+
+.search-card-pc-outer-right {
+    border-style: solid;
+    border-width: 0px 0px 0px 1px;
+}
+
+.search-card-body {
+    padding: 0px;
+}
+
+.search-request-btn {
+    margin-top: 50%;
+    margin-left: 18%;
+    margin-bottom: 15%;
+}
+
+.search-card-head {
+    font-weight: bold;
+    font-size: 26px;
+}
