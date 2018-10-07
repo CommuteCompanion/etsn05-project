@@ -1,51 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>CommuteCompanion - My Commutes</title>
-        <link rel="stylesheet" href="/font-awesome/css/all.min.css">
-        <link rel="stylesheet" href="scss/custom/main.scss">
-    </head>
-    <body class="text-center">
-        <!-- Tabs -->
-        <section id="tabs">
-            <div class="container">
-                <h6 class="section-title h1">Tabs</h6>
-                <div class="row">
-                    <div class="col-xs-12 ">
-                        <nav>
-                            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Home</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</a>
-                                <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</a>
-                                <a class="nav-item nav-link" id="nav-about-tab" data-toggle="tab" href="#nav-about" role="tab" aria-controls="nav-about" aria-selected="false">About</a>
-                            </div>
-                        </nav>
-                        <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                Et et consectetur ipsum labore excepteur est proident excepteur ad velit occaecat qui minim occaecat veniam. Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim occaecat. Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit. Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat anim ullamco ad duis occaecat ex.
-                            </div>
-                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                Et et consectetur ipsum labore excepteur est proident excepteur ad velit occaecat qui minim occaecat veniam. Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim occaecat. Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit. Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat anim ullamco ad duis occaecat ex.
-                            </div>
-                            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                                Et et consectetur ipsum labore excepteur est proident excepteur ad velit occaecat qui minim occaecat veniam. Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim occaecat. Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit. Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat anim ullamco ad duis occaecat ex.
-                            </div>
-                            <div class="tab-pane fade" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
-                                Et et consectetur ipsum labore excepteur est proident excepteur ad velit occaecat qui minim occaecat veniam. Fugiat veniam incididunt anim aliqua enim pariatur veniam sunt est aute sit dolor anim. Velit non irure adipisicing aliqua ullamco irure incididunt irure non esse consectetur nostrud minim non minim occaecat. Amet duis do nisi duis veniam non est eiusmod tempor incididunt tempor dolor ipsum in qui sit. Exercitation mollit sit culpa nisi culpa non adipisicing reprehenderit do dolore. Duis reprehenderit occaecat anim ullamco ad duis occaecat ex.
+<div class="container">
+    <div class="row">
+        <div class="col text-right">
+            <button type="button" class="btn-lg btn-outline-primary btn-rounded">Drives</button>
+        </div>
+        <div class="col text-center">
+            <button type="button" class="btn-lg btn-primary btn-rounded">Trips</button>
+        </div>
+        <div class="col text-left">
+            <button type="button" class="btn-lg btn-primary btn-rounded">Archive</button>
+        </div>
+    </div>
+    <div class="container trip-container">
+        <div class="row" id="trip-row">
+            <div class="col search-card mt-5">
+                <div class="col my-4">
+                    <div class="card my-3">
+                        <div class="search-card-body my-1">
+                            <div class="row">
+                                <div class="col-2 search-card-pc-outer-left">
+                                    <p class="card-head">Jon</p>
+                                    <p>Male, 23</p>
+                                    <p>55 driven</p>
+                                    <p>4.4</p>
+                                    <p>18 reviews</p>
+                                </div>
+                                <div class="col-4 search-card-pc">
+                                    <p class="card-head">Gothenburg to Lund</p>
+                                    <p>Leaving Wednesday, September 19 at 18:30</p>
+                                    <br>
+                                    <p>Pick Gothenburg</p>
+                                    <p>Dropoff Halmstad</p>
+                                </div>
+                                <div class="col-4 search-card-pc">
+                                    <p class="card-head">Audi Cool model Super</p>
+                                    <p>Turbo car(not for slow people)</p>
+                                </div>
+                                <div class="col-2 search-card-pc-outer-right">
+                                    <p class="card-head">2 Seats left</p>
+                                    <button type="submit" class="btn btn-primary search-request-btn">Request</button>
+                                </div>
                             </div>
                         </div>
-
+                    </div>
+                    <div class="card my-3">
+                        <div class="search-card-body my-1">
+                            <div class="row">
+                                <div class="col-2 search-card-pc-outer-left">
+                                    <p class="card-head">Jon</p>
+                                    <p>Male, 23</p>
+                                    <p>55 driven</p>
+                                    <p>4.4</p>
+                                    <p>18 reviews</p>
+                                </div>
+                                <div class="col-4 search-card-pc">
+                                    <p class="card-head">Gothenburg to Lund</p>
+                                    <p>Leaving Wednesday, September 19 at 18:30</p>
+                                    <br>
+                                    <p>Pick Gothenburg</p>
+                                    <p>Dropoff Halmstad</p>
+                                </div>
+                                <div class="col-4 search-card-pc">
+                                    <p class="card-head">Audi Cool model Super</p>
+                                    <p>Turbo car(not for slow people)</p>
+                                </div>
+                                <div class="col-2 search-card-pc-outer-right">
+                                    <p class="card-head">2 Seats left</p>
+                                    <button type="submit" class="btn btn-primary search-request-btn">Request</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- ./Tabs -->
-
-        <script src="js/custom/rest.js"></script>
-        <script src="js/custom/my-commutes.js"></script>
-        <script type="application/javascript">
-            base.myCommutesController.initOnLoad();
-        </script>
-    </body> 
-</html>
+        </div>
+    </div>
+</div>
