@@ -1,13 +1,13 @@
 package se.lth.base.server.data;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.database.ErrorType;
 import se.lth.base.server.database.Mapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Data access class for a drive user
@@ -34,28 +34,28 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     public DriveUserDataAccess(String driverUrl) {
         super(driverUrl, new DriveMapper());
     }
-    
-    public DriveUser addDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted) {
-    	insert("INSERT INTO drive_user (drive_id, user_id, start, stop, is_driver, accepted) VALUES (?,?,?,?,?,?)",
-                driveId, userId, start, stop, driver, accepted);
+
+    public DriveUser addDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
+        execute("INSERT INTO drive_user (drive_id, user_id, start, stop, is_driver, accepted, rated) VALUES (?,?,?,?,?,?,?)",
+                driveId, userId, start, stop, driver, accepted, rated);
     	
     	return new DriveUser(driveId, userId, start, stop, driver, accepted, !HAS_RATED);
     }
-    
-    public DriveUser updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted) {
-    	execute("UPDATE drive_user SET start = ?, stop = ?, is_driver = ?, accepted = ? WHERE drive_id = ? AND user_id = ?",
-                start, stop, driver, accepted, driveId, userId);
+
+    public DriveUser updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
+        execute("UPDATE drive_user SET start = ?, stop = ?, is_driver = ?, accepted = ?, rated = ?, WHERE drive_id = ? AND user_id = ?",
+                start, stop, driver, accepted, driveId, userId, rated);
     	
     	return getDriveUser(driveId, userId);
     }
     
     public DriveUser getDriveUser(int driveId, int userId) {
-    	return queryFirst("SELECT drive_id, user_id, start, stop, is_driver, accepted FROM drive_user WHERE drive_id = ? AND user_id = ?",
+        return queryFirst("SELECT drive_id, user_id, start, stop, is_driver, accepted, rated FROM drive_user WHERE drive_id = ? AND user_id = ?",
     			driveId, userId);
     }
     
     public List<DriveUser> getDriveUsersForDrive(int driveId) {
-    	return query("SELECT drive_id, user_id, start, stop, is_driver, accepted FROM drive_user WHERE drive_id = ?", driveId);
+        return query("SELECT drive_id, user_id, start, stop, is_driver, accepted, rated FROM drive_user WHERE drive_id = ?", driveId);
     }
     
     public boolean deleteDriveUser(int driveId, int userId) {
