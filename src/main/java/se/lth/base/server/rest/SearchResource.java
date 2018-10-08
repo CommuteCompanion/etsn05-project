@@ -61,8 +61,9 @@ public class SearchResource {
             Drive drive = iterator.next();
             // Create drive stop and start as "DriveMilestones" and add the to the list
             // Milestone id is not of intreset and is therefore set to 0
-            DriveMilestone driveStart = new DriveMilestone(0, drive.getDriveId(), drive.getStart());
-            DriveMilestone driveStop = new DriveMilestone(0, drive.getDriveId(), drive.getStop());
+            DriveMilestone driveStart = new DriveMilestone(0, drive.getDriveId(), drive.getStart(), drive.getDepartureTime());
+            // TODO Does driveStop need a "arrival" time?
+            DriveMilestone driveStop = new DriveMilestone(0, drive.getDriveId(), drive.getStop(), null);
             List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(drive.getDriveId());
             driveMilestones.add(0, driveStart);
             driveMilestones.add(driveStop);
