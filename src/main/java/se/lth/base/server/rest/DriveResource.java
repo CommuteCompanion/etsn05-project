@@ -156,8 +156,6 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<Drive> getDrivesForUser(@PathParam("userId") int userId) {
-        System.out.println(userId);
-        System.out.println(user.getId());
         if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
             return driveDao.getDrivesForUser(userId);
         }
