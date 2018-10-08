@@ -5,6 +5,7 @@ import se.lth.base.server.Config;
 import se.lth.base.server.database.BaseDataAccessTest;
 import se.lth.base.server.database.DataAccessException;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,20 +21,15 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void addNewUser() {
-        userDao.addUser(new Credentials("Generic", "qwerty", Role.USER));
+        userDao.addUser(new Credentials("Generic", "qwerty", Role.USER, User.NONE));
         List<User> users = userDao.getUsers();
         assertTrue(users.stream().anyMatch(u -> u.getName().equals("Generic") && u.getRole().equals(Role.USER)));
     }
 
     @Test(expected = DataAccessException.class)
     public void addDuplicatedUser() {
-        userDao.addUser(new Credentials("Gandalf", "mellon", Role.USER));
-        userDao.addUser(new Credentials("Gandalf", "vapenation", Role.USER));
-    }
-
-    @Test(expected = DataAccessException.class)
-    public void addShortUser() {
-        userDao.addUser(new Credentials("Gry", "no", Role.USER));
+        userDao.addUser(new Credentials("Gandalf", "mellon", Role.USER, User.NONE));
+        userDao.addUser(new Credentials("Gandalf", "vapenation", Role.USER, User.NONE));
     }
 
     @Test
@@ -48,7 +44,7 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void removeUser() {
-        User user = userDao.addUser(new Credentials("Sven", "a", Role.ADMIN));
+        User user = userDao.addUser(new Credentials("Sven", "a", Role.ADMIN, User.NONE));
         assertTrue(userDao.getUsers().stream().anyMatch(u -> u.getName().equals("Sven")));
         userDao.deleteUser(user.getId());
         assertTrue(userDao.getUsers().stream().noneMatch(u -> u.getName().equals("Sven")));
@@ -56,26 +52,26 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test(expected = DataAccessException.class)
     public void authenticateNoUser() {
-        userDao.authenticate(new Credentials("Waldo", "?", Role.NONE));
+        userDao.authenticate(new Credentials("Waldo", "?", Role.NONE, User.NONE));
     }
 
     @Test
     public void authenticateNewUser() {
-        userDao.addUser(new Credentials("Pelle", "!2", Role.USER));
-        Session pellesSession = userDao.authenticate(new Credentials("Pelle", "!2", Role.NONE));
+        userDao.addUser(new Credentials("Pelle", "!2", Role.USER, User.NONE));
+        Session pellesSession = userDao.authenticate(new Credentials("Pelle", "!2", Role.NONE, User.NONE));
         assertEquals("Pelle", pellesSession.getUser().getName());
         assertNotNull(pellesSession.getSessionId());
     }
 
     @Test
     public void authenticateNewUserTwice() {
-        userDao.addUser(new Credentials("Elin", "password", Role.USER));
+        userDao.addUser(new Credentials("Elin", "password", Role.USER, User.NONE));
 
-        Session authenticated = userDao.authenticate(new Credentials("Elin", "password", Role.NONE));
+        Session authenticated = userDao.authenticate(new Credentials("Elin", "password", Role.NONE, User.NONE));
         assertNotNull(authenticated);
         assertEquals("Elin", authenticated.getUser().getName());
 
-        Session authenticatedAgain = userDao.authenticate(new Credentials("Elin", "password", Role.NONE));
+        Session authenticatedAgain = userDao.authenticate(new Credentials("Elin", "password", Role.NONE, User.NONE));
         assertNotEquals(authenticated.getSessionId(), authenticatedAgain.getSessionId());
     }
 
@@ -86,22 +82,22 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void removeSession() {
-        userDao.addUser(new Credentials("MormorElsa", "kanelbulle", Role.USER));
-        Session session = userDao.authenticate(new Credentials("MormorElsa", "kanelbulle", Role.NONE));
+        userDao.addUser(new Credentials("MormorElsa", "kanelbulle", Role.USER, User.NONE));
+        Session session = userDao.authenticate(new Credentials("MormorElsa", "kanelbulle", Role.NONE, User.NONE));
         assertTrue(userDao.removeSession(session.getSessionId()));
         assertFalse(userDao.removeSession(session.getSessionId()));
     }
 
     @Test(expected = DataAccessException.class)
     public void failedAuthenticate() {
-        userDao.addUser(new Credentials("steffe", "kittylover1996!", Role.USER));
-        userDao.authenticate(new Credentials("steffe", "cantrememberwhatitwas! nooo!", Role.NONE));
+        userDao.addUser(new Credentials("steffe", "kittylover1996!", Role.USER, User.NONE));
+        userDao.authenticate(new Credentials("steffe", "cantrememberwhatitwas! nooo!", Role.NONE, User.NONE));
     }
 
     @Test
     public void checkSession() {
-        userDao.addUser(new Credentials("uffe", "genius programmer", Role.ADMIN));
-        Session session = userDao.authenticate(new Credentials("uffe", "genius programmer", Role.NONE));
+        userDao.addUser(new Credentials("uffe", "genius programmer", Role.ADMIN, User.NONE));
+        Session session = userDao.authenticate(new Credentials("uffe", "genius programmer", Role.NONE, User.NONE));
         Session checked = userDao.getSession(session.getSessionId());
         assertEquals("uffe", checked.getUser().getName());
         assertEquals(session.getSessionId(), checked.getSessionId());
@@ -109,8 +105,8 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void checkRemovedSession() {
-        userDao.addUser(new Credentials("lisa", "y", Role.ADMIN));
-        Session session = userDao.authenticate(new Credentials("lisa", "y", Role.NONE));
+        userDao.addUser(new Credentials("lisa", "y", Role.ADMIN, User.NONE));
+        Session session = userDao.authenticate(new Credentials("lisa", "y", Role.NONE, User.NONE));
         Session checked = userDao.getSession(session.getSessionId());
         assertEquals(session.getSessionId(), checked.getSessionId());
         userDao.removeSession(checked.getSessionId());
@@ -134,12 +130,12 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test(expected = DataAccessException.class)
     public void updateMissingUser() {
-        userDao.updateUser(10, new Credentials("admin", "password", Role.ADMIN));
+        userDao.updateUser(10, new Credentials("admin", "password", Role.ADMIN, User.NONE));
     }
 
     @Test
     public void updateUser() {
-        User user = userDao.updateUser(2, new Credentials("test2", "newpass", Role.USER));
+        User user = userDao.updateUser(2, new Credentials("test2", "newpass", Role.USER, User.NONE));
         assertEquals(2, user.getId());
         assertEquals("test2", user.getName());
         assertEquals(Role.USER, user.getRole());
@@ -147,9 +143,9 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void updateWithoutPassword() {
-        Session session1 = userDao.authenticate(new Credentials("Test", "password", Role.USER));
-        userDao.updateUser(2, new Credentials("test2", null, Role.USER));
-        Session session2 = userDao.authenticate(new Credentials("test2", "password", Role.USER));
+        Session session1 = userDao.authenticate(new Credentials("Test", "password", Role.USER, User.NONE));
+        userDao.updateUser(2, new Credentials("test2", null, Role.USER, User.NONE));
+        Session session2 = userDao.authenticate(new Credentials("test2", "password", Role.USER, User.NONE));
         System.out.println(session1);
         System.out.println(session2);
     }

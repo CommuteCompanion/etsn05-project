@@ -2,7 +2,7 @@
   "name": "etsn05-project",
   "version": "1.0.0",
   "description": "ETSN05 Project Group 1",
-  "main": "src/main/resources/webassets/index.js",
+  "main": "src/main/resources/webassets/js/custom/index.js",
   "dependencies": {},
   "devDependencies": {
     "puppeteer": "^1.8.0"

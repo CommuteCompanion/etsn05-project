@@ -4,10 +4,7 @@
 
 # Visual Studio Code specific from: https://github.com/github/gitignore/blob/master/Global/VisualStudioCode.gitignore
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+src/.vscode/*
 
 
 # Eclipse specific from: https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
@@ -129,7 +126,7 @@ pom.xml.tag
 .sass-cache/
 
 # Ignore "main" CSS files
-src/main/resources/webassets/css/*
+src/main/resources/webassets/css/custom/*
 
 # Save the folder
-!src/main/resources/webassets/css/.gitkeep
+!src/main/resources/webassets/css/custom/.gitkeep

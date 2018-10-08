@@ -47,13 +47,13 @@ public class DriveResource {
     	List<DriveMilestone> milestones = driveWrap.getMilestones();
     	
     	// Add drive
-        drive = driveDao.addDrive(user.getId(), drive.getStart(), drive.getStop(), drive.getDateTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarYear(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggage(), drive.getOptWinterTires(), drive.getOptPets(), drive.getOptBicycle(), drive.getOptSkis());
+        drive = driveDao.addDrive(drive.getStart(), drive.getStop(), drive.getDepartureTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggageSize(), drive.getOptWinterTires(), drive.getOptBicycle(), drive.getOptPets());
         
         List<DriveMilestone> returningMilestones = new ArrayList<DriveMilestone>();
         
         // Add all milestones
         for (DriveMilestone m : milestones)
-        	returningMilestones.add(driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone()));
+        	returningMilestones.add(driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime()));
         
         // Add driver to list of users
         List<DriveUser> users = new ArrayList<DriveUser>();
@@ -71,7 +71,7 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     public Drive putDrive(@PathParam("{driveId}") int driveId, Drive drive) throws URISyntaxException {
     	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
-    		return driveDao.updateDrive(driveId,  drive.getStart(), drive.getStop(), drive.getDateTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarYear(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggage(), drive.getOptWinterTires(), drive.getOptPets(), drive.getOptBicycle(), drive.getOptSkis());
+    		return driveDao.updateDrive(driveId, drive.getStart(), drive.getStop(), drive.getDepartureTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggageSize(), drive.getOptWinterTires(), drive.getOptBicycle(), drive.getOptPets());
     	
     	throw new WebApplicationException("Only driver allowed to update drive", Status.UNAUTHORIZED);
     }
@@ -87,6 +87,14 @@ public class DriveResource {
     	List<DriveReport> reports = user.getRole().clearanceFor(Role.ADMIN) ? driveReportDao.getDriveReportsForDrive(driveId) : new ArrayList<DriveReport>();
     	
     	return new DriveWrap(drive, milestones, users, reports);
+    }
+    
+    @Path("all")
+    @GET
+    @RolesAllowed(Role.Names.ADMIN)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Drive> getDrives() {
+        return driveDao.getDrives();
     }
     
     @Path("{driveId}")
@@ -130,18 +138,6 @@ public class DriveResource {
     		driveUserDao.deleteDriveUser(driveId, userId);
     	
     	throw new WebApplicationException("Only driver allowed to remove passengers", Status.UNAUTHORIZED);
-    }
-    
-    @Path("{driveId}/complete")
-    @PUT
-    @RolesAllowed(Role.Names.USER)
-    public Drive completeDrive(@PathParam("{driveId}") int driveId) {
-    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
-    		driveDao.completeDrive(driveId);
-    		return driveDao.getDrive(driveId);
-    	}
-    	
-    	throw new WebApplicationException("Only driver allowed to accept passengers", Status.UNAUTHORIZED);
     }
     
     @Path("{driveId}/rate")
