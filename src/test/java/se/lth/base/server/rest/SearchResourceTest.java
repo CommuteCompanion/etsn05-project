@@ -37,6 +37,7 @@ public class SearchResourceTest extends BaseResourceTest {
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
 
         User user1 = userDao.addUser(SEARCH_TEST_CREDENTIALS_1);
+        System.out.println("UserID: " + user1.getId());
         User user2 = userDao.addUser(SEARCH_TEST_CREDENTIALS_2);
         User user3 = userDao.addUser(SEARCH_TEST_CREDENTIALS_3);
 
@@ -54,6 +55,7 @@ public class SearchResourceTest extends BaseResourceTest {
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "C", timestamp1_2);
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "D", timestamp1_3);
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "E", timestamp1_4);
+        System.out.println("Attempting to run addDriveUser(...) with params: " + drive1.getDriveId() + " " + user1.getId() + " " + "A" + " " + "F" + " " + true + " " + true);
         driveUserDao.addDriveUser(drive1.getDriveId(), user1.getId(), "A", "F", true, true);
     }
 
