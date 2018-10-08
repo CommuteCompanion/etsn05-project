@@ -17,7 +17,7 @@ import java.util.List;
 public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
 
 	public DriveMilestone addMilestone(int driveId, String milestone, Timestamp departureTime) {
-        int milestoneId = insert("INSERT INTO drive_milestone (drive_id, milestone_name, departure_time) VALUES(?,?,?)");
+        int milestoneId = insert("INSERT INTO drive_milestone (drive_id, milestone_name, departure_time) VALUES(?,?,?)", driveId, milestone, departureTime);
 		return new DriveMilestone(milestoneId, driveId, milestone, departureTime);
 	}
 
