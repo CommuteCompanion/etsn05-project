@@ -1,17 +1,7 @@
 package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
-import se.lth.base.server.data.Drive;
-import se.lth.base.server.data.DriveDataAccess;
-import se.lth.base.server.data.DriveMilestone;
-import se.lth.base.server.data.DriveMilestoneDataAccess;
-import se.lth.base.server.data.DriveReport;
-import se.lth.base.server.data.DriveReportDataAccess;
-import se.lth.base.server.data.DriveUser;
-import se.lth.base.server.data.DriveUserDataAccess;
-import se.lth.base.server.data.DriveWrap;
-import se.lth.base.server.data.Role;
-import se.lth.base.server.data.User;
+import se.lth.base.server.data.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -19,7 +9,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
-
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -160,5 +149,19 @@ public class DriveResource {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public DriveReport reportDrive(@PathParam("{driveId}") int driveId, DriveReport driveReport) {
     	return driveReportDao.addDriveReport(driveId, user.getId(), driveReport.getReportMessage());
+    }
+
+    @Path("user/{userId}")
+    @GET
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Drive> getDrivesForUser(@PathParam("userId") int userId) {
+        System.out.println(userId);
+        System.out.println(user.getId());
+        if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
+            return driveDao.getDrivesForUser(userId);
+        }
+        throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
+
     }
 }
