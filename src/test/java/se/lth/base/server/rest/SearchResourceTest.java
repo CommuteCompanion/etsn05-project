@@ -43,12 +43,12 @@ public class SearchResourceTest extends BaseResourceTest {
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
         DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
-        Timestamp timestamp1 = new Timestamp(2018, 10, 20, 12, 0, 0, 0);
+        Timestamp timestamp1 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0);
         Drive drive1 = driveDao.addDrive("A", "F", timestamp1, "Comment", "x", "x", "x", "x", 2, 1, false, false, false);
-        Timestamp timestamp1_1 = new Timestamp(2018, 10, 20, 12, 5, 0, 0);
-        Timestamp timestamp1_2 = new Timestamp(2018, 10, 20, 12, 5, 0, 0);
-        Timestamp timestamp1_3 = new Timestamp(2018, 10, 20, 12, 5, 0, 0);
-        Timestamp timestamp1_4 = new Timestamp(2018, 10, 20, 12, 5, 0, 0);
+        Timestamp timestamp1_1 = new Timestamp(2018 - 1900, 10, 20, 12, 5, 0, 0);
+        Timestamp timestamp1_2 = new Timestamp(2018 - 1900, 10, 20, 12, 5, 0, 0);
+        Timestamp timestamp1_3 = new Timestamp(2018 - 1900, 10, 20, 12, 5, 0, 0);
+        Timestamp timestamp1_4 = new Timestamp(2018 - 1900, 10, 20, 12, 5, 0, 0);
         System.out.println("DriveID: " + drive1.getDriveId());
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "B", timestamp1_1);
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "C", timestamp1_2);
@@ -62,7 +62,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         login(SEARCH_TEST_CREDENTIALS_2);
 
-        Timestamp timestampUser1 = new Timestamp(2018, 10, 20, 12, 0, 0, 0);
+        Timestamp timestampUser1 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0);
         SearchFilter searchFilter = new SearchFilter(-1, -1, "A", "B", timestampUser1);
 
         Response response = target("search")
