@@ -3,9 +3,14 @@ package se.lth.base.server.rest;
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
 
+import javax.annotation.security.PermitAll;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,20 +30,24 @@ public class SearchResource {
     }
 
     // TODO Add RESTful tags
-    public List<Drive> getDrives() {
+    @Path("getDrives")
+    @POST
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Drive> getDrives(SearchFilter searchFilter) {
 
         // TODO Get requested trip start, stop and departure
-        String tripStart = "";
-        String tripStop = "";
-        String departure = "";
+        String tripStart = searchFilter.getStart();
+        String tripStop = searchFilter.getStop();
+        Timestamp departure = searchFilter.getDepartureTime();
 
 
         // Get all drives matching start and end point of search
-        List<Drive> filteredDrives = filterDrivesMatchingTrip(tripStart, tripStop);
+        List<Drive> filteredDrives = filterDrivesMatchingTrip(tripStart, tripStop, departure);
 
 
         // TODO
-        return null;
+        return filteredDrives;
     }
 
     // TODO Add RESTful tags
@@ -47,7 +56,7 @@ public class SearchResource {
         return null;
     }
 
-    private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop) {
+    private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departure) {
         // TODO Overall thought
         // Get all milestones in order (including start and end of trip) with the fields: name, departure
         // Get all trip associated with drive and create interval objects containing: startIndex, stopIndex, departure
@@ -60,14 +69,17 @@ public class SearchResource {
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
             // Create drive stop and start as "DriveMilestones" and add the to the list
-            // Milestone id is not of intreset and is therefore set to 0
-            DriveMilestone driveStart = new DriveMilestone(0, drive.getDriveId(), drive.getStart(), drive.getDepartureTime());
+            // Milestone id is not of interest and is therefore set to -1
+            DriveMilestone driveStart = new DriveMilestone(-1, drive.getDriveId(), drive.getStart(), drive.getDepartureTime());
             // TODO Does driveStop need a "arrival" time?
-            DriveMilestone driveStop = new DriveMilestone(0, drive.getDriveId(), drive.getStop(), null);
+            DriveMilestone driveStop = new DriveMilestone(-1, drive.getDriveId(), drive.getStop(), null);
             List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(drive.getDriveId());
             driveMilestones.add(0, driveStart);
             driveMilestones.add(driveStop);
             List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(drive.getDriveId());
+
+            // Add the potentially new passenger to the driveUser list for this drive
+            driveUsers.add(new DriveUser(-1, -1, tripStart, tripStop, false, false, false));
             int carSeats = drive.getCarNumberOfSeats();
 
             // Check if too many drive users start and stop overlap (seats taken > max seats)
