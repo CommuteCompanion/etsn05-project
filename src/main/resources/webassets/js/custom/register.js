@@ -7,14 +7,14 @@ window.base.registerController = (() => {
         submitUser: submitEvent => {
             submitEvent.preventDefault();
             const password = document.getElementById('register-password').value;
-            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
             const role = "USER";
-            const credentials ={username, password, role};
+            const credentials ={email, password, role};
             window.base.rest.addUser(credentials).then(user => {
                 if (user.error) {
                     alert(user.message);
                 } else {
-                    window.base.rest.login(username, password, false).then(response => {
+                    window.base.rest.login(email, password, false).then(response => {
                         if (response.ok) {
                             window.base.changeLocation('/');
                         } else {
