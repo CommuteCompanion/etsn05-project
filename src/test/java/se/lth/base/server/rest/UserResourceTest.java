@@ -126,7 +126,7 @@ public class UserResourceTest extends BaseResourceTest {
         User newUser = target("user")
                 .request()
                 .post(Entity.json(newCredentials), User.class);
-        assertEquals(newCredentials.getUsername(), newUser.getName());
+        assertEquals(newCredentials.getEmail(), newUser.getName());
         assertEquals(newCredentials.getRole(), newUser.getRole());
         assertTrue(newUser.getId() > 0);
 
@@ -254,13 +254,13 @@ public class UserResourceTest extends BaseResourceTest {
     @Test
     public void updateUser() {
         login(ADMIN_CREDENTIALS);
-        Credentials newTest = new Credentials("test2", null, Role.ADMIN, TEST);
+        Credentials newTest = new Credentials("test2@lu.se", null, Role.ADMIN, TEST);
         User user = target("user")
                 .path(Integer.toString(TEST.getId()))
                 .request()
                 .put(Entity.json(newTest), User.class);
         assertEquals(TEST.getId(), user.getId());
-        assertEquals(newTest.getUsername(), user.getName());
+        assertEquals(newTest.getEmail(), user.getName());
         assertEquals(newTest.getRole(), user.getRole());
     }
 }
