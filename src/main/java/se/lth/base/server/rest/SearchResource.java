@@ -21,7 +21,6 @@ public class SearchResource {
     private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
-    private final DriveReportDataAccess driveReportDao = new DriveReportDataAccess(Config.instance().getDatabaseDriver());
     private final User user;
 
     // TODO Maybe change this value
@@ -66,6 +65,9 @@ public class SearchResource {
         // Get all drives
         List<Drive> drives = driveDao.getDrives();
         Iterator<Drive> iterator = drives.iterator();
+
+        // Get all drives associated with the user
+        List<Drive> drivesAssociatedWithUser = getAllFutureDrivesAssociatedWithUser(user.getId(), drives);
 
         // Loop through all drives
         while (iterator.hasNext()) {
@@ -118,6 +120,9 @@ public class SearchResource {
             }
 
             // TODO Check so that passenger has no other bookings (passenger in another drive or driver in another drive)
+            if (departureTime != null) {
+
+            }
 
         }
         return drives;
@@ -192,6 +197,25 @@ public class SearchResource {
                 }
             }
         }
+        return false;
+    }
+
+    private List<Drive> getAllFutureDrivesAssociatedWithUser(int userId, List<Drive> drives) {
+        List<Drive> drivesAssociated = new ArrayList<>();
+        for (Drive d : drives) {
+            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(d.getDriveId());
+            for (DriveUser driveUser : driveUsers) {
+                if (driveUser.getUserId() == userId) {
+                    drivesAssociated.add(d);
+                    break;
+                }
+            }
+        }
+        return drivesAssociated;
+    }
+
+    private boolean doesTripOverlapWithFutureDrivesAssociatedWithUser(Timestamp currentTripStart, Timestamp currentTripStop, List<Drive> associatedFutureDrives) {
+        // TODO
         return false;
     }
 
