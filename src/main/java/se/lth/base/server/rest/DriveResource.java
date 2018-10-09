@@ -156,7 +156,7 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<Drive> getDrivesForUser(@PathParam("userId") int userId) {
-        if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
+        if (userId == user.getId()) {
             return driveDao.getDrivesForUser(userId);
         }
         throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);

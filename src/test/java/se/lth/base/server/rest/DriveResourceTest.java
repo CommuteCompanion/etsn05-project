@@ -36,14 +36,32 @@ public class DriveResourceTest extends BaseResourceTest {
     }
 
     @Test
-    public void getDrivesForUsers() {
+    public void getDrivesForUserAsRightUser() {
         login(TEST_CREDENTIALS);
-
         List<Drive> drives = target("drive")
-                .path("all")
+                .path("user/" + TEST.getId())
                 .request()
                 .get(DRIVE_LIST);
         assertTrue(drives.isEmpty());
+    }
 
+    @Test(expected = ForbiddenException.class)
+    public void getDrivesForUserAsWrongUser() {
+        login(TEST_CREDENTIALS);
+        List<Drive> drives = target("drive")
+                .path("user/" + TEST.getId())
+                .request()
+                .get(DRIVE_LIST);
+
+    }
+
+    @Test
+    public void getDrivesForUserAsAdmin() {
+        login(ADMIN_CREDENTIALS);
+        List<Drive> drives = target("drive")
+                .path("user/" + TEST.getId())
+                .request()
+                .get(DRIVE_LIST);
+        assertTrue(drives.isEmpty());
     }
 }
