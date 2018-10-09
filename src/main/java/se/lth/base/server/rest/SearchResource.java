@@ -3,7 +3,7 @@ package se.lth.base.server.rest;
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
 
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -24,20 +24,21 @@ public class SearchResource {
     private final DriveReportDataAccess driveReportDao = new DriveReportDataAccess(Config.instance().getDatabaseDriver());
     private final User user;
 
+    // TODO Maybe change this value
+    // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
     private final int SEARCH_MINUTES_MARGIN = 10;
 
     public SearchResource(@Context ContainerRequestContext context) {
         this.user = (User) context.getProperty(User.class.getSimpleName());
     }
 
-    // TODO Add RESTful tags
     @Path("getDrives")
     @POST
-    @PermitAll
+    @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<Drive> getDrives(SearchFilter searchFilter) {
 
-        // TODO Get requested trip start, stop and departure
+        // Get requested trip start, stop and departure
         String tripStart = searchFilter.getStart();
         String tripStop = searchFilter.getStop();
         Timestamp departure = searchFilter.getDepartureTime();
@@ -46,8 +47,6 @@ public class SearchResource {
         // Get all drives matching start and end point of search
         List<Drive> filteredDrives = filterDrivesMatchingTrip(tripStart, tripStop, departure);
 
-
-        // TODO
         return filteredDrives;
     }
 
@@ -110,10 +109,14 @@ public class SearchResource {
             }
 
             // Check if so that departure time of passenger matches with departure time of milestone set by driver
-            if (!checkDepartureTimeMatch(departureTime, tripStart, driveMilestones)) {
-                iterator.remove();
-                continue;
+            if (departureTime != null) {
+                if (!checkDepartureTimeMatch(departureTime, tripStart, driveMilestones)) {
+                    iterator.remove();
+                    continue;
+                }
             }
+
+            // TODO Check so that passenger has no other bookings (passenger in another drive or driver in another drive)
 
         }
         return drives;
