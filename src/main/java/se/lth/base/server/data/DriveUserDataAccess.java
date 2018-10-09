@@ -44,7 +44,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
 
     public DriveUser updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
         execute("UPDATE drive_user SET start = ?, stop = ?, is_driver = ?, accepted = ?, rated = ?, WHERE drive_id = ? AND user_id = ?",
-                start, stop, driver, accepted, driveId, userId, rated);
+                start, stop, driver, accepted, rated, driveId, userId);
     	
     	return getDriveUser(driveId, userId);
     }
