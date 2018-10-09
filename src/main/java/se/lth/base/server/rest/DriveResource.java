@@ -1,17 +1,7 @@
 package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
-import se.lth.base.server.data.Drive;
-import se.lth.base.server.data.DriveDataAccess;
-import se.lth.base.server.data.DriveMilestone;
-import se.lth.base.server.data.DriveMilestoneDataAccess;
-import se.lth.base.server.data.DriveReport;
-import se.lth.base.server.data.DriveReportDataAccess;
-import se.lth.base.server.data.DriveUser;
-import se.lth.base.server.data.DriveUserDataAccess;
-import se.lth.base.server.data.DriveWrap;
-import se.lth.base.server.data.Role;
-import se.lth.base.server.data.User;
+import se.lth.base.server.data.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -19,7 +9,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
-
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +17,7 @@ import java.util.List;
 public class DriveResource {
 	private final boolean IS_DRIVER = true;
 	private final boolean IS_ACCEPTED = true;
+    private final boolean IS_RATED = false;
 	
     private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
@@ -57,7 +47,7 @@ public class DriveResource {
         
         // Add driver to list of users
         List<DriveUser> users = new ArrayList<DriveUser>();
-        users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED));     
+        users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED, IS_RATED));
 
         // No reports yet
         List<DriveReport> reports = new ArrayList<DriveReport>();
@@ -113,7 +103,7 @@ public class DriveResource {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public DriveUser addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
     	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId))
-    	return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED);
+            return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, IS_RATED);
     	
     	throw new WebApplicationException("No available seats left", Status.PRECONDITION_FAILED);
     }
