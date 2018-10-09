@@ -32,6 +32,12 @@ public class SearchResource {
         this.user = (User) context.getProperty(User.class.getSimpleName());
     }
 
+    /**
+     * This method lets a user search for drives by specifying search parameters such as trip start, stop and departure time
+     *
+     * @param searchFilter is used to filter out possible drives. If the timestamp attribute in this object is null, then filtering will be done only on trip start and stop
+     * @return A list of Drive-objects matching the input arguments
+     */
     @Path("getDrives")
     @POST
     @RolesAllowed(Role.Names.USER)
@@ -57,16 +63,11 @@ public class SearchResource {
     }
 
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
-        // TODO Overall thought
-        // Get all milestones in order (including start and end of trip) with the fields: name, departure
-        // Get all trip associated with drive and create interval objects containing: startIndex, stopIndex, departure
-        // Check so that departure time of new passenger is possible without delaying the other existing passengers too much
-        // Check so that car does not get full adding the new passenger
-        // Check all other requirements such as luggage etc.
-
+        // Get all drives
         List<Drive> drives = driveDao.getDrives();
         Iterator<Drive> iterator = drives.iterator();
 
+        // Loop through all drives
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
             // Create drive stop and start as "DriveMilestones" and add the to the list
@@ -85,7 +86,7 @@ public class SearchResource {
                 continue;
             }
 
-
+            // Get all DriveUsers associated with the current drive
             List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(drive.getDriveId());
 
             // Remove driver from driveUsers list
@@ -155,8 +156,7 @@ public class SearchResource {
         // Create DriveUserIntervals
         List<DriveUserInterval> driveUserIntervals = new ArrayList<>();
         for(DriveUser driveUser : driveUsers) {
-            // TODO departureTime is null
-            driveUserIntervals.add(new DriveUserInterval(driveUser.getStart(), driveUser.getStop(), null, milestones));
+            driveUserIntervals.add(new DriveUserInterval(driveUser.getStart(), driveUser.getStop(), milestones));
         }
 
         for(int i = 0; i < milestones.size() - 1; i++) {
@@ -198,12 +198,10 @@ public class SearchResource {
     private class DriveUserInterval {
         private int startIndex;
         private int stopIndex;
-        private Timestamp departureTime;
 
-        public DriveUserInterval(String start, String stop, Timestamp departureTime, List<DriveMilestone> milestones) {
+        public DriveUserInterval(String start, String stop, List<DriveMilestone> milestones) {
             startIndex = getIndexOfMilestone(start, milestones);
             stopIndex = getIndexOfMilestone(stop, milestones);
-            this.departureTime = departureTime;
         }
 
         private int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
@@ -221,10 +219,6 @@ public class SearchResource {
 
         public int getStopIndex() {
             return stopIndex;
-        }
-
-        public Timestamp getDepartureTime() {
-            return departureTime;
         }
     }
 
