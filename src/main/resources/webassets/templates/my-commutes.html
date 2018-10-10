@@ -44,7 +44,7 @@
                             </div>
                             <div class="col-2 search-card-pc-outer-right">
                                 <div class="row">
-                                    <button type="submit" class="btn btn-primary mycom-btn ml-3 my-3 w-75">Edit</button>
+                                    <button type="submit" class="btn btn-primary mycom-btn ml-3 my-3 w-75" id="drive-edit-modalTrigger">Edit</button>
                                 </div>
                                 <div class="row">
                                     <button type="submit" class="btn btn-danger mycom-btn ml-3 my-3 w-75">Cancel</button>
@@ -83,7 +83,7 @@
                             </div>
                             <div class="col-2 search-card-pc-outer-right">
                                 <div class="row">
-                                    <button type="submit" class="btn btn-primary mycom-past-btn ml-3 mt-5 w-75">Rate</button>
+                                    <button type="submit" class="btn btn-primary mycom-past-btn ml-3 mt-5 w-75" id="drive-rate-modalTrigger">Rate</button>
                                 </div>
                             </div>
                         </div>
@@ -113,21 +113,16 @@
                                 <p>4.4</p>
                                 <p>18 reviews</p>
                             </div>
-                            <div class="col-4 search-card-pc">
+                            <div class="col-5 search-card-pc">
                                 <p class="card-head">Gothenburg to Lund</p>
                                 <p>Leaving Wednesday, September 19 at 18:30</p>
                                 <br>
                                 <p>Pick Gothenburg</p>
                                 <p>Dropoff Halmstad</p>
                             </div>
-                            <div class="col-4 search-card-pc">
+                            <div class="col-5 archive-search-card-pc">
                                 <p class="card-head">Audi Cool model Super</p>
                                 <p>Turbo car(not for slow people)</p>
-                            </div>
-                            <div class="col-2 search-card-pc-outer-right">
-                                <div class="row">
-                                    <button type="submit" class="btn btn-primary mycom-btn ml-3 my-3 w-75">Choose trip</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -159,7 +154,7 @@
                             </div>
                             <div class="col-2 search-card-pc-outer-right">
                                 <div class="row">
-                                    <button type="submit" class="btn btn-primary mycom-past-btn ml-3 mt-5 w-75">Rate</button>
+                                    <button type="submit" class="btn btn-primary mycom-past-btn ml-3 mt-5 w-75" id="trip-rate-modalTrigger">Rate</button>
                                 </div>
                             </div>
                         </div>
@@ -176,7 +171,7 @@
         <div class="col search-card mt-5">
             <div class="col my-4">
                 <div class="row">
-                    <p class="mycom-drive-kind">Upcoming drives</p>
+                    <p class="mycom-drive-kind">Drives</p>
                     <hr>
                 </div>
                 <div class="card mt-3 mb-5">
@@ -189,33 +184,22 @@
                                 <p>4.4</p>
                                 <p>18 reviews</p>
                             </div>
-                            <div class="col-4 search-card-pc">
+                            <div class="col-5 search-card-pc">
                                 <p class="card-head">Gothenburg to Lund</p>
                                 <p>Leaving Wednesday, September 19 at 18:30</p>
                                 <br>
                                 <p>Pick Gothenburg</p>
                                 <p>Dropoff Halmstad</p>
                             </div>
-                            <div class="col-4 search-card-pc">
+                            <div class="col-5 archive-search-card-pc">
                                 <p class="card-head">Audi Cool model Super</p>
                                 <p>Turbo car(not for slow people)</p>
-                            </div>
-                            <div class="col-2 search-card-pc-outer-right">
-                                <div class="row">
-                                    <button type="submit" class="btn btn-primary mycom-btn ml-3 my-3 w-75">Edit</button>
-                                </div>
-                                <div class="row">
-                                    <button type="submit" class="btn btn-danger mycom-btn ml-3 my-3 w-75">Cancel</button>
-                                </div>
-                                <div class="row">
-                                    <button type="submit" class="btn btn-success mycom-btn ml-3 my-3 w-75">Complete</button>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <p class="mycom-drive-kind">Past drives</p>
+                    <p class="mycom-drive-kind">Trips</p>
                     <hr>
                 </div>
                 <div class="card mt-3 mb-5">
@@ -228,21 +212,16 @@
                                 <p>4.4</p>
                                 <p>18 reviews</p>
                             </div>
-                            <div class="col-4 search-card-pc">
+                            <div class="col-5 search-card-pc">
                                 <p class="card-head">Gothenburg to Lund</p>
                                 <p>Leaving Wednesday, September 19 at 18:30</p>
                                 <br>
                                 <p>Pick Gothenburg</p>
                                 <p>Dropoff Halmstad</p>
                             </div>
-                            <div class="col-4 search-card-pc">
+                            <div class="col-5 archive-search-card-pc">
                                 <p class="card-head">Audi Cool model Super</p>
                                 <p>Turbo car(not for slow people)</p>
-                            </div>
-                            <div class="col-2 search-card-pc-outer-right">
-                                <div class="row">
-                                    <button type="submit" class="btn btn-primary mycom-past-btn ml-3 mt-5 w-75">Rate</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -250,32 +229,4 @@
             </div>
         </div>
     </div>
-</div>
-
-
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
 </div>
