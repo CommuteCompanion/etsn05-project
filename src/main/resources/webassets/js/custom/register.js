@@ -6,23 +6,25 @@ window.base.registerController = (() => {
     const controller = {
         submitUser: submitEvent => {
             submitEvent.preventDefault();
-            const password = document.getElementById('register-password').value;
-            const username = document.getElementById('register-username').value;
-            const firstName = document.getElementById('register-firstName').value;
-            const lastName = document.getElementById('register-lastName').value;
-            const phoneNumber = document.getElementById('register-phoneNumber').value;
-            const email = document.getElementById('register-email').value;
-            const dateOfBirth = document.getElementById('register-dateOfBirth').value;
-            const drivingLicence = document.getElementById('register-drivingLicence').checked;
 
-            const user = {firstName, lastName, phoneNumber, email, dateOfBirth, drivingLicence}
+            const password = document.getElementById('register-password').value;
+            const email = document.getElementById('register-email').value;
+            const firstName = document.getElementById('register-first-name').value;
+            const lastName = document.getElementById('register-last-name').value;
+            const phoneNumber = document.getElementById('register-phone-number').value;
+            const dateOfBirth = Date.parse(document.getElementById('register-date-of-birth').value);
+            const drivingLicence = document.getElementById('register-driving-license').value;
+            const gender = document.getElementById('register-gender-male').checked ? 0 : 1;
+
+            const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence, gender};
             const role = "USER";
-            const credentials ={username, password, role, user};
+            const credentials ={email, password, role, user};
+
             window.base.rest.addUser(credentials).then(user => {
                 if (user.error) {
                     alert(user.message);
                 } else {
-                    window.base.rest.login(username, password, false).then(response => {
+                    window.base.rest.login(email, password, false).then(response => {
                         if (response.ok) {
                             window.base.changeLocation('/');
                         } else {
@@ -35,7 +37,9 @@ window.base.registerController = (() => {
             return false;
         },
 
-        load: () => document.getElementById('register-form').onsubmit = controller.submitUser,
+        load: () => {
+            document.getElementById('register-form').onsubmit = controller.submitUser;
+        },
         initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.registerController.load)
     };
     
