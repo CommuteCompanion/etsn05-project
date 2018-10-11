@@ -1,5 +1,6 @@
 package se.lth.base.server.rest;
 
+import com.google.gson.internal.LinkedTreeMap;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -193,4 +194,28 @@ public class SearchResourceTest extends BaseResourceTest {
 
     }
 
+    @Test
+    /**
+     * When tripStart, tripStop and departureTime in SearchFilter is null and getDrives(SearchFilter) is called,
+     * all drives should be returned in most recently created order
+     */
+    public void getDrivesInMostRecentlyCreatedOrder() {
+        login(SEARCH_TEST_CREDENTIALS_2);
+
+        SearchFilter searchFilter1 = new SearchFilter(-1, user2Id, null, null, null);
+
+        List<LinkedTreeMap<String, Object>> response = target("search")
+                .path("getDrives")
+                .request()
+                .post(Entity.json(searchFilter1), List.class);
+
+        // Apparently the list contains LinkedTreeMap<String, Object>, each representing a Drive object
+        LinkedTreeMap<String, Object> drive3 = response.get(0);
+        Assert.assertEquals((double) drive3Id, drive3.get("driveId"));
+        LinkedTreeMap<String, Object> drive2 = response.get(1);
+        Assert.assertEquals((double) drive2Id, drive2.get("driveId"));
+        LinkedTreeMap<String, Object> drive1 = response.get(2);
+        Assert.assertEquals((double) drive1Id, drive1.get("driveId"));
+
+    }
 }

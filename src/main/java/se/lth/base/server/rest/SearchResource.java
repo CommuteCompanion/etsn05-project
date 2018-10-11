@@ -12,6 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,8 +67,11 @@ public class SearchResource {
         List<Drive> drives = driveDao.getDrives();
         Iterator<Drive> iterator = drives.iterator();
 
-        // Get all drives associated with the user
-        List<Drive> drivesAssociatedWithUser = getAllFutureDrivesAssociatedWithUser(user.getId(), drives);
+        if ((tripStart == null || tripStart.isEmpty()) && (tripStop == null || tripStop.isEmpty()) && departureTime == null) {
+            // Drives are returned in most recently created drive first (need a created date in Drive class)
+            Collections.reverse(drives);
+            return drives;
+        }
 
         // Loop through all drives
         while (iterator.hasNext()) {
@@ -118,12 +122,6 @@ public class SearchResource {
                     continue;
                 }
             }
-
-            // TODO Check so that passenger has no other bookings (passenger in another drive or driver in another drive)
-            if (departureTime != null) {
-
-            }
-
         }
         return drives;
     }
@@ -197,25 +195,6 @@ public class SearchResource {
                 }
             }
         }
-        return false;
-    }
-
-    private List<Drive> getAllFutureDrivesAssociatedWithUser(int userId, List<Drive> drives) {
-        List<Drive> drivesAssociated = new ArrayList<>();
-        for (Drive d : drives) {
-            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(d.getDriveId());
-            for (DriveUser driveUser : driveUsers) {
-                if (driveUser.getUserId() == userId) {
-                    drivesAssociated.add(d);
-                    break;
-                }
-            }
-        }
-        return drivesAssociated;
-    }
-
-    private boolean doesTripOverlapWithFutureDrivesAssociatedWithUser(Timestamp currentTripStart, Timestamp currentTripStop, List<Drive> associatedFutureDrives) {
-        // TODO
         return false;
     }
 
