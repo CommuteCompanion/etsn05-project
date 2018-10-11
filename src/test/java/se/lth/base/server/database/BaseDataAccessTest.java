@@ -18,11 +18,11 @@ import java.sql.Date;
 public abstract class BaseDataAccessTest {
     protected static final User ADMIN = new User(1, Role.ADMIN, "Admin", "Admin",
             "-", "0", "admin@commutecompanion.se", 0,
-            Date.valueOf("2018-01-01"), false, 0, 0, 0);
+            Date.valueOf("2018-01-01").getTime(), false, 0, 0, 0);
     protected static final Credentials ADMIN_CREDENTIALS = new Credentials("Admin",
             "password", Role.ADMIN, ADMIN);
     protected static final User TEST = new User(2, Role.USER, "Test", "Test",
-            "-", "0", "test@commutecompanion.se", 0, Date.valueOf("2018-01-01"),
+            "-", "0", "test@commutecompanion.se", 0, Date.valueOf("2018-01-01").getTime(),
             false, 0, 0, 0);
     protected static final Credentials TEST_CREDENTIALS = new Credentials("Test",
             "password", Role.USER, TEST);

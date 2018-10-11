@@ -53,7 +53,8 @@ public class UserDataAccess extends DataAccess<User> {
         String phoneNumber = user.getPhoneNumber();
         String email = user.getEmail();
         int gender = user.getGender();
-        Date dateOfBirth = user.getDateOfBirth();
+        long dateOfBirthL = user.getDateOfBirth();
+        Date dateOfBirth = new Date(dateOfBirthL);
         boolean drivingLicense = user.getDrivingLicence();
 
         int userId = insert("INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, " +
@@ -62,7 +63,7 @@ public class UserDataAccess extends DataAccess<User> {
                 role.name(), username, salt, passwordHash, firstName, lastName, phoneNumber, email, gender,
                 dateOfBirth, drivingLicense);
         return new User(userId, credentials.getRole(), username, firstName, lastName, phoneNumber, email, gender,
-                dateOfBirth, drivingLicense, 0, 0, 0);
+                dateOfBirthL, drivingLicense, 0, 0, 0);
     }
 
     public User updateUser(int userId, Credentials credentials) {
@@ -156,7 +157,7 @@ public class UserDataAccess extends DataAccess<User> {
             return new User(resultSet.getInt("user_id"), Role.valueOf(resultSet.getString("role")),
             		resultSet.getString("username"), resultSet.getString("first_name"), resultSet.getString("last_name"),
                     resultSet.getString("phone_number"), resultSet.getString("email"), resultSet.getInt("gender"),
-                    resultSet.getDate("date_of_birth"), resultSet.getBoolean("driving_license"),
+                    resultSet.getObject("date_of_birth", Date.class).getTime(), resultSet.getBoolean("driving_license"),
                     resultSet.getInt("rating_total_score"), resultSet.getInt("number_of_ratings"), resultSet.getInt("warning"));
         }
     }

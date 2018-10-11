@@ -104,7 +104,7 @@ public class Credentials {
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         String phoneNumber = user.getPhoneNumber();
-        Date dateOfBirth = user.getDateOfBirth();
+        long dateOfBirth = user.getDateOfBirth();
         String email = user.getEmail();
 
         // Check all values are set
@@ -116,7 +116,7 @@ public class Credentials {
             throw new WebApplicationException("Last name not specified", Response.Status.BAD_REQUEST);
         }
 
-        if (dateOfBirth == null) {
+        if (dateOfBirth == 0) {
             throw new WebApplicationException("Date of birth not specified", Response.Status.BAD_REQUEST);
         }
 
@@ -152,7 +152,7 @@ public class Credentials {
         }
 
         // Check age
-        long currentAge = (new Date().getTime() - dateOfBirth.getTime()) / 1000;
+        long currentAge = (new Date().getTime() - dateOfBirth) / 1000;
         long legalAge = 60 * 60 * 24 * 365 * 18;
         if (currentAge < legalAge) {
             throw new WebApplicationException("Too young to register, minimum 18 years old", Response.Status.BAD_REQUEST);
