@@ -32,14 +32,14 @@ public class Credentials {
     private static final int SIZE = 256;
     private static final int ITERATION_COST = 16;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA1";
-    private final String username;
+    private final String email;
     @Expose(serialize = false)
     private final String password;
     private final Role role;
     private final User user;
 
-    public Credentials(String username, String password, Role role, User user) {
-        this.username = username;
+    public Credentials(String email, String password, Role role, User user) {
+        this.email = email;
         this.password = password;
         this.role = role;
         this.user = user;
@@ -49,8 +49,8 @@ public class Credentials {
         return new SecureRandom().nextLong();
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
     public Role getRole() {
@@ -105,7 +105,7 @@ public class Credentials {
         String lastName = user.getLastName();
         String phoneNumber = user.getPhoneNumber();
         long dateOfBirth = user.getDateOfBirth();
-        String email = user.getEmail();
+        String email = user.getName();
 
         // Check all values are set
         if (firstName == null) {
@@ -169,7 +169,7 @@ public class Credentials {
         if (tokens.length != 2 ||
                 tokens[0] == null || tokens[0].trim().length() == 0 ||
                 tokens[1] == null || tokens[1].trim().length() == 0) {
-            throw new WebApplicationException("Email not valid", Response.Status.BAD_REQUEST);
+            throw new WebApplicationException("Email: " + email + " is not valid", Response.Status.BAD_REQUEST);
         }
 
         // Check phone number
