@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 
 public class DriveResourceTest extends BaseResourceTest {
-	
+
 	 private static final GenericType<List<Drive>> DRIVE_LIST = new GenericType<List<Drive>>() {
 	    };
 
@@ -30,7 +30,7 @@ public class DriveResourceTest extends BaseResourceTest {
                 .request()
                 .get(DRIVE_LIST);
     }
-	
+
 	@Test
     public void getDrivesAsAdmin() {
         login(ADMIN_CREDENTIALS);

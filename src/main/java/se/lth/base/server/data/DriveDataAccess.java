@@ -65,7 +65,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
     
     public Drive getDrive(int driveId) {
-    	return queryFirst("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive WHERE drive_id = ?", 
+    	return queryFirst("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive WHERE drive_id = ?",
     			driveId);
     }
     

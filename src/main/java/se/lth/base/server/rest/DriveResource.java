@@ -18,7 +18,7 @@ public class DriveResource {
 	private final boolean IS_DRIVER = true;
 	private final boolean IS_ACCEPTED = true;
     private final boolean IS_RATED = false;
-	
+
     private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
@@ -86,7 +86,7 @@ public class DriveResource {
     public List<Drive> getDrives() {
         return driveDao.getDrives();
     }
-    
+
     @Path("{driveId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
@@ -143,7 +143,7 @@ public class DriveResource {
     	
     	throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
     }
-    
+
     @Path("{driveId}/report")
     @POST
     @RolesAllowed(Role.Names.USER)
