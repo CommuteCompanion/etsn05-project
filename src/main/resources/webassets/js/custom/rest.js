@@ -36,9 +36,9 @@ window.base.rest = (() => {
         getUser: () => baseFetch('/rest/user')
             .then(response => response.json())
             .then(u => new User(u)),
-        login: (username, password, rememberMe) => baseFetch('/rest/user/login?remember=' + rememberMe, {
+        login: (email, password, rememberMe) => baseFetch('/rest/user/login?remember=' + rememberMe, {
             method: 'POST',
-            body: JSON.stringify({username: username, password: password}),
+            body: JSON.stringify({email: email, password: password}),
             headers: jsonHeader
         }),
         logout: () => baseFetch('/rest/user/logout', {method: 'POST'}),
