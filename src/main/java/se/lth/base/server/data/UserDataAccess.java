@@ -53,17 +53,16 @@ public class UserDataAccess extends DataAccess<User> {
         String phoneNumber = user.getPhoneNumber();
         String email = user.getEmail();
         int gender = user.getGender();
-        long dateOfBirthL = user.getDateOfBirth();
-        Date dateOfBirth = new Date(dateOfBirthL);
+        long dateOfBirth = user.getDateOfBirth();
         boolean drivingLicense = user.getDrivingLicence();
 
         int userId = insert("INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, " +
                         "phone_number, email, gender, date_of_birth, driving_license) VALUES " +
                         "((SELECT role_id FROM user_role WHERE user_role.role=?),?,?,?,?,?,?,?,?,?,?)",
                 role.name(), username, salt, passwordHash, firstName, lastName, phoneNumber, email, gender,
-                dateOfBirth, drivingLicense);
+                new Date(dateOfBirth), drivingLicense);
         return new User(userId, credentials.getRole(), username, firstName, lastName, phoneNumber, email, gender,
-                dateOfBirthL, drivingLicense, 0, 0, 0);
+                dateOfBirth, drivingLicense, 0, 0, 0);
     }
 
     public User updateUser(int userId, Credentials credentials) {
