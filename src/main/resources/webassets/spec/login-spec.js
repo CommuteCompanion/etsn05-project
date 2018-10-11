@@ -4,9 +4,9 @@
  */
 describe('loginController', function() {
 
-    var none = new base.User({email: '-', role: 'NONE'});
-    var test = new base.User({email: 'Test', role: 'USER'});
-    var admin = new base.User({email: 'Admin', role: 'ADMIN'});
+    var none = new base.User({username: '-', role: 'NONE'});
+    var test = new base.User({username: 'Test', role: 'USER'});
+    var admin = new base.User({username: 'Admin', role: 'ADMIN'});
 
     var node;
     // Creates the controller by loading the index.html and put it in the node variable
@@ -39,7 +39,7 @@ describe('loginController', function() {
         });
 
         it('should call loginUser on form submit', function() {
-            document.getElementById('email').value = 'test@lu.se';
+            document.getElementById('username').value = 'test';
             document.getElementById('password').value = 'password1';
             spyOn(base.loginController, 'loginUser');
             document.querySelector('#login-form button').click();
@@ -47,20 +47,20 @@ describe('loginController', function() {
         });
 
         it('should do post to rest/login', function(done) {
-            document.getElementById('email').value = 'test@lu.se';
+            document.getElementById('username').value = 'test';
             document.getElementById('password').value = 'password2';
             spyOn(base, 'changeLocation');
             var loginPromise = Promise.resolve({ok: true});
             spyOn(base.rest, 'login').and.returnValue(loginPromise);
             document.querySelector('button').click();
             loginPromise.then(function() {
-                expect(base.rest.login).toHaveBeenCalledWith('test@lu.se', 'password2', false);
+                expect(base.rest.login).toHaveBeenCalledWith('test', 'password2', false);
                 expect(base.changeLocation).toHaveBeenCalledWith('/');
             }).finally(done);
         });
 
         it('should show error on failed login', function(done) {
-            document.getElementById('email').value = 'test@lu.se';
+            document.getElementById('username').value = 'test';
             document.getElementById('password').value = 'password3';
             var errorPromise = Promise.resolve({message: 'mock error'});
             var loginPromise = Promise.resolve({
