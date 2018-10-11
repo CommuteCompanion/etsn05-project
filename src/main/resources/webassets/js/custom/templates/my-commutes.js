@@ -22,7 +22,7 @@ window.base.myCommutesController = (() => {
             for (let i = 0; i < requestModalTriggers.length; i++) {
                 let trigger = requestModalTriggers[i];
                 trigger.onclick = () => {
-                    let driveId = trigger.closest('.card').getAttribute('id').split('-')[1];
+                    let driveId = trigger.closest('.card').getAttribute('id').split('-')[2];
                     view.loadRequestModal(driveId);
                 };
             }
