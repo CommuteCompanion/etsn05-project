@@ -196,7 +196,7 @@ public class CustomEmail {
 
         // Add recipient
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
-        recipients.add(new Recipient(fullName, singleUser.getName(), Message.RecipientType.TO));
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return getResource(EMAIL_TEMPLATE, content);
     }
@@ -245,7 +245,7 @@ public class CustomEmail {
 
         // Add recipient
         String fullName = driverU.getFirstName() + " " + driverU.getLastName();
-        recipients.add(new Recipient(fullName, driverU.getName(), Message.RecipientType.TO));
+        recipients.add(new Recipient(fullName, driverU.getEmail(), Message.RecipientType.TO));
 
         return getResource(EMAIL_TEMPLATE, content);
     }
@@ -294,7 +294,7 @@ public class CustomEmail {
 
         // Add recipient
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
-        recipients.add(new Recipient(fullName, singleUser.getName(), Message.RecipientType.TO));
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return getResource(EMAIL_TEMPLATE, content);
     }
@@ -312,7 +312,7 @@ public class CustomEmail {
         for (DriveUser u : driveWrap.getUsers()) {
             User user = userDao.getUser(u.getUserId());
             String fullName = user.getFirstName() + " " + user.getLastName();
-            recipients.add(new Recipient(fullName, user.getName(), Message.RecipientType.TO));
+            recipients.add(new Recipient(fullName, user.getEmail(), Message.RecipientType.TO));
             if (u.isDriver()) {
                 driver = u;
             }
@@ -362,7 +362,7 @@ public class CustomEmail {
 
         // Add recipient
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
-        recipients.add(new Recipient(fullName, singleUser.getName(), Message.RecipientType.TO));
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return getResource(EMAIL_TEMPLATE, content);
     }
@@ -411,7 +411,7 @@ public class CustomEmail {
 
         // Add recipient
         String fullName = driverU.getFirstName() + " " + driverU.getLastName();
-        recipients.add(new Recipient(fullName, driverU.getName(), Message.RecipientType.TO));
+        recipients.add(new Recipient(fullName, driverU.getEmail(), Message.RecipientType.TO));
 
         return getResource(EMAIL_TEMPLATE, content);
     }
@@ -434,7 +434,7 @@ public class CustomEmail {
             } else {
                 User user = userDao.getUser(u.getUserId());
                 String fullName = user.getFirstName() + " " + user.getLastName();
-                recipients.add(new Recipient(fullName, user.getName(), Message.RecipientType.TO));
+                recipients.add(new Recipient(fullName, user.getEmail(), Message.RecipientType.TO));
             }
         }
 
@@ -475,7 +475,7 @@ public class CustomEmail {
 
         // Add recipient
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
-        recipients.add(new Recipient(fullName, singleUser.getName(), Message.RecipientType.TO));
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return getResource(EMAIL_TEMPLATE, content);
     }
@@ -517,7 +517,7 @@ public class CustomEmail {
 
         // Add recipient
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
-        recipients.add(new Recipient(fullName, singleUser.getName(), Message.RecipientType.TO));
+        recipients.add(new Recipient(fullName, singleUser.getEmail(), Message.RecipientType.TO));
 
         return getResource(EMAIL_TEMPLATE, content);
     }

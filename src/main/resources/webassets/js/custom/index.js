@@ -52,7 +52,7 @@ window.base.mainController = (() => {
         },
         hideAdminLinks: () => document.querySelectorAll('#main-nav li.admin-only').forEach(li => li.style.display = 'none'),
         hideUserLinks: () => document.querySelectorAll('#main-nav li.user-only').forEach(li => li.style.display = 'none'),
-        renderEmail: () => document.getElementById('email').textContent = model.user.email
+        renderUsername: () => document.getElementById('username').textContent = model.user.username
     };
 
     const controller = {
@@ -78,7 +78,7 @@ window.base.mainController = (() => {
             window.base.mainController.changeRoute();
             window.base.rest.getUser().then(user => {
                 model.user = user;
-                view.renderEmail();
+                view.renderUsername();
                 if (user.isNone()) {
                     window.base.changeLocation('/login.html');
                 } else if (!user.isAdmin()) {
