@@ -158,10 +158,8 @@ public class DriveResource {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<Drive> getDrivesForUser(@PathParam("userId") int userId) {
         if (userId == user.getId() || user.getRole().getLevel() > 2) {
-            System.out.println("1");
             return driveDao.getDrivesForUser(userId);
         }
-        System.out.println("2");
         throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
 
     }

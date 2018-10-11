@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DriveResourceTest extends BaseResourceTest {
 
-	 private static final GenericType<List<Drive>> DRIVE_LIST = new GenericType<List<Drive>>() {
+    private static final GenericType<List<Drive>> DRIVE_LIST = new GenericType<List<Drive>>() {
 	    };
 
 	@Test(expected = ForbiddenException.class)
@@ -31,7 +31,7 @@ public class DriveResourceTest extends BaseResourceTest {
                 .get(DRIVE_LIST);
     }
 
-	@Test
+    @Test
     public void getDrivesAsAdmin() {
         login(ADMIN_CREDENTIALS);
         List<Drive> drives = target("drive")
