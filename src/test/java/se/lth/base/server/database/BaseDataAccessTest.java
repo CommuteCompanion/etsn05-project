@@ -16,15 +16,13 @@ import java.sql.Date;
  * @author Rasmus Ros, rasmus.ros@cs.lth.se
  */
 public abstract class BaseDataAccessTest {
-    protected static final User ADMIN = new User(1, Role.ADMIN, "Admin", "Admin",
-            "-", "0", "admin@commutecompanion.se", 0,
-            Date.valueOf("2018-01-01"), false, 0, 0, 0);
-    protected static final Credentials ADMIN_CREDENTIALS = new Credentials("Admin",
+    protected static final User ADMIN = new User(1, Role.ADMIN, "admin@lu.se", "Admin",
+            "-", "0", 0, Date.valueOf("2018-01-01"), false, 0, 0, 0);
+    protected static final Credentials ADMIN_CREDENTIALS = new Credentials("admin@lu.se",
             "password", Role.ADMIN, ADMIN);
-    protected static final User TEST = new User(2, Role.USER, "Test", "Test",
-            "-", "0", "test@commutecompanion.se", 0, Date.valueOf("2018-01-01"),
-            false, 0, 0, 0);
-    protected static final Credentials TEST_CREDENTIALS = new Credentials("Test",
+    protected static final User TEST = new User(2, Role.USER, "test@lu.se", "Test",
+            "-", "0", 0, Date.valueOf("2018-01-01"), false, 0, 0, 0);
+    protected static final Credentials TEST_CREDENTIALS = new Credentials("test@lu.se",
             "password", Role.USER, TEST);
     private static final String IN_MEM_DRIVER_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
 

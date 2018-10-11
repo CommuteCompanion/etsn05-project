@@ -143,9 +143,9 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void updateWithoutPassword() {
-        Session session1 = userDao.authenticate(new Credentials("Test", "password", Role.USER, User.NONE));
-        userDao.updateUser(2, new Credentials("test2", null, Role.USER, User.NONE));
-        Session session2 = userDao.authenticate(new Credentials("test2", "password", Role.USER, User.NONE));
+        Session session1 = userDao.authenticate(new Credentials("test@lu.se", "password", Role.USER, User.NONE));
+        userDao.updateUser(2, new Credentials("test2@lu.se", null, Role.USER, User.NONE));
+        Session session2 = userDao.authenticate(new Credentials("test2@lu.se", "password", Role.USER, User.NONE));
         System.out.println(session1);
         System.out.println(session2);
     }
