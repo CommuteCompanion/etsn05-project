@@ -24,7 +24,6 @@ public class SearchResource {
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
     private final User user;
 
-    // TODO Maybe change this value
     // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
     private final int SEARCH_MINUTES_MARGIN = 10;
 
@@ -34,8 +33,10 @@ public class SearchResource {
 
     /**
      * This method lets a user search for drives by specifying search parameters such as trip start, stop and departure time
+     * in the form of a SearchFilter object.
      *
-     * @param searchFilter is used to filter out possible drives. If the timestamp attribute in this object is null, then filtering will be done only on trip start and stop
+     * @param searchFilter is used to filter out possible drives. If the timestamp attribute in this object is null, then filtering will be done only on trip start and stop.
+     *                    If trip start, trip stop and departure time are all null then all drives will be returned in the order of most recently added drive first.
      * @return A list of Drive-objects matching the input arguments
      */
     @Path("getDrives")
@@ -56,12 +57,6 @@ public class SearchResource {
         return filteredDrives;
     }
 
-    // TODO Add RESTful tags
-    public List<User> getUsers() {
-        // TODO
-        return null;
-    }
-
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
         // Get all drives
         List<Drive> drives = driveDao.getDrives();
@@ -79,7 +74,7 @@ public class SearchResource {
             // Create drive stop and start as "DriveMilestones" and add the to the list
             // Milestone id is not of interest and is therefore set to -1
             DriveMilestone driveStart = new DriveMilestone(-1, drive.getDriveId(), drive.getStart(), drive.getDepartureTime());
-            // TODO Does driveStop need a "arrival" time?
+            // driveStop does not need an "arrival" time
             DriveMilestone driveStop = new DriveMilestone(-1, drive.getDriveId(), drive.getStop(), null);
             List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(drive.getDriveId());
             driveMilestones.add(0, driveStart);

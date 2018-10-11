@@ -216,6 +216,5 @@ public class SearchResourceTest extends BaseResourceTest {
         Assert.assertEquals((double) drive2Id, drive2.get("driveId"));
         LinkedTreeMap<String, Object> drive1 = response.get(2);
         Assert.assertEquals((double) drive1Id, drive1.get("driveId"));
-
     }
 }
