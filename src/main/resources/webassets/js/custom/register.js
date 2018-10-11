@@ -12,7 +12,7 @@ window.base.registerController = (() => {
             const lastName = document.getElementById('register-lastName').value;
             const phoneNumber = document.getElementById('register-phoneNumber').value;
             const email = document.getElementById('register-email').value;
-            const dateOfBirth = document.getElementById('register-dateOfBirth').value;
+            const dateOfBirth = Date.parse(document.getElementById('register-dateOfBirth').value);
             const drivingLicence = document.getElementById('register-drivingLicence').checked;
 
             const user = {firstName, lastName, phoneNumber, email, dateOfBirth, drivingLicence}
