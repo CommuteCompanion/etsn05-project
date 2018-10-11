@@ -7,9 +7,16 @@ window.base.registerController = (() => {
         submitUser: submitEvent => {
             submitEvent.preventDefault();
             const password = document.getElementById('register-password').value;
-            const email = document.getElementById('register-email').value;
+            const email = document.getElementById('email-username').value;
+            const firstName = document.getElementById('register-firstName').value;
+            const lastName = document.getElementById('register-lastName').value;
+            const phoneNumber = document.getElementById('register-phoneNumber').value;
+            const dateOfBirth = document.getElementById('register-dateOfBirth').value;
+            const drivingLicence = document.getElementById('register-drivingLicence').checked;
+
+            const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence}
             const role = "USER";
-            const credentials ={email, password, role};
+            const credentials ={email, password, role, user};
             window.base.rest.addUser(credentials).then(user => {
                 if (user.error) {
                     alert(user.message);

@@ -67,9 +67,9 @@ window.base.mainController = (() => {
             fetch(controller.routingTable[newRoute].partial)
                 .then(response => response.text())
                 .then(tabHtml => {
-                    document.getElementById('main-tab').innerHTML = tabHtml;
-                    controller.routingTable[newRoute].controller().load();
-                });
+                document.getElementById('main-tab').innerHTML = tabHtml;
+                controller.routingTable[newRoute].controller().load();
+            });
             view.render();
         },
         load: () => {
