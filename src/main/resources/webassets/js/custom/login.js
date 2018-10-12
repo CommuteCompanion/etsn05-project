@@ -22,10 +22,10 @@ window.base.loginController = (() => {
             });
         },
         loginUser: () => {
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const remember = document.getElementById('remember').checked;
-            window.base.rest.login(username, password, remember)
+            window.base.rest.login(email, password, remember)
                 .then(response => {
                     if (response.ok) {
                         window.base.changeLocation('/');

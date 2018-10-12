@@ -5,7 +5,10 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.email.Recipient;
 import org.slf4j.LoggerFactory;
 import se.lth.base.server.Config;
-import se.lth.base.server.data.*;
+import se.lth.base.server.data.DriveUser;
+import se.lth.base.server.data.DriveWrap;
+import se.lth.base.server.data.User;
+import se.lth.base.server.data.UserDataAccess;
 
 import javax.mail.Message;
 import java.io.BufferedReader;

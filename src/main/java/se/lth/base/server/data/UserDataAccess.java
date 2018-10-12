@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  * The security measures are as follows.
  * <ul>
  * <li>All passwords are stored in a hashed format in the database, using @{@link Credentials#generatePasswordHash(long)}}</li>
- * <li>Usernames are used to salt passwords,
+ * <li>emails are used to salt passwords,
  * <a href="https://en.wikipedia.org/wiki/Salt_(cryptography)">see here for explanation.</a>
  * <li>When a user does login, it receives a UUID-token. This token is then used to authenticate,
  * using @{@link #getSession}.
@@ -40,50 +40,48 @@ public class UserDataAccess extends DataAccess<User> {
      * Add a new user to the system.
      *
      * @param credentials of the new user, containing name, role, and password.
-     * @throws DataAccessException if duplicated username or too short user names.
+     * @throws DataAccessException if duplicated emails or wrong format.
      */
     public User addUser(Credentials credentials) {
         User user = credentials.getUser();
         Role role = credentials.getRole();
-        String username = credentials.getUsername();
+        String email = credentials.getEmail();
         long salt = Credentials.generateSalt();
         UUID passwordHash = credentials.generatePasswordHash(salt);
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
         String phoneNumber = user.getPhoneNumber();
-        String email = user.getEmail();
         int gender = user.getGender();
-        Date dateOfBirth = user.getDateOfBirth();
+        long dateOfBirth = user.getDateOfBirth();
         boolean drivingLicense = user.getDrivingLicence();
-
-        int userId = insert("INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, " +
-                        "phone_number, email, gender, date_of_birth, driving_license) VALUES " +
-                        "((SELECT role_id FROM user_role WHERE user_role.role=?),?,?,?,?,?,?,?,?,?,?)",
-                role.name(), username, salt, passwordHash, firstName, lastName, phoneNumber, email, gender,
-                dateOfBirth, drivingLicense);
-        return new User(userId, credentials.getRole(), username, firstName, lastName, phoneNumber, email, gender,
+        int userId = insert("INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, " +
+                        "phone_number, gender, date_of_birth, driving_license) VALUES " +
+                        "((SELECT role_id FROM user_role WHERE user_role.role=?),?,?,?,?,?,?,?,?,?)",
+                role.name(), email, salt, passwordHash, firstName, lastName, phoneNumber, gender,
+                new Date(dateOfBirth), drivingLicense);
+        return new User(userId, credentials.getRole(), email, firstName, lastName, phoneNumber, gender,
                 dateOfBirth, drivingLicense, 0, 0, 0);
     }
 
     public User updateUser(int userId, Credentials credentials) {
         if (credentials.hasPassword()) {
             long salt = Credentials.generateSalt();
-            execute("UPDATE user SET username = ?, password_hash = ?, salt = ?, role_id = (" +
+            execute("UPDATE user SET email = ?, password_hash = ?, salt = ?, role_id = (" +
                             "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    credentials.getUsername(), credentials.generatePasswordHash(salt), salt,
+                    credentials.getEmail(), credentials.generatePasswordHash(salt), salt,
                     credentials.getRole().name(), userId);
         } else {
-            execute("UPDATE user SET username = ?, role_id = (" +
+            execute("UPDATE user SET email = ?, role_id = (" +
                             "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    credentials.getUsername(), credentials.getRole().name(), userId);
+                    credentials.getEmail(), credentials.getRole().name(), userId);
         }
         return getUser(userId);
     }
 
     public User getUser(int userId) {
-        return queryFirst("SELECT user_id, role, username, first_name, last_name, phone_number, email, gender, " +
+        return queryFirst("SELECT user_id, role, email, first_name, last_name, phone_number, gender, " +
                 "date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, user_role " +
                 "WHERE user.user_id = ? AND user.role_id = user_role.role_id", userId);
     }
@@ -96,7 +94,7 @@ public class UserDataAccess extends DataAccess<User> {
      * @return all users in the system.
      */
     public List<User> getUsers() {
-        return query("SELECT user_id, role, username, first_name, last_name, phone_number, email, gender, " +
+        return query("SELECT user_id, role, email, first_name, last_name, phone_number, gender, " +
                 "date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, user_role " +
                 "WHERE user.role_id = user_role.role_id");
     }
@@ -109,7 +107,7 @@ public class UserDataAccess extends DataAccess<User> {
      * @throws DataAccessException if the session is not found.
      */
     public Session getSession(UUID sessionId) {
-        User user = queryFirst("SELECT user.user_id, role, username, first_name, last_name, phone_number, email, " +
+        User user = queryFirst("SELECT user.user_id, role, email, first_name, last_name, phone_number, " +
                 "gender, date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, " +
                 "user_role, session WHERE user_role.role_id = user.role_id AND session.user_id = user.user_id " +
                 "AND session.session_uuid = ?", sessionId);
@@ -131,22 +129,22 @@ public class UserDataAccess extends DataAccess<User> {
     /**
      * Login a user.
      *
-     * @param credentials username and plain text password.
+     * @param credentials email and plain text password.
      * @return New user session, consisting of a @{@link UUID} and @{@link User}.
-     * @throws DataAccessException if the username or password does not match.
+     * @throws DataAccessException if the email or password does not match.
      */
     public Session authenticate(Credentials credentials) {
         Supplier<DataAccessException> onError = () ->
-                new DataAccessException("Username or password incorrect", ErrorType.DATA_QUALITY);
+                new DataAccessException("Email or password incorrect", ErrorType.DATA_QUALITY);
         long salt = new DataAccess<>(getDriverUrl(), (rs) -> rs.getLong(1))
-                .queryFirst("SELECT salt FROM user WHERE username = ?", credentials.getUsername());
+                .queryFirst("SELECT salt FROM user WHERE email = ?", credentials.getEmail());
         UUID hash = credentials.generatePasswordHash(salt);
-        User user = queryFirst("SELECT user_id, role, username, first_name, last_name, phone_number, email, " +
+        User user = queryFirst("SELECT user_id, role, email, first_name, last_name, phone_number, " +
                 "gender, date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, " +
-                "user_role WHERE user_role.role_id = user.role_id AND username = ? AND password_hash = ?",
-                credentials.getUsername(), hash);
-        UUID sessionId = insert("INSERT INTO session (user_id) SELECT user_id FROM user WHERE username = ?",
-                user.getName());
+                "user_role WHERE user_role.role_id = user.role_id AND email = ? AND password_hash = ?",
+                credentials.getEmail(), hash);
+        UUID sessionId = insert("INSERT INTO session (user_id) SELECT user_id FROM user WHERE email = ?",
+                user.getEmail());
         return new Session(sessionId, user);
     }
 
@@ -154,9 +152,9 @@ public class UserDataAccess extends DataAccess<User> {
         @Override
         public User map(ResultSet resultSet) throws SQLException {
             return new User(resultSet.getInt("user_id"), Role.valueOf(resultSet.getString("role")),
-            		resultSet.getString("username"), resultSet.getString("first_name"), resultSet.getString("last_name"),
-                    resultSet.getString("phone_number"), resultSet.getString("email"), resultSet.getInt("gender"),
-                    resultSet.getDate("date_of_birth"), resultSet.getBoolean("driving_license"),
+            		resultSet.getString("email"), resultSet.getString("first_name"), resultSet.getString("last_name"),
+                    resultSet.getString("phone_number"), resultSet.getInt("gender"),
+                    resultSet.getObject("date_of_birth", Date.class).getTime(), resultSet.getBoolean("driving_license"),
                     resultSet.getInt("rating_total_score"), resultSet.getInt("number_of_ratings"), resultSet.getInt("warning"));
         }
     }

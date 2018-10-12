@@ -7,22 +7,22 @@ window.base.registerController = (() => {
         submitUser: submitEvent => {
             submitEvent.preventDefault();
             const password = document.getElementById('register-password').value;
-            const username = document.getElementById('register-username').value;
+            const email = document.getElementById('register-email').value;
             const firstName = document.getElementById('register-firstName').value;
             const lastName = document.getElementById('register-lastName').value;
             const phoneNumber = document.getElementById('register-phoneNumber').value;
             const email = document.getElementById('register-email').value;
-            const dateOfBirth = document.getElementById('register-dateOfBirth').value;
+            const dateOfBirth = Date.parse(document.getElementById('register-dateOfBirth').value);
             const drivingLicence = document.getElementById('register-drivingLicence').checked;
 
-            const user = {firstName, lastName, phoneNumber, email, dateOfBirth, drivingLicence}
+            const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence}
             const role = "USER";
-            const credentials ={username, password, role, user};
+            const credentials = {email, password, role, user};
             window.base.rest.addUser(credentials).then(user => {
                 if (user.error) {
                     alert(user.message);
                 } else {
-                    window.base.rest.login(username, password, false).then(response => {
+                    window.base.rest.login(email, password, false).then(response => {
                         if (response.ok) {
                             window.base.changeLocation('/');
                         } else {
