@@ -58,21 +58,14 @@ public class DriveResourceTest extends BaseResourceTest {
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
         driveUserDao.addDriveUser(drive1Id, TEST.getId(), "A", "B", false, false, false);
 
-        //New drive with a new user
-        Drive drive2 = driveDao.addDrive("A", "F", timestamp1, "Comment", "x", "x", "x", "x", 1, 1, false, false, false);
-        int drive2Id = drive2.getDriveId();
-        driveUserDao.addDriveUser(drive2Id, ADMIN.getId(), "A", "B", false, false, false);
-
-        login(TEST_CREDENTIALS);
         drives = target("drive")
                 .path("user/" + TEST.getId())
                 .request()
                 .get(DRIVE_LIST);
         assertEquals(1, drives.size());
-
+        assertEquals(drives.get(0).getDriveId(), drive1Id);
     }
 
-    //
     @Test(expected = WebApplicationException.class)
     public void getDrivesForUserAsWrongUser() {
         login(TEST_CREDENTIALS);
@@ -80,7 +73,6 @@ public class DriveResourceTest extends BaseResourceTest {
                 .path("user/" + ADMIN.getId())
                 .request()
                 .get(DRIVE_LIST);
-
     }
 
     @Test
@@ -106,5 +98,6 @@ public class DriveResourceTest extends BaseResourceTest {
                 .request()
                 .get(DRIVE_LIST);
         assertEquals(1, drives.size());
+        assertEquals(drives.get(0).getDriveId(), drive1Id);
     }
 }
