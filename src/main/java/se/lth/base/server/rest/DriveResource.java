@@ -151,4 +151,21 @@ public class DriveResource {
     public DriveReport reportDrive(@PathParam("{driveId}") int driveId, DriveReport driveReport) {
     	return driveReportDao.addDriveReport(driveId, user.getId(), driveReport.getReportMessage());
     }
+    
+    @Path("allReports")
+    @GET
+    @RolesAllowed(Role.Names.ADMIN)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<DriveWrap> getReportedDrives(){
+    	List<DriveWrap> driveWraps = new ArrayList<DriveWrap>();
+    	List<Drive> reportedDrives = driveDao.getReportedDrives();
+    	
+    	for(Drive d : reportedDrives) {
+    		List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
+    		List<DriveUser> users = driveUserDao.getDriveUsersForDrive(d.getDriveId());
+    		List<DriveReport> reports = driveReportDao.getDriveReportsForDrive(d.getDriveId());
+    		driveWraps.add(new DriveWrap(d, milestones, users, reports));
+    	}
+    	return driveWraps;
+    }
 }
