@@ -25,7 +25,7 @@ import java.lang.reflect.Type;
 @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class JsonProvider implements MessageBodyReader<Object>, MessageBodyWriter<Object> {
 
-    private static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss.SSS").create();
+    private static final Gson GSON = new GsonBuilder().create();
 
     @Override
     public boolean isReadable(Class<?> aClass, Type type, Annotation[] annotations, MediaType mediaType) {

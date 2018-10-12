@@ -17,14 +17,14 @@ hr {
     border: 0;
     clear:both;
     display:block;
-    width: 100%;               
+    width: 100%;
     background-color:#fff;
     height: 2px;
     margin-top: 0px;
 }
 
 #drive-btn, #trip-btn, #archive-btn {
-    outline: none !important; 
+    outline: none !important;
     margin-left: 2%;
     margin-right: 2%;
 }
@@ -135,7 +135,7 @@ hr {
     float:left;
 }
 
-/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t 
+/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t
 follow these rules. Every browser that supports :checked also supports :not(), so
 it doesn’t make the test unnecessarily selective */
 .rating:not(:checked) > input {
