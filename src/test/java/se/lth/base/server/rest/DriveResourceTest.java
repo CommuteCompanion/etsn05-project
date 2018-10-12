@@ -99,13 +99,6 @@ public class DriveResourceTest extends BaseResourceTest {
     }
 
     @Test
-    /*
-    Skapar en tom drive1
-    Testar om driveuser är med i driven, ska bli falskt
-    Skapar en driveUser och lägger till hen i drive1
-    Testar om användare är TEST är inlagd på drive1, ska bli sant
-
-     */
     public void addUserToDrive() {
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
         Timestamp timestamp1 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0);
@@ -129,8 +122,5 @@ public class DriveResourceTest extends BaseResourceTest {
         for (DriveUser user : wrap.getUsers()) {
             assertEquals(user.getUserId(), TEST.getId());
         }
-
-
-
     }
 }
