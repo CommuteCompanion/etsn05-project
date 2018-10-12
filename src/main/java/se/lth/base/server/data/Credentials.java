@@ -32,14 +32,14 @@ public class Credentials {
     private static final int SIZE = 256;
     private static final int ITERATION_COST = 16;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA1";
-    private final String username;
+    private final String email;
     @Expose(serialize = false)
     private final String password;
     private final Role role;
     private final User user;
 
-    public Credentials(String username, String password, Role role, User user) {
-        this.username = username;
+    public Credentials(String email, String password, Role role, User user) {
+        this.email = email;
         this.password = password;
         this.role = role;
         this.user = user;
@@ -49,8 +49,8 @@ public class Credentials {
         return new SecureRandom().nextLong();
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
     public Role getRole() {
