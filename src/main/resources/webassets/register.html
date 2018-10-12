@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>CommuteCompanion - Registration</title>
+    <link rel="stylesheet" href="css/vendors/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="css/custom/main.css">
     <link rel="icon" href="images/favicon.ico" type="image/vnd.microsoft.icon"/>
 </head>
@@ -21,34 +22,50 @@
     <div class="row mb-4">
         <div class="col-md-4 offset-md-4 text-center">
             <form id="register-form">
-                <div class="form-group">
+                <div class="input-group form-group">
                     <label class="sr-only" for="register-email">Email</label>
-                    <input type="email" class="form-control" id="register-email" placeholder="Email" required>
-                    <div class="valid-feedback"></div>
-                    <div class="invalid-feedback">Please enter a valid email</div>
+                    <input type="email" class="form-control border-right-0" id="register-email" placeholder="Email" required>
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="input-group form-group">
                     <label class="sr-only" for="register-password">Password</label>
-                    <input type="password" class="form-control" id="register-password" placeholder="Password" required
+                    <input type="password" class="form-control border-right-0" id="register-password" placeholder="Password" required
                            pattern="^(?=.*\d)(?=.*\d)(?=.*\d).{7,}$" data-content="Minimum 8 characters whereof 3 non alphabetic" data-toggle="popover" data-trigger="focus">
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="input-group form-group">
                     <label class="sr-only" for="register-first-name">First name</label>
-                    <input pattern=".{1,}" type="text" class="form-control" id="register-first-name" placeholder="First name" required>
+                    <input pattern=".{1,}" type="text" class="form-control border-right-0" id="register-first-name" placeholder="First name" required>
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="input-group form-group">
                     <label class="sr-only" for="register-last-name">Last name</label>
-                    <input pattern=".{1,}" type="text" class="form-control" id="register-last-name" placeholder="Last name" required>
+                    <input pattern=".{1,}" type="text" class="form-control border-right-0" id="register-last-name" placeholder="Last name" required>
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="input-group form-group">
                     <label class="sr-only" for="register-phone-number">Phone number</label>
-                    <input pattern="^(\+|0)\d{6,}$" type="tel" class="form-control" id="register-phone-number" placeholder="Phone number" required
+                    <input pattern="^(\+|0)\d{6,}$" type="tel" class="form-control border-right-0" id="register-phone-number" placeholder="Phone number" required
                            data-content="Must start with + or 0 and be at least 7 digits" data-toggle="popover" data-trigger="focus">
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
                 </div>
-                <div class="form-group">
+                <div class="input-group form-group">
                     <label class="sr-only" for="register-date-of-birth">Date of birth</label>
-                    <input pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}$" type="tel" class="form-control" id="register-date-of-birth" placeholder="Date of birth" required
+                    <input pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}$" type="tel" class="form-control border-right-0" id="register-date-of-birth" placeholder="Date of birth" required
                            data-content="You must be at least 18 years old to register." data-toggle="popover" data-trigger="focus">
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="register-gender" id="register-gender-male" value="0">

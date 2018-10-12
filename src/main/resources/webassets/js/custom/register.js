@@ -21,7 +21,7 @@ window.base.registerController = (() => {
 
                         if (e === 'gender') {
                             controller.validateGenderInput(e, form);
-                        } else {
+                        } else if (e !== 'drivingLicense') {
                             controller.validateTextInput(e, form);
                         }
                     }
@@ -63,30 +63,44 @@ window.base.registerController = (() => {
                 }
             },
             validateTextInput: (e, form) => {
-                form[e].getField().onkeyup = () => {
+                const field = form[e].getField();
+                field.onkeyup = () => {
                     if (e === 'dateOfBirth') {
                         controller.sanitizeDateInput(form[e].getField());
                     }
-                    const classList = form[e].getField().classList;
+                    const inputClassList = field.classList;
+                    const spanClassList = field.nextElementSibling.children[0].classList;
+                    const iconClassList = field.nextElementSibling.children[0].children[0].classList;
+
+                    iconClassList.remove('text-muted');
+
                     if (form[e].validate()) {
                         form[e].isValid = true;
 
-                        if (classList.contains('border-danger')) {
-                            classList.remove('border-danger')
+                        if (inputClassList.contains('border-danger')) {
+                            spanClassList.remove('border-danger');
+                            iconClassList.remove('text-danger');
+                            inputClassList.remove('border-danger');
                         }
 
-                        if (!classList.contains('border-success')) {
-                            classList.add('border-success');
+                        if (!inputClassList.contains('border-success')) {
+                            spanClassList.add('border-success');
+                            iconClassList.add('text-success');
+                            inputClassList.add('border-success');
                         }
                     } else {
                         form[e].isValid = false;
 
-                        if (classList.contains('border-success')) {
-                            classList.remove('border-success')
+                        if (inputClassList.contains('border-success')) {
+                            spanClassList.remove('border-success');
+                            iconClassList.remove('text-success');
+                            inputClassList.remove('border-success');
                         }
 
-                        if (!classList.contains('border-danger')) {
-                            classList.add('border-danger');
+                        if (!inputClassList.contains('border-danger')) {
+                            spanClassList.add('border-danger');
+                            iconClassList.add('text-danger');
+                            inputClassList.add('border-danger');
                         }
                     }
 
@@ -207,7 +221,7 @@ window.base.registerController = (() => {
                 () => {
                     let form = controller.getForm();
                     controller.setInputListeners(form);
-                    form.onsubmit = controller.submitUser;
+                    form.form.onsubmit = controller.submitUser;
                 },
             initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.registerController.load)
         }
