@@ -3,6 +3,7 @@ package se.lth.base.server.data;
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.Mapper;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -22,7 +23,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
             return new Drive(resultSet.getInt("drive_id"),
                     resultSet.getString("start"),
                     resultSet.getString("stop"),
-                    resultSet.getTimestamp("departure_time"),
+                    resultSet.getObject("departure_time", Date.class).getTime(),
                     resultSet.getString("comment"),
                     resultSet.getString("car_brand"),
                     resultSet.getString("car_model"),
@@ -40,25 +41,48 @@ public class DriveDataAccess extends DataAccess<Drive> {
         super(driverUrl, new DriveMapper());
     }
     
-    public Drive addDrive(String start, String stop, Timestamp departureTime, String comment, String carBrand,
-			String carModel, String carColor, String carLicensePlate, int carNumberOfSeats, int optLuggageSize,
-			boolean optWinterTires, boolean optBicycle, boolean optPets) {
+    public Drive addDrive(Drive drive) {
+        String start = drive.getStart();
+        String stop = drive.getStop();
+        long departureTime = drive.getDepartureTime();
+        String comment = drive.getComment();
+        String carBrand = drive.getCarBrand();
+        String carModel = drive.getCarModel();
+        String carColor = drive.getCarColor();
+        String carLicensePlate = drive.getCarLicensePlate();
+        int carNumberOfSeats = drive.getCarNumberOfSeats();
+        int optLuggageSize = drive.getOptLuggageSize();
+        boolean optWinterTires = drive.getOptWinterTires();
+        boolean optBicycle = drive.getOptBicycle();
+        boolean optPets = drive.getOptPets();
 
     	int driveId = insert("INSERT INTO drive (start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate,"
     			+ " car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, 
+                start, stop, new Date(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
     	
     	return new Drive(driveId, start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, 
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
     }
     
-    public Drive updateDrive(int driveId, String start, String stop, Timestamp departureTime, String comment, String carBrand,
-			String carModel, String carColor, String carLicensePlate, int carNumberOfSeats, int optLuggageSize,
-			boolean optWinterTires, boolean optBicycle, boolean optPets) {
+    public Drive updateDrive(Drive drive) {
+	    int driveId = drive.getDriveId();
+        String start = drive.getStart();
+        String stop = drive.getStop();
+        long departureTime = drive.getDepartureTime();
+        String comment = drive.getComment();
+        String carBrand = drive.getCarBrand();
+        String carModel = drive.getCarModel();
+        String carColor = drive.getCarColor();
+        String carLicensePlate = drive.getCarLicensePlate();
+        int carNumberOfSeats = drive.getCarNumberOfSeats();
+        int optLuggageSize = drive.getOptLuggageSize();
+        boolean optWinterTires = drive.getOptWinterTires();
+        boolean optBicycle = drive.getOptBicycle();
+        boolean optPets = drive.getOptPets();
 
     	execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?)",
-                start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, 
+                start, stop, new Date(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);    	
     	
     	return getDrive(driveId);
