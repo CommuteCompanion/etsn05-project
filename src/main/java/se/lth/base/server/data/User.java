@@ -9,7 +9,7 @@ public class User implements Principal {
 
     private final int userId;
     private final Role role;
-	  private final String email;
+    private final String email;
     private String firstName;
     private String lastName;
     private String phoneNumber;

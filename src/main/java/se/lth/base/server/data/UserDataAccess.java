@@ -58,7 +58,7 @@ public class UserDataAccess extends DataAccess<User> {
                         "phone_number, gender, date_of_birth, driving_license) VALUES " +
                         "((SELECT role_id FROM user_role WHERE user_role.role=?),?,?,?,?,?,?,?,?,?)",
                 role.name(), email, salt, passwordHash, firstName, lastName, phoneNumber, gender,
-                dateOfBirth, drivingLicense);
+                new Date(dateOfBirth), drivingLicense);
         return new User(userId, credentials.getRole(), email, firstName, lastName, phoneNumber, gender,
                 dateOfBirth, drivingLicense, 0, 0, 0);
     }
