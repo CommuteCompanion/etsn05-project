@@ -152,7 +152,7 @@ public class DriveResource {
     	return driveReportDao.addDriveReport(driveId, user.getId(), driveReport.getReportMessage());
     }
 
-    @Path("allReports")
+    @Path("all-reports")
     @GET
     @RolesAllowed(Role.Names.ADMIN)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
