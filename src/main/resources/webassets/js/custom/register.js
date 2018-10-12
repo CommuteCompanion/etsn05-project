@@ -141,7 +141,7 @@ window.base.registerController = (() => {
                 },
                 firstName: {
                     getField: () => document.getElementById('register-first-name'),
-                    getValue: () => document.getElementById('register-first-name').value.value,
+                    getValue: () => document.getElementById('register-first-name').value,
                     validate: () => document.getElementById('register-first-name').checkValidity(),
                     isValid: false
                 },
@@ -169,7 +169,7 @@ window.base.registerController = (() => {
                 },
                 drivingLicence: {
                     getField: () => document.getElementById('register-driving-license'),
-                    getValue: () => document.getElementById('register-driving-license').value,
+                    getValue: () => document.getElementById('register-driving-license').checked,
                     validate: () => document.getElementById('register-driving-license').checkValidity(),
                 },
                 gender: {
@@ -196,18 +196,19 @@ window.base.registerController = (() => {
             gender = gender.getValue();
 
             const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence, gender};
+
             const role = "USER";
             const credentials = {email, password, role, user};
 
             window.base.rest.addUser(credentials).then(user => {
                 if (user.error) {
-                    alert(user.message);
+                    controller.showFailure(user.message);
                 } else {
                     window.base.rest.login(email, password, false).then(response => {
                         if (response.ok) {
                             window.base.changeLocation('/');
                         } else {
-                            alert('Error during login.');
+                            controller.showFailure(user.message);
                         }
                     });
                 }
@@ -215,7 +216,17 @@ window.base.registerController = (() => {
 
             return false;
         },
+        showFailure: msg => {
+            const alert = document.getElementById('register-alert');
+            const classList = alert.classList;
 
+            if (classList.contains('d-none')) {
+                classList.remove('d-none');
+            }
+
+            alert.innerHTML = '<h4 class="alert-heading">Oops!</h4>'
+                + '<p>Something went wrong, error message: ' + msg + '</p>';
+        },
         load: () => {
             let form = controller.getForm();
             controller.setInputListeners(form);
