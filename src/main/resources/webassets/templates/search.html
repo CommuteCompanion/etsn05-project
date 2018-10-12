@@ -1,63 +1,114 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <form id="drive-search" class="form-inline justify-content-center">
-                <input type="text" class="form-control mr-2 w-25" id="" placeholder="From">
-                <input type="text" class="form-control mr-2 w-25" placeholder="To">
-                <input type="text" class="form-control mr-2 w-25" pattern="^[0-9]{2}:[0-9]{2}$"
-                       data-content="Must be format HH:MM" data-toggle="popover" data-trigger="focus"
-                       placeholder="Leaving">
-                <button type="submit" class="btn btn-success">Search</button>
-            </form>
-        </div>
+<div class="row">
+    <div class="col-md-12 p-0">
+        <form id="drive-search">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" id="" placeholder="From">
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" placeholder="To">
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" pattern="^[0-9]{2}:[0-9]{2}$"
+                           data-content="Must be format HH:MM" data-toggle="popover" data-trigger="focus"
+                           placeholder="Leaving">
+                </div>
+                <div class="form-group col-md-3">
+                    <button type="submit" class="btn btn-info text-white btn-block">Search</button>
+                </div>
+            </div>
+        </form>
     </div>
-    <div class="row mt-3 border">
-        <div class="col-2 border-right text-center">
-            <h5 class="mt-3 mb-0">Jon</h5>
-            <p class="text-muted">Male, 23</p>
-            <p class="mb-0 text-muted"><i class="fas fa-car fa-sm"></i> 55 driven</p>
-            <p class="text-muted"><i class="fas fa-star fa-sm"></i>4.4</p>
-            <p class="text-muted">18 reviews</p>
-        </div>
-        <div class="col-5 border-right">
-            <h5 class="mt-3 mb-0">Gothenburg to Lund</h5>
-            <p class="text-muted">
-                <span>Leaving</span>
-                <span>Wednesday, September 19 at 18:30</span></p>
-            <p class="text-muted mb-0">
-                <span>Pickup:</span>
-                <span class="ml-5">Gothenburg</span>
-            </p>
-            <p class="text-muted">
-                <span>Pickup:</span>
-                <span class="ml-5">Halmstad</span>
-            </p>
-        </div>
-        <div class="col-3 border-right">
-            <h5 class="mt-3 mb-0">Audi A3 Sportsback</h5>
-            <p class="text-muted">Black, 2016</p>
-            <p class="text-muted mb-0">Vehicle preferences</p>
-            <p class="text-muted">
-                <i class="fas fa-suitcase fa-lg"></i>
-                <i class="fas fa-snowflake fa-lg"></i>
-                <i class="fas fa-bicycle fa-lg"></i>
-                <i class="fas fa-paw fa-lg"></i>
-            </p>
-        </div>
-        <div class="col-2 text-center">
-            <table class="h-100 w-100">
-                <tr>
-                    <td class="align-top">
-                        <h5 class="mt-3">2 seats left</h5>
+</div>
+<div class="search-bg border-top pt-3">
+    <div class="container">
+        <div class="row border bg-white shadow-sm">
+            <div class="col-2 border-right">
+                <h5 class="mt-3 mb-0 text-muted font-weight-bold">Jon</h5>
+                <p class="text-muted">Male, 23</p>
+                <div class="row mt-4">
+                    <div class="col-2">
+                        <p class="mb-0 text-muted"><i class="fas fa-car fa-sm"></i></p>
+                        <p class="text-muted mb-0"><i class="fas fa-star fa-sm"></i></p>
+                        <p class="text-muted"><i class="fas fa-chart-bar fa-sm"></i></p>
+                    </div>
+                    <div class="col-9">
+                        <p class="text-muted mb-0">55 driven</p>
+                        <p class="text-muted mb-0">4.4 rating</p>
+                        <p class="text-muted">18 reviews</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5 border-right">
+                <table class="h-100 w-100">
+                    <tr>
+                        <td class="align-top">
+                            <a href=""><h5 class="mt-3 mb-0 text-danger font-weight-bold">Gothenburg to Lund</h5></a>
+                            <div class="row">
+                                <div class="col-3">
+                                        <p class="text-muted">Leaving:</p>
+                                </div>
+                                <div class="col-9">
+                                    <p class="text-muted">Wednesday, September 19 at 18:30</p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <td class="align-bottom">
+                        <div class="row mb-0">
+                            <div class="col-3">
+                                <p class="text-muted mb-0">Pickup:</p>
+                                <p class="text-muted">Dropoff:</p>
+                            </div>
+                            <div class="col-9">
+                                <p class="text-muted mb-0">Gothenburg</p>
+                                <p class="text-muted">Halmstad</p>
+                            </div>
+                        </div>
                     </td>
-                </tr>
-                <td class="align-bottom">
-                    <button class="mb-3 btn btn-danger btn-sm">Request</button>
-                </td>
-            </table>
+                </table>
+            </div>
+            <div class="col-3 border-right">
+                <table class="h-100 w-100">
+                    <tr>
+                        <td class="align-top">
+                            <h5 class="mt-3 mb-0 text-muted font-weight-bold">Audi A3 Sportsback</h5>
+                            <p class="text-muted mb-0">2008 | ABC123</p>
+                        </td>
+                    </tr>
+                    <td class="align-bottom">
+                        <p class="text-muted mb-0">Vehicle preferences</p>
+                        <p>
+                            <i class="fas fa-suitcase text-info fa-lg"></i>
+                            <i class="fas fa-snowflake text-muted fa-lg"></i>
+                            <i class="fas fa-bicycle text-info fa-lg"></i>
+                            <i class="fas fa-paw text-muted fa-lg"></i>
+                        </p>
+                    </td>
+                </table>
+            </div>
+            <div class="col-2">
+                <table class="h-100 w-100">
+                    <tr>
+                        <td class="align-top">
+                            <h5 class="mt-3 text-muted font-weight-bold">2 seats left</h5>
+                            <p>
+                                <i class="fas fa-user-check text-info"></i>
+                                <i class="fas fa-user-check text-info"></i>
+                                <i class="fas fa-user text-muted"></i>
+                                <i class="fas fa-user text-muted"></i>
+                            </p>
+                        </td>
+                    </tr>
+                    <td class="align-bottom">
+                        <button class="mb-3 btn btn-danger btn-sm btn-block">Request</button>
+                    </td>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
 
 <script type="application/javascript">
     window.base.searchController.initOnLoad();
