@@ -44,9 +44,7 @@ public class UserResource {
     @POST
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public Response login(Credentials credentials,
-                          @QueryParam("remember") @DefaultValue("false") boolean rememberMe)
-            throws URISyntaxException {
+    public Response login(Credentials credentials, @QueryParam("remember") @DefaultValue("false") boolean rememberMe) {
         Session newSession = userDao.authenticate(credentials);
         int maxAge = rememberMe ? (int) TimeUnit.DAYS.toSeconds(7) : NewCookie.DEFAULT_MAX_AGE;
         return Response.noContent().cookie(newCookie(newSession.getSessionId().toString(), maxAge, null)).build();
