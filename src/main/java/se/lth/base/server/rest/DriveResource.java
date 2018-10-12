@@ -18,7 +18,7 @@ public class DriveResource {
 	private final boolean IS_DRIVER = true;
 	private final boolean IS_ACCEPTED = true;
     private final boolean IS_RATED = false;
-	
+
     private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
@@ -86,7 +86,7 @@ public class DriveResource {
     public List<Drive> getDrives() {
         return driveDao.getDrives();
     }
-    
+
     @Path("{driveId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
@@ -143,7 +143,7 @@ public class DriveResource {
     	
     	throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
     }
-    
+
     @Path("{driveId}/report")
     @POST
     @RolesAllowed(Role.Names.USER)
@@ -151,7 +151,7 @@ public class DriveResource {
     public DriveReport reportDrive(@PathParam("{driveId}") int driveId, DriveReport driveReport) {
     	return driveReportDao.addDriveReport(driveId, user.getId(), driveReport.getReportMessage());
     }
-    
+
     @Path("allReports")
     @GET
     @RolesAllowed(Role.Names.ADMIN)
@@ -167,5 +167,16 @@ public class DriveResource {
     		driveWraps.add(new DriveWrap(d, milestones, users, reports));
     	}
     	return driveWraps;
+    }
+
+    @Path("user/{userId}")
+    @GET
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Drive> getDrivesForUser(@PathParam("userId") int userId) {
+        if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
+            return driveDao.getDrivesForUser(userId);
+        }
+        throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
     }
 }
