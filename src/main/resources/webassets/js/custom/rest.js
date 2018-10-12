@@ -14,6 +14,10 @@ window.base.rest = (() => {
         this.isNone = () => this.role.name === 'NONE';
     }
 
+    function Drive(json) {
+        Object.assign(this, json) ;
+    }
+
     const objOrError = (json, cons) => json.error ? json : new cons(json);
 
     window.base.User = User;
@@ -33,6 +37,24 @@ window.base.rest = (() => {
     };
 
     return {
+        getReportedDrives: () => baseFetch('/rest/drive/all')
+            .then(response => response.json())
+            .then(drives => drives.map(d => new Drive(d))),
+
+        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, {
+            method: 'PUT',
+            body: JSON.stringify(drive),
+            headers: jsonHeader
+        }),
+
+        addDrive: (driveWrap) => baseFetch('/rest/drive/', {
+            method: 'post',
+            body: JSON.stringify(driveWrap),
+            headers: jsonHeader
+        })
+        .then(response => response.json())
+        .then(d => objOrError(d, Drive)),
+
         getUser: () => baseFetch('/rest/user')
             .then(response => response.json())
             .then(u => new User(u)),
