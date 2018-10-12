@@ -6,23 +6,65 @@
                 <label for="set-email" class="col-md-4">Email</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" id="set-email"  required
-                    pattern=".{4,}">
+                           pattern=".{4,}">
                     <small id="edit-email-help" class="form-text text-muted">Minimum 4 characters.</small>
                 </div>
-           </div>
-           <div class="row">
-               <label for="set-password" class="col-md-4">New password</label>
-               <div class="col-md-8">
+            </div>
+            <div class="row">
+                <label for="set-firstname" class="col-md-4">First name</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="set-firstname" required
+                           pattern=".{4,}">
+                    <small id="edit-firstname-help" class="form-text text-muted">Minimum 4 characters.</small>
+                </div>
+            </div>
+            <div class="row">
+                <label for="set-lastname" class="col-md-4">Last name</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="set-lastname" required
+                           pattern=".{4,}">
+                    <small id="edit-lastname-help" class="form-text text-muted">Minimum 4 characters.</small>
+                </div>
+            </div>
+            <div class="row">
+                <label for="set-gender" class="col-md-4">Gender</label>
+                <div class="col-md-8">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="set-female" name="set-gender" class="custom-control-input">
+                        <label class="custom-control-label" for="set-female">Female</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="set-male" name="set-gender" class="custom-control-input">
+                        <label class="custom-control-label" for="set-male">Male</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label for="set-license" class="col-md-4">Driving license</label>
+                <div class="col-md-8">
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="set-license-true" name="set-license" class="custom-control-input">
+                        <label class="custom-control-label" for="set-license-true">Yes</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="set-license-false" name="set-license" class="custom-control-input">
+                        <label class="custom-control-label" for="set-license-false">No</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label for="set-password" class="col-md-4">New password</label>
+                <div class="col-md-8">
                     <input type="password" class="form-control" id="set-password" 
-                            pattern=".{8,}">
+                           pattern=".{8,}">
                     <small id="edit-password-help" class="form-text text-muted">Minimum 8 characters.</small>
                 </div>
-           </div>
-           <div class="row">
+            </div>
+            <div class="row">
                 <label for="set-password-repeat" class="col-md-4">Confirm new password</label>
                 <div class="col-md-8">
                     <input type="password" class="form-control" id="set-password-confirm" 
-                       pattern=".{8,}">        
+                           pattern=".{8,}">        
                 </div>       
             </div>
             <p>Continue to add rows when added to database.</p>
