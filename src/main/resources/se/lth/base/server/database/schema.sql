@@ -7,13 +7,12 @@ CREATE TABLE user_role(role_id TINYINT,
 
 CREATE TABLE user(user_id INT AUTO_INCREMENT,
                   role_id TINYINT NOT NULL DEFAULT 2,
-                  username VARCHAR_IGNORECASE NOT NULL UNIQUE, -- username should be unique
+                  email VARCHAR NOT NULL UNIQUE, -- emails should be unique
                   salt BIGINT NOT NULL,
                   password_hash UUID NOT NULL,
                   first_name VARCHAR(255) NOT NULL,
                   last_name VARCHAR(255) NOT NULL,
                   phone_number VARCHAR(255) NOT NULL,
-                  email VARCHAR(255) NOT NULL,
                   gender TINYINT NOT NULL,
                   date_of_birth DATE NOT NULL,
                   driving_license BOOLEAN NOT NULL DEFAULT FALSE,
@@ -82,6 +81,6 @@ CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT,
                            FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
-INSERT INTO user (role_id, username, salt, password_hash, first_name, last_name, phone_number, email, gender, date_of_birth)
-    VALUES (1, 'Admin', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 'admin@admin', 1, CURRENT_TIMESTAMP()),
-           (2, 'Test', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 'test@test', 1, CURRENT_TIMESTAMP());
+INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, phone_number, gender, date_of_birth)
+    VALUES (1, 'admin@lu.se', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 1, CURRENT_TIMESTAMP()),
+           (2, 'test@lu.se', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 1, CURRENT_TIMESTAMP());
