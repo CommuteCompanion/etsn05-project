@@ -144,7 +144,7 @@ public class UserDataAccess extends DataAccess<User> {
                 "user_role WHERE user_role.role_id = user.role_id AND email = ? AND password_hash = ?",
                 credentials.getEmail(), hash);
         UUID sessionId = insert("INSERT INTO session (user_id) SELECT user_id FROM user WHERE email = ?",
-                user.getName());
+                user.getEmail());
         return new Session(sessionId, user);
     }
 

@@ -7,8 +7,8 @@ import se.lth.base.server.data.Credentials;
 import se.lth.base.server.data.Role;
 import se.lth.base.server.data.User;
 
-import java.sql.SQLException;
 import java.sql.Date;
+import java.sql.SQLException;
 
 /**
  * Base class for H2 database tests. The connection url configures an in-memory database.

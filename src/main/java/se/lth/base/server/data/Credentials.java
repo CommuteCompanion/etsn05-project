@@ -105,7 +105,7 @@ public class Credentials {
         String lastName = user.getLastName();
         String phoneNumber = user.getPhoneNumber();
         long dateOfBirth = user.getDateOfBirth();
-        String email = user.getName();
+        String email = user.getEmail();
 
         // Check all values are set
         if (firstName == null) {
@@ -169,7 +169,7 @@ public class Credentials {
         if (tokens.length != 2 ||
                 tokens[0] == null || tokens[0].trim().length() == 0 ||
                 tokens[1] == null || tokens[1].trim().length() == 0) {
-            throw new WebApplicationException("Email: " + email + " is not valid", Response.Status.BAD_REQUEST);
+            throw new WebApplicationException("Email not valid", Response.Status.BAD_REQUEST);
         }
 
         // Check phone number

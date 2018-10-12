@@ -9,16 +9,17 @@ public class User implements Principal {
 
     private final int userId;
     private final Role role;
+	  private final String email;
     private String firstName;
     private String lastName;
     private String phoneNumber;
-    private final String email;
     private final int gender;
     private final long dateOfBirth;
     private final Boolean drivingLicence;
     private final int ratingTotalScore;
     private final int numberOfRatings;
     private final int warning;
+
     public User(int userId, Role role, String email, String firstName, String lastName, String phoneNumber,
 			int gender, long dateOfBirth, Boolean drivingLicence, int ratingTotalScore,
 			int numberOfRatings, int warning) {
@@ -44,8 +45,16 @@ public class User implements Principal {
         return userId;
     }
 
+    /**
+     * This is only a shortcut to satisfy Principal.
+     * Will return a user's email; for clarity, use getEmail() instead.
+     */
     @Override
     public String getName() {
+		return email;
+    }
+
+    public String getEmail() {
         return email;
     }
 	
