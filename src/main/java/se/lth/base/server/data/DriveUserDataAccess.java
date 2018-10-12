@@ -66,8 +66,8 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     	return execute("UPDATE drive_user SET accepted = ? WHERE drive_id = ? AND user_id = ?", IS_ACCEPTED, driveId, userId) > 0;
     }
     
-    public int getNumberOfUsersInDrive(int driveId) {
-    	ResultSet result = openQuery("COUNT (*) FROM drive_user WHERE drive_id = ?", driveId);
+    public int getNumberOfPassengers(int driveId) {
+    	ResultSet result = openQuery("COUNT (*) FROM drive_user WHERE drive_id = ? AND accepted = ?", driveId, IS_ACCEPTED);
     	
     	try {
     		result.next();

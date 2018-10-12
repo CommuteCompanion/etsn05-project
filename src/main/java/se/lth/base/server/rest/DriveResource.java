@@ -17,7 +17,7 @@ import java.util.List;
 public class DriveResource {
 	private final boolean IS_DRIVER = true;
 	private final boolean IS_ACCEPTED = true;
-    private final boolean IS_RATED = false;
+    private final boolean IS_RATED = true;
 	
     private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
@@ -47,7 +47,7 @@ public class DriveResource {
         
         // Add driver to list of users
         List<DriveUser> users = new ArrayList<DriveUser>();
-        users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED, IS_RATED));
+        users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED, !IS_RATED));
 
         // No reports yet
         List<DriveReport> reports = new ArrayList<DriveReport>();
@@ -102,8 +102,8 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public DriveUser addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
-    	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId))
-            return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, IS_RATED);
+    	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfPassengers(driveId))
+            return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, !IS_RATED);
     	
     	throw new WebApplicationException("No available seats left", Status.PRECONDITION_FAILED);
     }
