@@ -8,7 +8,6 @@ import se.lth.base.server.data.*;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
-import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -101,22 +100,22 @@ public class DriveResourceTest extends BaseResourceTest {
     @Test
     public void addUserToDrive() {
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
-        Timestamp timestamp1 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0);
-        Drive drive1 = driveDao.addDrive("A", "F", timestamp1, "Comment", "x", "x", "x", "x", 1, 1, false, false, false);
-        int drive1Id = drive1.getDriveId();
+        Drive drive1 = new Drive(0, "A", "F", 1, "x", "x", "x", "x", "x", 2, 1, false, false, false);
+        Drive drive2 = driveDao.addDrive(drive1);
+        int drive2Id = drive2.getDriveId();
 
         login(TEST_CREDENTIALS);
         DriveWrap wrap = target("drive")
-                .path(Integer.toString(drive1Id))
+                .path(Integer.toString(drive2Id))
                 .request()
                 .get(DriveWrap.class);
         for (DriveUser user : wrap.getUsers()) {
             assertNotEquals(user.getUserId(), TEST.getId());
         }
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
-        driveUserDao.addDriveUser(drive1Id, TEST.getId(), "A", "B", false, false, false);
+        driveUserDao.addDriveUser(drive2Id, TEST.getId(), "A", "B", false, false, false);
         wrap = target("drive")
-                .path(Integer.toString(drive1Id))
+                .path(Integer.toString(drive2Id))
                 .request()
                 .get(DriveWrap.class);
         for (DriveUser user : wrap.getUsers()) {
