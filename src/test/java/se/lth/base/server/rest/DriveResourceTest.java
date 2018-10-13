@@ -3,18 +3,14 @@ package se.lth.base.server.rest;
 import org.junit.Test;
 import se.lth.base.server.BaseResourceTest;
 import se.lth.base.server.Config;
-import se.lth.base.server.data.Drive;
-import se.lth.base.server.data.DriveDataAccess;
-import se.lth.base.server.data.DriveUserDataAccess;
+import se.lth.base.server.data.*;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
-import java.sql.Timestamp;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class DriveResourceTest extends BaseResourceTest {
@@ -99,5 +95,31 @@ public class DriveResourceTest extends BaseResourceTest {
                 .get(DRIVE_LIST);
         assertEquals(1, drives.size());
         assertEquals(drives.get(0).getDriveId(), drive1Id);
+    }
+
+    @Test
+    public void addUserToDrive() {
+        DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
+        Drive drive1 = new Drive(0, "A", "F", 1, "x", "x", "x", "x", "x", 2, 1, false, false, false);
+        Drive drive2 = driveDao.addDrive(drive1);
+        int drive2Id = drive2.getDriveId();
+
+        login(TEST_CREDENTIALS);
+        DriveWrap wrap = target("drive")
+                .path(Integer.toString(drive2Id))
+                .request()
+                .get(DriveWrap.class);
+        for (DriveUser user : wrap.getUsers()) {
+            assertNotEquals(user.getUserId(), TEST.getId());
+        }
+        DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
+        driveUserDao.addDriveUser(drive2Id, TEST.getId(), "A", "B", false, false, false);
+        wrap = target("drive")
+                .path(Integer.toString(drive2Id))
+                .request()
+                .get(DriveWrap.class);
+        for (DriveUser user : wrap.getUsers()) {
+            assertEquals(user.getUserId(), TEST.getId());
+        }
     }
 }
