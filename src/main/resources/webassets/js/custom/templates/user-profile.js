@@ -8,8 +8,22 @@ window.base.userProfileController = (() => {
     const view = {
         render: () => window.base.rest.getUser().then(u => {
             model.user = u;
+            console.log(u);
             return u;
-        }).then(() => document.getElementById('set-email').value = model.user.email),
+        }).then(() => {
+            document.getElementById('set-email').value = model.user.email; document.getElementById('set-firstname').value = model.user.firstName;
+            document.getElementById('set-lastname').value = model.user.firstName;
+            if(model.user.gender == 1) {
+                document.getElementById('set-female').checked = true;
+            } else if (model.user.gender == 0){
+                document.getElementById('set-male').checked = true;
+            };
+            if(model.user.drivingLicence == true) {
+                document.getElementById('set-licence-true').checked = true;
+            } else if (model.user.drivingLicence == false){
+                document.getElementById('set-licence-false').checked = true;
+            };
+        }),
         clearChanges: () => {
             view.render();
             document.getElementById('set-password').value = '';
@@ -22,31 +36,39 @@ window.base.userProfileController = (() => {
         .then(() => window.location.replace('/')),
         submitUser: submitEvent => {
             submitEvent.preventDefault();
+
             const email = document.getElementById('set-email').value;
-            model.user.firstName = document.getElementById('set-firstname').value;
-            model.user.lastName = document.getElementById('set-lastname').value;
+            const firstName = document.getElementById('set-firstname').value;
+            const lastName = document.getElementById('set-lastname').value;
             if(document.getElementById('set-male').checked) {
-                model.user.gender = 0;
+                var gender = 0;
             } else if (document.getElementById('set-female').checked) {
-                model.user.gender = 1;
+                var gender = 1;
             };
-            if(document.getElementById('set-license-true').checked) {
-                model.user.drivingLicence = true;
-            } else if (document.getElementById('set-female').checked) {
-                model.user.drivingLicence = false;
+            if(document.getElementById('set-licence-true').checked) {
+                var drivingLicence = true;
+            } else if (document.getElementById('set-licence-false').checked) {
+                var drivingLicence = false;
             };
+            //model.user.firstName = firstName;
+            //model.user.lastName = lastName;
+            //model.user.gender = gender;
+            //model.user.drivingLicence = drivingLicence;
+            console.log(model.user);
             const password = document.getElementById('set-password').value;
             const repeatPassword = document.getElementById('set-password-confirm').value;
             const id = model.user.userId;
             const role = model.user.role.name;
-            const credentials = {email, password, role};
             const updatedUser = model.user;
+            
+            const credentials = {email, password, role, updatedUser};
             if (password === '') {
                 delete credentials.password;
             }
             if (password === repeatPassword) {
                 window.base.rest.putUser(id, {email, password, role, updatedUser}).then(user => {
                     if (user.error) {
+                        view.render();
                         alert(user.message);
                     } else {
                         view.render();
@@ -56,7 +78,6 @@ window.base.userProfileController = (() => {
             } else {
                 alert('Passwords don\'t match');
             }
-            return false;
         },
         load: () => {
             document.getElementById('user-form').onsubmit = controller.submitUser;

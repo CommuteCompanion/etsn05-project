@@ -83,4 +83,4 @@ CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT,
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
 INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, phone_number, gender, date_of_birth)
     VALUES (1, 'admin@lu.se', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 1, CURRENT_TIMESTAMP()),
-           (2, 'test@lu.se', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 1, CURRENT_TIMESTAMP());
+           (2, 'test@lu.se', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 1, SELECT CURRENT_TIMESTAMP() - 1800000000);

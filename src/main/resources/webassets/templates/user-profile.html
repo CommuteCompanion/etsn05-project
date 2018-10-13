@@ -2,7 +2,7 @@
 <div class="row">
     <form id="user-form" class="col-md-7">
         <div id="user-settings" class="form-group">
-            <div class="row">
+            <div class="row my-2">
                 <label for="set-email" class="col-md-4">Email</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" id="set-email"  required
@@ -10,7 +10,7 @@
                     <small id="edit-email-help" class="form-text text-muted">Minimum 4 characters.</small>
                 </div>
             </div>
-            <div class="row">
+            <div class="row my-2">
                 <label for="set-firstname" class="col-md-4">First name</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" id="set-firstname" required
@@ -18,7 +18,7 @@
                     <small id="edit-firstname-help" class="form-text text-muted">Minimum 4 characters.</small>
                 </div>
             </div>
-            <div class="row">
+            <div class="row my-2">
                 <label for="set-lastname" class="col-md-4">Last name</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" id="set-lastname" required
@@ -26,7 +26,7 @@
                     <small id="edit-lastname-help" class="form-text text-muted">Minimum 4 characters.</small>
                 </div>
             </div>
-            <div class="row">
+            <div class="row my-2">
                 <label for="set-gender" class="col-md-4">Gender</label>
                 <div class="col-md-8">
                     <div class="custom-control custom-radio custom-control-inline">
@@ -39,20 +39,20 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <label for="set-license" class="col-md-4">Driving license</label>
-                <div class="col-md-8" id="license">
+            <div class="row my-2">
+                <label for="set-licence" class="col-md-4">Driving licence</label>
+                <div class="col-md-8" id="licence">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-license-true" name="set-license" class="custom-control-input" value="true">
-                        <label class="custom-control-label" for="set-license-true">Yes</label>
+                        <input type="radio" id="set-licence-true" name="set-licence" class="custom-control-input" value="true">
+                        <label class="custom-control-label" for="set-licence-true">Yes</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-license-false" name="set-license" class="custom-control-input" value="false">
-                        <label class="custom-control-label" for="set-license-false">No</label>
+                        <input type="radio" id="set-licence-false" name="set-licence" class="custom-control-input" value="false">
+                        <label class="custom-control-label" for="set-licence-false">No</label>
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row my-2">
                 <label for="set-password" class="col-md-4">New password</label>
                 <div class="col-md-8">
                     <input type="password" class="form-control" id="set-password" 
@@ -60,15 +60,14 @@
                     <small id="edit-password-help" class="form-text text-muted">Minimum 8 characters.</small>
                 </div>
             </div>
-            <div class="row">
+            <div class="row my-2">
                 <label for="set-password-repeat" class="col-md-4">Confirm new password</label>
                 <div class="col-md-8">
                     <input type="password" class="form-control" id="set-password-confirm" 
                            pattern=".{8,}">        
                 </div>       
             </div>
-            <p>Continue to add rows when added to database.</p>
-            <div class="row">
+            <div class="row my-5">
                 <div class="col-6">
                     <button id="submit-user" type="submit" class="w-100 btn btn-primary">Submit</button>
                 </div>
@@ -78,9 +77,7 @@
             </div>
         </div>
     </form>
-    <div id="user-settings-information" class="col-md-5">
-        <p>Diverse härlig info om vårt superfantastiska värdsförändrande projekt commute companion. Lorem ipsum osv.</p>
-        <p>Kontakta oss på commutecompanion@gmail.com. Woop</p>
+    <div id="user-settings-information" class="col-md-5 my-2">
         <button id="delete-account" type="button" class="w-100 btn btn-danger">Delete account</button>
     </div>
 </div>
