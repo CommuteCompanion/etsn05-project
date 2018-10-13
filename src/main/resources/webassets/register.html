@@ -3,52 +3,91 @@
 <head>
     <meta charset="utf-8">
     <title>CommuteCompanion - Registration</title>
+    <link rel="stylesheet" href="css/vendors/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="css/custom/main.css">
     <link rel="icon" href="images/favicon.ico" type="image/vnd.microsoft.icon"/>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-md-6 offset-md-3 text-center">
-            <img src="images/logo.svg" alt="" width="160" height="100">
-            <h1>Welcome to CommuteCompanion!</h1>
-            <p>CommuteCompanion is a world leading rideshare network. Join our future!</p>
+        <div class="col-md-4 offset-md-4 text-center">
+            <img class="mb-2 mt-4" src="images/logo2.svg" alt="" width="160" height="100">
+            <h5>Welcome to CommuteCompanion</h5>
+            <p>
+                <span>We are a world leading rideshare network.</span><br>
+                <span>Join the future now!</span>
+            </p>
         </div>
     </div>
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-md-4 offset-md-4 text-center">
-            <form class="form-register" id="register-form">
-                <div class="col-md-12">
-                    <label class="col-form-label sr-only" for="register-email">Email</label>
-                    <input type="text" class="form-control mb-1" id="register-email" placeholder="Enter email"
-                           required
-                           pattern=".{4,}">
-                    <label class="col-form-label sr-only" for="register-password">Password</label>
-                    <input type="password" class="form-control mb-4" id="register-password" placeholder="Password"
-                           required pattern=".{8,}">
-                    <label class="col-form-label sr-only" for="register-firstName">Firstname</label>
-                    <input type="text" class="form-control mb-4" id="register-firstName" placeholder="First Name">
-                    <label class="col-form-label sr-only" for="register-lastName">Lastname</label>
-                    <input type="text" class="form-control mb-4" id="register-lastName" placeholder="Last Name">
-                    <label class="col-form-label sr-only" for="register-phoneNumber">Phonenumber</label>
-                    <input type="text" class="form-control mb-4" id="register-phoneNumber" placeholder="Phone number">
-                    <label class="col-form-label sr-only" for="register-gender">Gender</label>
-                    <input type="text" class="form-control mb-4" id="register-gender" placeholder="Gender">
-                    <label class="col-form-label sr-only" for="register-dateOfBirth">Dateofbirth</label>
-                    <input type="date" class="form-control mb-4" id="register-dateOfBirth" placeholder="Date of birth">
-
-                    <div>Do you have a driver licence?
-                        <label class="col-form-label sr-only" for="register-drivingLicence">Drivinglicence</label>
-                        <input type="checkbox" class="form-control mb-4" id="register-drivingLicence"
-                               placeholder="Driving licence">
+            <form id="register-form">
+                <div id="register-alert" class="alert alert-danger d-none" role="alert"></div>
+                <div class="input-group form-group">
+                    <label class="sr-only" for="register-email">Email</label>
+                    <input type="email" class="form-control border-right-0" id="register-email" placeholder="Email" required>
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
                     </div>
-                    <button id="register" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-                    <a href="login.html" class="btn btn-lg btn-primary btn-block" role="button">Go back</a>
                 </div>
+                <div class="input-group form-group">
+                    <label class="sr-only" for="register-password">Password</label>
+                    <input type="password" class="form-control border-right-0" id="register-password" placeholder="Password" required
+                           pattern="^(?=.*\d)(?=.*\d)(?=.*\d).{7,}$" data-content="Minimum 8 characters whereof 3 non alphabetic" data-toggle="popover" data-trigger="focus">
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
+                </div>
+                <div class="input-group form-group">
+                    <label class="sr-only" for="register-first-name">First name</label>
+                    <input pattern=".{1,}" type="text" class="form-control border-right-0" id="register-first-name" placeholder="First name" required>
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
+                </div>
+                <div class="input-group form-group">
+                    <label class="sr-only" for="register-last-name">Last name</label>
+                    <input pattern=".{1,}" type="text" class="form-control border-right-0" id="register-last-name" placeholder="Last name" required>
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
+                </div>
+                <div class="input-group form-group">
+                    <label class="sr-only" for="register-phone-number">Phone number</label>
+                    <input pattern="^(\+|0)\d{6,}$" type="tel" class="form-control border-right-0" id="register-phone-number" placeholder="Phone number" required
+                           data-content="Must start with + or 0 and be at least 7 digits" data-toggle="popover" data-trigger="focus">
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
+                </div>
+                <div class="input-group form-group">
+                    <label class="sr-only" for="register-date-of-birth">Date of birth</label>
+                    <input pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}$" type="tel" class="form-control border-right-0" id="register-date-of-birth" placeholder="Date of birth" required
+                           data-content="You must be at least 18 years old to register." data-toggle="popover" data-trigger="focus">
+                    <div class="input-group-append">
+                        <span class="bg-white input-group-text border-left-0"><i class="fas fa-check-circle text-muted"></i></span>
+                    </div>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="register-gender" id="register-gender-male" value="0">
+                    <label class="form-check-label" for="register-gender-male">Man</label>
+                </div>
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="radio" name="register-gender" id="register-gender-female" value="1">
+                    <label class="form-check-label" for="register-gender-female">Woman</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="register-driving-license">
+                    <label class="form-check-label" for="register-driving-license">I have a driver's license</label>
+                </div>
+                <button id="register" class="btn btn-success btn-block" type="submit" disabled>Register</button>
+                <a href="login.html" class="btn btn-primary btn-block" role="button">Go back</a>
             </form>
         </div>
     </div>
 </div>
+
+<script src="js/vendors/bootstrap-native-v4.min.js"></script>
 <script src="js/custom/rest.js"></script>
 <script src="js/custom/register.js"></script>
 <script type="application/javascript">
