@@ -8,19 +8,18 @@ window.base.userProfileController = (() => {
     const view = {
         render: () => window.base.rest.getUser().then(u => {
             model.user = u;
-            console.log(u);
             return u;
         }).then(() => {
             document.getElementById('set-email').value = model.user.email; document.getElementById('set-firstname').value = model.user.firstName;
             document.getElementById('set-lastname').value = model.user.lastName;
-            if(model.user.gender == 1) {
+            if(model.user.gender === 1) {
                 document.getElementById('set-female').checked = true;
-            } else if (model.user.gender == 0){
+            } else if (model.user.gender === 0){
                 document.getElementById('set-male').checked = true;
             };
-            if(model.user.drivingLicence == true) {
+            if(model.user.drivingLicence === true) {
                 document.getElementById('set-licence-true').checked = true;
-            } else if (model.user.drivingLicence == false){
+            } else if (model.user.drivingLicence === false){
                 document.getElementById('set-licence-false').checked = true;
             };
         }),
@@ -37,25 +36,23 @@ window.base.userProfileController = (() => {
         submitUser: submitEvent => {
             submitEvent.preventDefault();
 
+            let gender;
+            let drivingLicence;
             const email = document.getElementById('set-email').value;
             const firstName = document.getElementById('set-firstname').value;
             const lastName = document.getElementById('set-lastname').value;
-            console.log(firstName);
-            console.log(lastName);
             if(document.getElementById('set-male').checked) {
-                var gender = 0;
+                gender = 0;
             } else if (document.getElementById('set-female').checked) {
-                var gender = 1;
+                gender = 1;
             };
             if(document.getElementById('set-licence-true').checked) {
-                var drivingLicence = true;
+                drivingLicence = true;
             } else if (document.getElementById('set-licence-false').checked) {
-                var drivingLicence = false;
+                drivingLicence = false;
             };
             model.user.firstName = firstName;
             model.user.lastName = lastName;
-            console.log(model.user.firstName);
-            console.log(model.user.lastName);
             model.user.gender = gender;
             model.user.drivingLicence = drivingLicence;
 
@@ -63,8 +60,8 @@ window.base.userProfileController = (() => {
             const repeatPassword = document.getElementById('set-password-confirm').value;
             const id = model.user.userId;
             const role = model.user.role.name;
+            const roleObj = model.user.role;
             model.user.role = role;
-            console.log(model.user);
             const user = model.user;
 
             const credentials = {email, password, role, user};
@@ -82,12 +79,12 @@ window.base.userProfileController = (() => {
                         document.getElementById('set-lastname').textContent = lastName;
                         if(gender == 1) {
                             document.getElementById('set-female').checked = true;
-                        } else if (gender == 0){
+                        } else if (gender === 0){
                             document.getElementById('set-male').checked = true;
                         };
-                        if(drivingLicence == true) {
+                        if(drivingLicence === true) {
                             document.getElementById('set-licence-true').checked = true;
-                        } else if (drivingLicence == false){
+                        } else if (drivingLicence === false){
                             document.getElementById('set-licence-false').checked = true;
                         };
                     }
@@ -95,6 +92,7 @@ window.base.userProfileController = (() => {
             } else {
                 alert('Passwords don\'t match');
             }
+            model.user.role = roleObj;
         },
         load: () => {
             document.getElementById('user-form').onsubmit = controller.submitUser;
