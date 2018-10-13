@@ -30,24 +30,24 @@
                 <label for="set-gender" class="col-md-4">Gender</label>
                 <div class="col-md-8">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-female" name="set-gender" class="custom-control-input">
+                        <input type="radio" id="set-female" name="set-gender" runat="server" class="custom-control-input" value="female">
                         <label class="custom-control-label" for="set-female">Female</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-male" name="set-gender" class="custom-control-input">
+                        <input type="radio" id="set-male" name="set-gender" runat="server" class="custom-control-input" value="male">
                         <label class="custom-control-label" for="set-male">Male</label>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <label for="set-license" class="col-md-4">Driving license</label>
-                <div class="col-md-8">
+                <div class="col-md-8" id="license">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-license-true" name="set-license" class="custom-control-input">
+                        <input type="radio" id="set-license-true" name="set-license" class="custom-control-input" value="true">
                         <label class="custom-control-label" for="set-license-true">Yes</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-license-false" name="set-license" class="custom-control-input">
+                        <input type="radio" id="set-license-false" name="set-license" class="custom-control-input" value="false">
                         <label class="custom-control-label" for="set-license-false">No</label>
                     </div>
                 </div>
