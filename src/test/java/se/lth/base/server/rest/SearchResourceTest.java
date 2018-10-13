@@ -65,17 +65,8 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // Drive 1
         long timestamp1 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        System.out.println("Time set: " + timestamp1);
         Drive drive1 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp1, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive1Id = drive1.getDriveId();
-
-        System.out.println("Read time: " + driveDao.getDrive(drive1Id).getDepartureTime());
-
-        long test = new Timestamp(2018 - 1900, 10, 20, 0, 0, 0, 0).getTime();
-        System.out.println("Test time: " + test);
-
-        long test2 = new Date(new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime()).getTime();
-        System.out.println("Test2 time: " + test2);
 
         long timestamp1_1 = new Timestamp(2018 - 1900, 10, 20, 12, 5, 0, 0).getTime();
         long timestamp1_2 = new Timestamp(2018 - 1900, 10, 20, 12, 10, 0, 0).getTime();
@@ -158,8 +149,6 @@ public class SearchResourceTest extends BaseResourceTest {
                 .post(Entity.json(searchFilter1), List.class);
 
         Assert.assertEquals(0, response1.size());
-
-        System.out.println("-------------");
 
         long timestamp2User = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
         SearchFilter searchFilter2 = new SearchFilter(-1, -1, "C", "E", timestamp2User);

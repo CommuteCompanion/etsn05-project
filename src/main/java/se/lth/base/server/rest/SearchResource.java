@@ -161,7 +161,6 @@ public class SearchResource {
 
             // Check if too many drive users start and stop overlap (seats taken > max seats)
             if(checkMilestoneIntervalOverlap(driveMilestones, driveUsers, carSeats)) {
-                System.out.println("Removing drive (interval overlap)");
                 iterator.remove();
                 continue;
             }
@@ -169,7 +168,6 @@ public class SearchResource {
             // Check if so that departure time of passenger matches with departure time of milestone set by driver
             if (departureTime != null) {
                 if (!checkDepartureTimeMatch(departureTime, tripStart, driveMilestones)) {
-                    System.out.println("Removing drive (time mismatch)");
                     iterator.remove();
                     continue;
                 }

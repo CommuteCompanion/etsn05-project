@@ -3,7 +3,6 @@ package se.lth.base.server.data;
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.Mapper;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -17,30 +16,6 @@ import java.util.List;
  */
 public class DriveDataAccess extends DataAccess<Drive> {
 	
-	private static final class DriveMapper implements Mapper<Drive> {
-        @Override
-        public Drive map(ResultSet resultSet) throws SQLException {
-            return new Drive(resultSet.getInt("drive_id"),
-                    resultSet.getString("start"),
-                    resultSet.getString("stop"),
-                    resultSet.getObject("departure_time", Date.class).getTime(),
-                    resultSet.getString("comment"),
-                    resultSet.getString("car_brand"),
-                    resultSet.getString("car_model"),
-                    resultSet.getString("car_color"),
-                    resultSet.getString("car_license_plate"),
-                    resultSet.getInt("car_number_of_seats"),
-                    resultSet.getInt("opt_luggage_size"),
-                    resultSet.getBoolean("opt_winter_tires"),
-                    resultSet.getBoolean("opt_bicycle"),
-                    resultSet.getBoolean("opt_pets"));
-        }
-    }
-
-    public DriveDataAccess(String driverUrl) {
-        super(driverUrl, new DriveMapper());
-    }
-    
     public Drive addDrive(Drive drive) {
         String start = drive.getStart();
         String stop = drive.getStop();
@@ -58,11 +33,15 @@ public class DriveDataAccess extends DataAccess<Drive> {
 
     	int driveId = insert("INSERT INTO drive (start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate,"
     			+ " car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                start, stop, new Date(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
+                start, stop, new Timestamp(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
-    	
-    	return new Drive(driveId, start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, 
+
+        return new Drive(driveId, start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
+    }
+
+    public DriveDataAccess(String driverUrl) {
+        super(driverUrl, new DriveMapper());
     }
     
     public Drive updateDrive(Drive drive) {
@@ -82,10 +61,30 @@ public class DriveDataAccess extends DataAccess<Drive> {
         boolean optPets = drive.getOptPets();
 
     	execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?)",
-                start, stop, new Date(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
-                carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);    	
-    	
+                start, stop, new Timestamp(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
+                carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);
+
     	return getDrive(driveId);
+    }
+
+    private static final class DriveMapper implements Mapper<Drive> {
+        @Override
+        public Drive map(ResultSet resultSet) throws SQLException {
+            return new Drive(resultSet.getInt("drive_id"),
+                    resultSet.getString("start"),
+                    resultSet.getString("stop"),
+                    resultSet.getObject("departure_time", Timestamp.class).getTime(),
+                    resultSet.getString("comment"),
+                    resultSet.getString("car_brand"),
+                    resultSet.getString("car_model"),
+                    resultSet.getString("car_color"),
+                    resultSet.getString("car_license_plate"),
+                    resultSet.getInt("car_number_of_seats"),
+                    resultSet.getInt("opt_luggage_size"),
+                    resultSet.getBoolean("opt_winter_tires"),
+                    resultSet.getBoolean("opt_bicycle"),
+                    resultSet.getBoolean("opt_pets"));
+        }
     }
     
     public Drive getDrive(int driveId) {
