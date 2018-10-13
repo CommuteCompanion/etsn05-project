@@ -18,7 +18,7 @@ public class DriveResource {
 	private final boolean IS_DRIVER = true;
 	private final boolean IS_ACCEPTED = true;
     private final boolean IS_RATED = false;
-	
+
     private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
@@ -32,25 +32,25 @@ public class DriveResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public DriveWrap createDrive(DriveWrap driveWrap) throws URISyntaxException {
+    public DriveWrap createDrive(DriveWrap driveWrap) {
     	Drive drive = driveWrap.getDrive();
     	List<DriveMilestone> milestones = driveWrap.getMilestones();
     	
     	// Add drive
-        drive = driveDao.addDrive(drive.getStart(), drive.getStop(), drive.getDepartureTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggageSize(), drive.getOptWinterTires(), drive.getOptBicycle(), drive.getOptPets());
-        
-        List<DriveMilestone> returningMilestones = new ArrayList<DriveMilestone>();
+        drive = driveDao.addDrive(drive);
+
+        List<DriveMilestone> returningMilestones = new ArrayList<>();
         
         // Add all milestones
         for (DriveMilestone m : milestones)
         	returningMilestones.add(driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime()));
         
         // Add driver to list of users
-        List<DriveUser> users = new ArrayList<DriveUser>();
+        List<DriveUser> users = new ArrayList<>();
         users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED, IS_RATED));
 
         // No reports yet
-        List<DriveReport> reports = new ArrayList<DriveReport>();
+        List<DriveReport> reports = new ArrayList<>();
         
         return new DriveWrap(drive, milestones, users, reports);
     }
@@ -59,10 +59,10 @@ public class DriveResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public Drive putDrive(@PathParam("{driveId}") int driveId, Drive drive) throws URISyntaxException {
+    public Drive putDrive(@PathParam("driveId") int driveId, Drive drive) throws URISyntaxException {
     	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
-    		return driveDao.updateDrive(driveId, drive.getStart(), drive.getStop(), drive.getDepartureTime(), drive.getComment(), drive.getCarBrand(), drive.getCarModel(), drive.getCarColor(), drive.getCarLicensePlate(), drive.getCarNumberOfSeats(), drive.getOptLuggageSize(), drive.getOptWinterTires(), drive.getOptBicycle(), drive.getOptPets());
-    	
+    		return driveDao.updateDrive(drive);
+
     	throw new WebApplicationException("Only driver allowed to update drive", Status.UNAUTHORIZED);
     }
     
@@ -86,11 +86,11 @@ public class DriveResource {
     public List<Drive> getDrives() {
         return driveDao.getDrives();
     }
-    
+
     @Path("{driveId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
-    public void deleteDrive(@PathParam("{driveId}") int driveId) {
+    public void deleteDrive(@PathParam("driveId") int driveId) {
     	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
     		driveDao.deleteDrive(driveId);
     	
@@ -101,7 +101,7 @@ public class DriveResource {
     @POST
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public DriveUser addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
+    public DriveUser addUserToDrive(@PathParam("driveId") int driveId, DriveUser driveUser) {
     	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId))
             return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, IS_RATED);
     	
@@ -111,7 +111,7 @@ public class DriveResource {
     @Path("{driveId}/user/{userId}")
     @PUT
     @RolesAllowed(Role.Names.USER)
-    public DriveUser acceptUserInDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
+    public DriveUser acceptUserInDrive(@PathParam("driveId") int driveId, @PathParam("userId") int userId) {
     	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
     		driveUserDao.acceptDriveUser(driveId, userId);
     		return driveUserDao.getDriveUser(driveId, userId);	
@@ -123,7 +123,7 @@ public class DriveResource {
     @Path("{driveId}/user/{userId}")
     @DELETE
     @RolesAllowed(Role.Names.USER)
-    public void removeUserFromDrive(@PathParam("{driveId}") int driveId, @PathParam("{userId}") int userId) {
+    public void removeUserFromDrive(@PathParam("driveId") int driveId, @PathParam("userId") int userId) {
     	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
     		driveUserDao.deleteDriveUser(driveId, userId);
     	
@@ -134,7 +134,7 @@ public class DriveResource {
     @POST
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void rateUsers(@PathParam("{driveId") int driveId) {
+    public void rateUsers(@PathParam("driveId") int driveId) {
     	if (!driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
     		// Need a UserRate and updated User data object for this, doing this later
     		// Should return a UserRate object
@@ -143,12 +143,24 @@ public class DriveResource {
     	
     	throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
     }
-    
+
     @Path("{driveId}/report")
     @POST
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public DriveReport reportDrive(@PathParam("{driveId}") int driveId, DriveReport driveReport) {
+    public DriveReport reportDrive(@PathParam("driveId") int driveId, DriveReport driveReport) {
     	return driveReportDao.addDriveReport(driveId, user.getId(), driveReport.getReportMessage());
+    }
+
+    @Path("user/{userId}")
+    @GET
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Drive> getDrivesForUser(@PathParam("userId") int userId) {
+        if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
+            return driveDao.getDrivesForUser(userId);
+        }
+        throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
+
     }
 }

@@ -11,9 +11,9 @@ import java.sql.Timestamp;
 public class DriveMilestone {
 	private final int milestoneId, driveId;
 	private final String milestone;
-	private final Timestamp departureTime;
+	private final long departureTime;
 
-	public DriveMilestone(int milestoneId, int driveId, String milestone, Timestamp departureTime) {
+	public DriveMilestone(int milestoneId, int driveId, String milestone, long departureTime) {
 		this.milestoneId = milestoneId;
 		this.driveId = driveId;
 		this.milestone = milestone;
@@ -32,7 +32,7 @@ public class DriveMilestone {
 		return milestone;
 	}
 
-	public Timestamp getDepartureTime() {
+	public long getDepartureTime() {
 		return departureTime;
 	}
 }

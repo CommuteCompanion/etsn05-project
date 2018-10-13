@@ -5,13 +5,17 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.email.Recipient;
 import org.slf4j.LoggerFactory;
 import se.lth.base.server.Config;
-import se.lth.base.server.data.*;
+import se.lth.base.server.data.DriveUser;
+import se.lth.base.server.data.DriveWrap;
+import se.lth.base.server.data.User;
+import se.lth.base.server.data.UserDataAccess;
 
 import javax.mail.Message;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -209,8 +213,8 @@ public class CustomEmail {
         Map<String, String> content = new HashMap<>();
         DriveUser lastPassenger = null;
         DriveUser driver = null;
-        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(departureTime);
+        long departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(new Date(departureTime));
 
         // Fetch the driver and last passenger added
         for (DriveUser u : driveWrap.getUsers()) {
@@ -268,8 +272,8 @@ public class CustomEmail {
             acceptedPassenger = u;
         }
 
-        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+        long departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(new Date(departureTime));
 
         if (driver == null) {
             throw new IllegalArgumentException("Driver is null");
@@ -375,8 +379,8 @@ public class CustomEmail {
         Map<String, String> content = new HashMap<>();
         DriveUser lastPassenger = null;
         DriveUser driver = null;
-        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(departureTime);
+        long departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(new Date(departureTime));
 
         // Fetch the driver and last passenger added
         for (DriveUser u : driveWrap.getUsers()) {
@@ -423,8 +427,8 @@ public class CustomEmail {
     private String getDriverCancelledDriveBody() throws IOException {
         Map<String, String> content = new HashMap<>();
         DriveUser driver = null;
-        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+        long departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(new Date(departureTime));
         UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
 
         // Fetch the driver and last passenger added
@@ -495,8 +499,8 @@ public class CustomEmail {
             }
         }
 
-        Timestamp departureTime = driveWrap.getDrive().getDepartureTime();
-        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(departureTime);
+        long departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureDate = new SimpleDateFormat("EEEEE MMMMM d").format(new Date(departureTime));
 
         if (driver == null) {
             throw new IllegalArgumentException("Driver is null");
