@@ -12,7 +12,7 @@ window.base.userProfileController = (() => {
             return u;
         }).then(() => {
             document.getElementById('set-email').value = model.user.email; document.getElementById('set-firstname').value = model.user.firstName;
-            document.getElementById('set-lastname').value = model.user.firstName;
+            document.getElementById('set-lastname').value = model.user.lastName;
             if(model.user.gender == 1) {
                 document.getElementById('set-female').checked = true;
             } else if (model.user.gender == 0){
@@ -40,6 +40,8 @@ window.base.userProfileController = (() => {
             const email = document.getElementById('set-email').value;
             const firstName = document.getElementById('set-firstname').value;
             const lastName = document.getElementById('set-lastname').value;
+            console.log(firstName);
+            console.log(lastName);
             if(document.getElementById('set-male').checked) {
                 var gender = 0;
             } else if (document.getElementById('set-female').checked) {
@@ -50,29 +52,44 @@ window.base.userProfileController = (() => {
             } else if (document.getElementById('set-licence-false').checked) {
                 var drivingLicence = false;
             };
-            //model.user.firstName = firstName;
-            //model.user.lastName = lastName;
-            //model.user.gender = gender;
-            //model.user.drivingLicence = drivingLicence;
-            console.log(model.user);
+            model.user.firstName = firstName;
+            model.user.lastName = lastName;
+            console.log(model.user.firstName);
+            console.log(model.user.lastName);
+            model.user.gender = gender;
+            model.user.drivingLicence = drivingLicence;
+
             const password = document.getElementById('set-password').value;
             const repeatPassword = document.getElementById('set-password-confirm').value;
             const id = model.user.userId;
             const role = model.user.role.name;
-            const updatedUser = model.user;
-            
-            const credentials = {email, password, role, updatedUser};
+            model.user.role = role;
+            console.log(model.user);
+            const user = model.user;
+
+            const credentials = {email, password, role, user};
             if (password === '') {
                 delete credentials.password;
             }
             if (password === repeatPassword) {
-                window.base.rest.putUser(id, {email, password, role, updatedUser}).then(user => {
+                window.base.rest.putUser(id, {email, password, role, user}).then(user => {
                     if (user.error) {
                         view.render();
                         alert(user.message);
                     } else {
-                        view.render();
-                        document.getElementById('email').textContent = email;
+                        document.getElementById('set-email').textContent = email;
+                        document.getElementById('set-firstname').textContent = firstName;
+                        document.getElementById('set-lastname').textContent = lastName;
+                        if(gender == 1) {
+                            document.getElementById('set-female').checked = true;
+                        } else if (gender == 0){
+                            document.getElementById('set-male').checked = true;
+                        };
+                        if(drivingLicence == true) {
+                            document.getElementById('set-licence-true').checked = true;
+                        } else if (drivingLicence == false){
+                            document.getElementById('set-licence-false').checked = true;
+                        };
                     }
                 });
             } else {
