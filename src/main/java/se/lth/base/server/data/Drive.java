@@ -32,7 +32,7 @@ public class Drive {
      * @param carColor         the color of the car.
      * @param carLicensePlate  the license plate of the car.
      * @param carNumberOfSeats the number of seats in the car.
-     * @param optLuggageSize   the size of the luggage in the car. Can take values 0,1 or 2 (0 is no luggage and 2 is a big luggage).
+     * @param optLuggageSize   the size of the luggage in the car. Can take values 0,1 or 2 (referring to small, medium and large).
      * @param optWinterTires   specifies if the car has winter tiers or not.
      * @param optBicycle       specifies if it is possible to bring a bicycle.
      * @param optPets          specifies if pets are allowed in the car.
