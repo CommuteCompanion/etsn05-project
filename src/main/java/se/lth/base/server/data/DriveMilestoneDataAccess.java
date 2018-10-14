@@ -3,9 +3,9 @@ package se.lth.base.server.data;
 import se.lth.base.server.database.DataAccess;
 import se.lth.base.server.database.Mapper;
 
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -17,7 +17,7 @@ import java.util.List;
 public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
 
 	public DriveMilestone addMilestone(int driveId, String milestone, long departureTime) {
-        int milestoneId = insert("INSERT INTO drive_milestone (drive_id, milestone_name, departure_time) VALUES(?,?,?)", driveId, milestone, new Date(departureTime));
+        int milestoneId = insert("INSERT INTO drive_milestone (drive_id, milestone_name, departure_time) VALUES(?,?,?)", driveId, milestone, new Timestamp(departureTime));
 		return new DriveMilestone(milestoneId, driveId, milestone, departureTime);
 	}
 
@@ -44,7 +44,7 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
             return new DriveMilestone(resultSet.getInt("milestone_id"),
                     resultSet.getInt("drive_id"),
                     resultSet.getString("milestone_name"),
-                    resultSet.getObject("departure_time", Date.class).getTime());
+                    resultSet.getObject("departure_time", Timestamp.class).getTime());
         }
     }
 
