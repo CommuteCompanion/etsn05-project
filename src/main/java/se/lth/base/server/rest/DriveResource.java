@@ -185,17 +185,6 @@ public class DriveResource {
     @GET
     @RolesAllowed(Role.Names.USER)
     public int getNumberOfDrives(@PathParam("userId") int userId) {
-        int count = 0;
-        List<Drive> drives = driveDao.getDrives();
-        for (Drive drive : drives) {
-            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(drive.getDriveId());
-            for (DriveUser driveUser : driveUsers) {
-                if (driveUser.getUserId() == userId) {
-                    count++;
-                    break;
-                }
-            }
-        } 
-        return count;
+        return driveDao.getNumberOfDrivesForUser(userId);
     }
 }

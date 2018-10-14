@@ -1,6 +1,8 @@
 package se.lth.base.server.data;
 
 import se.lth.base.server.database.DataAccess;
+import se.lth.base.server.database.DataAccessException;
+import se.lth.base.server.database.ErrorType;
 import se.lth.base.server.database.Mapper;
 
 import java.sql.ResultSet;
@@ -106,6 +108,17 @@ public class DriveDataAccess extends DataAccess<Drive> {
 
     public boolean deleteDrive(int driveId) {
         return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
+    }
+
+    public int getNumberOfDrivesForUser(int userId) {
+        ResultSet result = openQuery("COUNT(*) FROM drive_user WHERE driver = true and user_id = ?", userId);
+
+        try {
+            result.next();
+            return result.getInt(1);
+        } catch (SQLException e) {
+            throw new DataAccessException(ErrorType.NOT_FOUND);
+        }
     }
 
 }
