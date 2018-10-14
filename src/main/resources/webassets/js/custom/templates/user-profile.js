@@ -9,7 +9,7 @@ window.base.userProfileController = (() => {
         render: () => window.base.rest.getUser().then(u => {
                 model.user = u;
                 return u;
-            }).then(() => document.getElementById('set-username').value = model.user.username),
+        }).then(() => document.getElementById('set-email').value = model.user.email),
         clearChanges: () => {
             view.render();
             document.getElementById('set-password').value = '';
@@ -22,22 +22,22 @@ window.base.userProfileController = (() => {
                 .then(() => window.location.replace('/')),
         submitUser: submitEvent => {
             submitEvent.preventDefault();
-            const username = document.getElementById('set-username').value;
+            const email = document.getElementById('set-email').value;
             const password = document.getElementById('set-password').value;
             const repeatPassword = document.getElementById('set-password-confirm').value;
             const id = model.user.userId;
             const role = model.user.role.name;
-            const credentials = {username, password, role};
+            const credentials = {email, password, role};
             if (password === '') {
                 delete credentials.password;
             }
             if (password === repeatPassword) {
-                window.base.rest.putUser(id, {username, password, role}).then(user => {
+                window.base.rest.putUser(id, {email, password, role}).then(user => {
                     if (user.error) {
                         alert(user.message);
                     } else {
                         view.render();
-                        document.getElementById('username').textContent = username;
+                        document.getElementById('email').textContent = email;
                     }
                 });
             } else {
@@ -48,7 +48,7 @@ window.base.userProfileController = (() => {
         load: () => {
             document.getElementById('user-form').onsubmit = controller.submitUser;
             document.querySelector('#clear-changes').onclick = view.clearChanges;
-            document.querySelector('#deconste-account').onclick = controller.deleteUser;
+            document.querySelector('#delete-account').onclick = controller.deleteUser;
             view.render();
         },
     };

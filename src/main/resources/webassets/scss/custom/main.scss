@@ -13,12 +13,23 @@ body {
 
 @import "../vendors/bootstrap/bootstrap";
 
+<<<<<<< HEAD
 .search-bg {
     width: 100vw;
     position: relative;
     background-color: $gray-100;
     left: calc(-1 * (100vw - 100%) / 2);
     min-height: calc(100vh - 50px);
+=======
+hr {
+    border: 0;
+    clear:both;
+    display:block;
+    width: 100%;
+    background-color:#fff;
+    height: 2px;
+    margin-top: 0px;
+>>>>>>> develop
 }
 
 #drive-btn, #trip-btn, #archive-btn {
@@ -135,7 +146,7 @@ body {
     float:left;
 }
 
-/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t 
+/* :not(:checked) is a filter, so that browsers that don’t support :checked don’t
 follow these rules. Every browser that supports :checked also supports :not(), so
 it doesn’t make the test unnecessarily selective */
 .rating:not(:checked) > input {
