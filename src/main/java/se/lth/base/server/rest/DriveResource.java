@@ -181,7 +181,7 @@ public class DriveResource {
     }
 
 
-    @Path("numberofdrives/{userId}")
+    @Path("count/{userId}")
     @GET
     @RolesAllowed(Role.Names.USER)
     public int getNumberOfDrives(@PathParam("userId") int userId) {
