@@ -43,7 +43,7 @@ public class SearchResource {
     @POST
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<Drive> getDrives(SearchFilter searchFilter) {
+    public List<DriveWrap> getDrives(SearchFilter searchFilter) {
 
         // Get requested trip start, stop and departure
         String tripStart = searchFilter.getStart();
@@ -58,7 +58,15 @@ public class SearchResource {
         // Get all drives matching start and end point of search
         List<Drive> filteredDrives = filterDrivesMatchingTrip(tripStart, tripStop, departureTime);
 
-        return filteredDrives;
+        // Turn into DriveWraps
+        List<DriveWrap> driveWraps = new ArrayList<>();
+        for (Drive d : filteredDrives) {
+            List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
+            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(d.getDriveId());
+            driveWraps.add(new DriveWrap(d, driveMilestones, driveUsers, null));
+        }
+
+        return driveWraps;
     }
 
     /**
