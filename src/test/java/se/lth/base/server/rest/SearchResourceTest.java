@@ -256,8 +256,23 @@ public class SearchResourceTest extends BaseResourceTest {
         Assert.assertEquals(5, response3.size());
     }
 
+    /*
     @Test
     public void searchFilterSubscription() {
+        login(SEARCH_TEST_CREDENTIALS_1);
+
+        long timestampUser = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        SearchFilter searchFilter = new SearchFilter(-1, user1Id, "A", "B", timestampUser);
+
+        SearchFilter response = target("search")
+                .path("subscribe")
+                .request()
+                .post(Entity.json(searchFilter), SearchFilter.class);
+
+
+
+
         // TODO
     }
+    */
 }
