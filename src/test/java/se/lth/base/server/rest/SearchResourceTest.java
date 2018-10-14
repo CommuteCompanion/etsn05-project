@@ -119,7 +119,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         SearchFilter searchFilter = new SearchFilter(-1, -1, "C", "E", -1);
         // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<Drive> response = target("search")
+        List<DriveWrap> response = target("search")
                 .path("getDrives")
                 .request()
                 .post(Entity.json(searchFilter), List.class);
@@ -143,7 +143,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter1 = new SearchFilter(-1, -1, "B", "C", timestamp1User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<Drive> response1 = target("search")
+        List<DriveWrap> response1 = target("search")
                 .path("getDrives")
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
@@ -154,7 +154,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter2 = new SearchFilter(-1, -1, "C", "E", timestamp2User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<Drive> response2 = target("search")
+        List<DriveWrap> response2 = target("search")
                 .path("getDrives")
                 .request()
                 .post(Entity.json(searchFilter2), List.class);
@@ -175,7 +175,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter1 = new SearchFilter(-1, user2Id, "B", "C", timestamp1User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<Drive> response1 = target("search")
+        List<DriveWrap> response1 = target("search")
                 .path("getDrives")
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
@@ -186,7 +186,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter2 = new SearchFilter(-1, user2Id, "B", "C", timestamp2User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<Drive> response2 = target("search")
+        List<DriveWrap> response2 = target("search")
                 .path("getDrives")
                 .request()
                 .post(Entity.json(searchFilter2), List.class);
@@ -211,12 +211,14 @@ public class SearchResourceTest extends BaseResourceTest {
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
 
-        // Apparently the list contains LinkedTreeMap<String, Object>, each representing a Drive object
-        LinkedTreeMap<String, Object> drive3 = response.get(0);
+        // Apparently the list contains LinkedTreeMap<String, Object>, each representing a DriveWrap object
+        System.out.println(response.get(0));
+
+        LinkedTreeMap<String, Object> drive3 = (LinkedTreeMap<String, Object>) (response.get(0)).get("drive");
         Assert.assertEquals((double) drive3Id, drive3.get("driveId"));
-        LinkedTreeMap<String, Object> drive2 = response.get(1);
+        LinkedTreeMap<String, Object> drive2 = (LinkedTreeMap<String, Object>) (response.get(1)).get("drive");
         Assert.assertEquals((double) drive2Id, drive2.get("driveId"));
-        LinkedTreeMap<String, Object> drive1 = response.get(2);
+        LinkedTreeMap<String, Object> drive1 = (LinkedTreeMap<String, Object>) (response.get(2)).get("drive");
         Assert.assertEquals((double) drive1Id, drive1.get("driveId"));
     }
 
