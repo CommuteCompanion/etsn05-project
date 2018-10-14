@@ -20,14 +20,16 @@ public class Drive {
     private final boolean optPets;
     private final boolean optBicycle;
     private final long departureTime;
+    private final long arrivalTime;
 
-    public Drive(int driveId, String start, String stop, long departureTime, String comment, String carBrand,
+    public Drive(int driveId, String start, String stop, long departureTime, long arrivalTime, String comment, String carBrand,
                  String carModel, String carColor, String carLicensePlate, int carNumberOfSeats, int optLuggageSize,
                  boolean optWinterTires, boolean optBicycle, boolean optPets) {
         this.driveId = driveId;
         this.start = start;
         this.stop = stop;
         this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
         this.comment = comment;
         this.carBrand = carBrand;
         this.carModel = carModel;
@@ -54,6 +56,10 @@ public class Drive {
 
     public long getDepartureTime() {
         return departureTime;
+    }
+
+    public long getArrivalTime() {
+        return arrivalTime;
     }
 
     public String getComment() {

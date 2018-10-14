@@ -65,7 +65,8 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // Drive 1
         long timestamp1 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        Drive drive1 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp1, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        long timestamp1_5 = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+        Drive drive1 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp1, timestamp1_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive1Id = drive1.getDriveId();
 
         long timestamp1_1 = new Timestamp(2018 - 1900, 10, 20, 12, 5, 0, 0).getTime();
@@ -81,7 +82,8 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // Drive 2
         long timestamp2 = new Timestamp(2018 - 1900, 10, 20, 13, 0, 0, 0).getTime();
-        Drive drive2 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp2, "Comment", "x", "x", "x", "x", 3, 1, false, false, false));
+        long timestamp2_5 = new Timestamp(2018 - 1900, 10, 20, 13, 25, 0, 0).getTime();
+        Drive drive2 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp2, timestamp2_5, "Comment", "x", "x", "x", "x", 3, 1, false, false, false));
         drive2Id = drive2.getDriveId();
         long timestamp2_1 = new Timestamp(2018 - 1900, 10, 20, 13, 5, 0, 0).getTime();
         long timestamp2_2 = new Timestamp(2018 - 1900, 10, 20, 13, 10, 0, 0).getTime();
@@ -96,7 +98,8 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // Drive 3
         long timestamp3 = new Timestamp(2018 - 1900, 10, 20, 14, 0, 0, 0).getTime();
-        Drive drive3 = driveDao.addDrive(new Drive(-1, "A2", "F2", timestamp3, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        long timestamp3_5 = new Timestamp(2018 - 1900, 10, 20, 14, 25, 0, 0).getTime();
+        Drive drive3 = driveDao.addDrive(new Drive(-1, "A2", "F2", timestamp3, timestamp3_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive3Id = drive3.getDriveId();
         long timestamp3_1 = new Timestamp(2018 - 1900, 10, 20, 14, 5, 0, 0).getTime();
         long timestamp3_2 = new Timestamp(2018 - 1900, 10, 20, 14, 10, 0, 0).getTime();
@@ -212,8 +215,6 @@ public class SearchResourceTest extends BaseResourceTest {
                 .post(Entity.json(searchFilter1), List.class);
 
         // Apparently the list contains LinkedTreeMap<String, Object>, each representing a DriveWrap object
-        System.out.println(response.get(0));
-
         LinkedTreeMap<String, Object> drive3 = (LinkedTreeMap<String, Object>) (response.get(0)).get("drive");
         Assert.assertEquals((double) drive3Id, drive3.get("driveId"));
         LinkedTreeMap<String, Object> drive2 = (LinkedTreeMap<String, Object>) (response.get(1)).get("drive");
@@ -254,5 +255,41 @@ public class SearchResourceTest extends BaseResourceTest {
                 .get(List.class);
 
         Assert.assertEquals(5, response3.size());
+    }
+
+    /**
+     * Make long booking 2018-10-20 12.00 - 18.00
+     * Try to att user to drive 1 (2018-10-20 12.00-12.30)
+     * Should be conflict
+     */
+    @Test
+    public void bookingOverlap() {
+        // Data access objects
+        DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
+        DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
+        DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
+
+        // Create long lasting drive
+        // Drive 4
+        long timestamp4 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        long timestamp4_2 = new Timestamp(2018 - 1900, 10, 20, 18, 0, 0, 0).getTime();
+        Drive drive4 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp4, timestamp4_2, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int drive4Id = drive4.getDriveId();
+        long timestamp4_1 = new Timestamp(2018 - 1900, 10, 20, 12, 30, 0, 0).getTime();
+        driveMilestoneDao.addMilestone(drive4Id, "B", timestamp4_1);
+
+        // Add user to long lasting drive
+        driveUserDao.addDriveUser(drive4Id, user3Id, "A", "B", false, false, false);
+
+        login(SEARCH_TEST_CREDENTIALS_1);
+
+        // Check for overlaps
+        // We actually receive a List<LinkedTreeMap<String, Object>>
+        List<Drive> response = target("search")
+                .path("checkbookingoverlap/" + drive1Id + "/A/C")
+                .request()
+                .get(List.class);
+
+        Assert.assertEquals(1, response.size());
     }
 }
