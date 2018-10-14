@@ -28,7 +28,9 @@ window.base.createDriveController = (() => {
             const start = document.getElementById('set-from').value;
             const stop = document.getElementById('set-to').value;
             const date = document.getElementById('set-date').value;
-            const departureTime = document.getElementById('set-time').value;
+            const tmpTime = document.getElementById('set-time').value;
+            const splitTime = tmpTime.split(':');
+            const departureTime = ((+splitTime[0] * (60000 * 60)) + (+splitTime[1] * 60000));
             const comment = document.getElementById('set-comment').value;
             const carBrand = document.getElementById('set-brand').value;
             const carModel = document.getElementById('set-model').value;
