@@ -11,7 +11,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import java.net.URISyntaxException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Set;
@@ -119,15 +118,13 @@ public class UserResource {
             throw new WebApplicationException("No user data", Response.Status.BAD_REQUEST);
         }
 
-        // Only allowed to update yourself if you're not an admin
+        // Only allowed to update yourself unless you're an admin
         if (userId != user.getId() && !user.getRole().clearanceFor(Role.ADMIN)) {
             throw new WebApplicationException("Operation not allowed", Response.Status.UNAUTHORIZED);
         }
 
-        // You can only update your own profile if you're not an admin and you're not changing
-        // your privilege
-        if (userId == user.getId() && (user.getRole().clearanceFor(Role.ADMIN) ||
-                user.getRole().getLevel() != credentials.getRole().getLevel())) {
+        // Only allowed to change profile settings if your role has not changed unless you're an admin
+        if (!user.getRole().clearanceFor(Role.ADMIN) && user.getRole().getLevel() != credentials.getRole().getLevel()) {
             throw new WebApplicationException("Operation not allowed", Response.Status.UNAUTHORIZED);
         }
 

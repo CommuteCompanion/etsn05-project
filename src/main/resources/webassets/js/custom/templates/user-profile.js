@@ -10,18 +10,19 @@ window.base.userProfileController = (() => {
             model.user = u;
             return u;
         }).then(() => {
-            document.getElementById('set-email').value = model.user.email; document.getElementById('set-firstname').value = model.user.firstName;
+            document.getElementById('set-email').value = model.user.email;
+            document.getElementById('set-firstname').value = model.user.firstName;
             document.getElementById('set-lastname').value = model.user.lastName;
-            if(model.user.gender === 1) {
+            if (model.user.gender === 1) {
                 document.getElementById('set-female').checked = true;
-            } else if (model.user.gender === 0){
+            } else if (model.user.gender === 0) {
                 document.getElementById('set-male').checked = true;
-            };
-            if(model.user.drivingLicence === true) {
+            }
+            if (model.user.drivingLicence === true) {
                 document.getElementById('set-licence-true').checked = true;
-            } else if (model.user.drivingLicence === false){
+            } else if (model.user.drivingLicence === false) {
                 document.getElementById('set-licence-false').checked = true;
-            };
+            }
         }),
         clearChanges: () => {
             view.render();
@@ -45,12 +46,12 @@ window.base.userProfileController = (() => {
                 gender = 0;
             } else if (document.getElementById('set-female').checked) {
                 gender = 1;
-            };
-            if(document.getElementById('set-licence-true').checked) {
+            }
+            if (document.getElementById('set-licence-true').checked) {
                 drivingLicence = true;
             } else if (document.getElementById('set-licence-false').checked) {
                 drivingLicence = false;
-            };
+            }
             model.user.firstName = firstName;
             model.user.lastName = lastName;
             model.user.gender = gender;
@@ -74,19 +75,8 @@ window.base.userProfileController = (() => {
                         view.render();
                         alert(user.message);
                     } else {
-                        document.getElementById('set-email').textContent = email;
-                        document.getElementById('set-firstname').textContent = firstName;
-                        document.getElementById('set-lastname').textContent = lastName;
-                        if(gender == 1) {
-                            document.getElementById('set-female').checked = true;
-                        } else if (gender === 0){
-                            document.getElementById('set-male').checked = true;
-                        };
-                        if(drivingLicence === true) {
-                            document.getElementById('set-licence-true').checked = true;
-                        } else if (drivingLicence === false){
-                            document.getElementById('set-licence-false').checked = true;
-                        };
+                        document.getElementById('email').innerText = email;
+                        view.render();
                     }
                 });
             } else {
