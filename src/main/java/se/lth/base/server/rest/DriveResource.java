@@ -102,7 +102,7 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public DriveUser addUserToDrive(@PathParam("{driveId}") int driveId, DriveUser driveUser) {
-    	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfPassengers(driveId))
+    	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId))
             return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, !IS_RATED);
     	
     	throw new WebApplicationException("No available seats left", Status.PRECONDITION_FAILED);
