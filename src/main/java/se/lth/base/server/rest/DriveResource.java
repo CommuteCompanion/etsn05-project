@@ -184,6 +184,7 @@ public class DriveResource {
     @Path("count/{userId}")
     @GET
     @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.TEXT_PLAIN)
     public int getNumberOfDrives(@PathParam("userId") int userId) {
         return driveDao.getNumberOfDrivesForUser(userId);
     }
