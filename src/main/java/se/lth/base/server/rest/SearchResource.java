@@ -2,12 +2,14 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
+import se.lth.base.server.mail.MailHandler;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +23,8 @@ public class SearchResource {
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
     private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-    private final SearchFilterDataAccess searchFilterDataAccess = new SearchFilterDataAccess(Config.instance().getDatabaseDriver());
+    private final SearchFilterDataAccess searchFilterDao = new SearchFilterDataAccess(Config.instance().getDatabaseDriver());
+    private final MailHandler mailHandler = new MailHandler();
     private final User user;
 
     // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
@@ -29,6 +32,10 @@ public class SearchResource {
 
     public SearchResource(@Context ContainerRequestContext context) {
         this.user = (User) context.getProperty(User.class.getSimpleName());
+    }
+
+    public SearchResource(User user) {
+        this.user = user;
     }
 
     /**
@@ -121,12 +128,42 @@ public class SearchResource {
         return users;
     }
 
+    /**
+     * A user can call this method to subscribe to a search filter. Matches will be notified through email.
+     *
+     * @param searchFilter SearchFilter DTO.
+     * @return a new SearchFilter with correct searchFilterId
+     */
     @Path("subsribe")
     @POST
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public SearchFilter subscribeToSearch(SearchFilter searchFilter) {
-        return searchFilterDataAccess.addSearchFilter(searchFilter);
+        return searchFilterDao.addSearchFilter(new SearchFilter(-1, user.getId(), searchFilter.getStart(), searchFilter.getStop(), searchFilter.getDepartureTime()));
+    }
+
+    /**
+     * This method will check for any possible matches between a Drive and existing SearchFilters.
+     * Matches will be notified through email.
+     *
+     * @param drive The drive one wishes to check matches against.
+     */
+    public void matchDriveWithSearchFilters(Drive drive) {
+        List<SearchFilter> searchFilters = searchFilterDao.getSearchFilters();
+        for (SearchFilter searchFilter : searchFilters) {
+            List<DriveWrap> drivesMatching = getDrives(searchFilter);
+            for (DriveWrap driveWrap : drivesMatching) {
+                Drive tempDrive = driveWrap.getDrive();
+                if (tempDrive.getDriveId() == drive.getDriveId()) {
+                    // Match found, notify user by email
+                    try {
+                        mailHandler.notifyUserSearchFilterMatch(driveWrap, userDao.getUser(searchFilter.getUserId()), searchFilter);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {

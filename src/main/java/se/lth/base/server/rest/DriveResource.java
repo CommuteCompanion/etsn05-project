@@ -53,7 +53,7 @@ public class DriveResource {
         List<DriveReport> reports = new ArrayList<>();
 
         // Check if any SearchFilters match with this drive, and if so notify these users by email
-        // TODO
+        new SearchResource(user).matchDriveWithSearchFilters(drive);
         
         return new DriveWrap(drive, milestones, users, reports);
     }

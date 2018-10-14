@@ -256,23 +256,30 @@ public class SearchResourceTest extends BaseResourceTest {
         Assert.assertEquals(5, response3.size());
     }
 
-    /*
+    /* Manual test (prints) (method can not return enough information for this test)
     @Test
     public void searchFilterSubscription() {
-        login(SEARCH_TEST_CREDENTIALS_1);
+        // Create a searchFilter
+        SearchFilterDataAccess searchFilterDao = new SearchFilterDataAccess(Config.instance().getDatabaseDriver());
+        long timestamp3 = new Timestamp(2018, 10, 20, 12, 0, 0,0).getTime();
+        searchFilterDao.addSearchFilter(new SearchFilter(-1, user2Id, "A", "B", timestamp3));
 
-        long timestampUser = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        SearchFilter searchFilter = new SearchFilter(-1, user1Id, "A", "B", timestampUser);
+        // Add a matching drive
+        login(TEST_CREDENTIALS);
+        long timestamp = new Timestamp(2018, 10, 20, 12, 0, 0, 0).getTime();
+        long timestamp2 = new Timestamp(2018, 10, 20, 12, 5, 0, 0).getTime();
+        Drive drive = new Drive(-1, "A", "C", timestamp, "a", "x", "x", "x", "x", 2, 2, false, false, false);
+        List<DriveMilestone> milestones = new ArrayList<>();
+        milestones.add(new DriveMilestone(-1, -1, "B", timestamp2));
+        List<DriveUser> driveUsers = new ArrayList<>();
+        List<DriveReport> reports = new ArrayList<>();
+        DriveWrap driveWrap = new DriveWrap(drive, milestones, driveUsers, reports);
 
-        SearchFilter response = target("search")
-                .path("subscribe")
+        Response response = target("drive")
+                .path("")
                 .request()
-                .post(Entity.json(searchFilter), SearchFilter.class);
+                .post(Entity.json(driveWrap));
 
-
-
-
-        // TODO
     }
     */
 }
