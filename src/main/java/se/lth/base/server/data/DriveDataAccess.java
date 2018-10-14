@@ -95,11 +95,14 @@ public class DriveDataAccess extends DataAccess<Drive> {
     public List<Drive> getDrives() {
     	return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive");
     }
+    
+    public List<Drive> getReportedDrives() {
+    	return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive INNER JOIN drive_report ON drive_id");
+    }
 
     public List<Drive> getDrivesForUser(int userId) {
         return query("SELECT * FROM drive INNER JOIN drive_user ON drive.drive_id = drive_user.drive_id WHERE user_id = ? ", userId);
     }
-
 
     public boolean deleteDrive(int driveId) {
         return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
