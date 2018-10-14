@@ -16,6 +16,7 @@ window.base.userProfileController = (() => {
             document.getElementById('set-password-confirm').value = '';
         }
     };
+
     const controller = {
         deleteUser: () => window.base.rest.deleteUser(model.user.userId)
                 .then(window.base.rest.logout())
