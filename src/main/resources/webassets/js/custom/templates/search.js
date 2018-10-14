@@ -77,7 +77,8 @@ window.base.searchController = (() => {
                 }
 
                 // language=HTML
-                searchResults += `<div class="row border bg-white shadow-sm">
+                searchResults += `
+        <div class="row border bg-white shadow-sm">
             <div class="col-2 border-right">
                 <h5 class="mt-3 mb-0 text-muted font-weight-bold">${driverFirstName}</h5>
                 <p class="text-muted">${driverGender}, ${driverAge}</p>
@@ -155,8 +156,9 @@ window.base.searchController = (() => {
                     <td class="align-bottom">
                         <button class="mb-3 btn btn-danger btn-sm btn-block request-btn">Request</button>
                     </td>
-                </table>`
-
+                </table>
+            </div>
+        </div>`
 
             }
 
