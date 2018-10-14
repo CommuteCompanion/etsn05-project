@@ -253,4 +253,9 @@ public class SearchResourceTest extends BaseResourceTest {
 
         Assert.assertEquals(5, response3.size());
     }
+
+    @Test
+    public void searchFilterSubscription() {
+        // TODO
+    }
 }

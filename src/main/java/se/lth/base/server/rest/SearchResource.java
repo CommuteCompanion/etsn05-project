@@ -21,6 +21,7 @@ public class SearchResource {
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
     private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+    private final SearchFilterDataAccess searchFilterDataAccess = new SearchFilterDataAccess(Config.instance().getDatabaseDriver());
     private final User user;
 
     // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
@@ -110,6 +111,14 @@ public class SearchResource {
         }
 
         return users;
+    }
+
+    @Path("subsribe")
+    @POST
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public SearchFilter subscribeToSearch(SearchFilter searchFilter) {
+        return searchFilterDataAccess.addSearchFilter(searchFilter);
     }
 
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
