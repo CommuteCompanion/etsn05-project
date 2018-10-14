@@ -17,7 +17,7 @@ window.base.searchController = (() => {
 
             for (let i = 0; i < model.searchResults.length; i++) {
                 const drive = model.searchResults[i].drive;
-                const driveName = drive.start + ' ' +  drive.stop;
+                const driveName = drive.start + ' ' + drive.stop;
                 const departureTime = drive.departureTime;
                 const carBrand = drive.carBrand;
                 const carModel = drive.carModel;
@@ -27,7 +27,7 @@ window.base.searchController = (() => {
 
                 const optActive = 'text-info';
                 const optNotActive = 'text-muted';
-                const optLuggage = drive.optLuggageSize > 0 ?  optActive : optNotActive;
+                const optLuggage = drive.optLuggageSize > 0 ? optActive : optNotActive;
                 const optWinterTires = drive.optWinterTires ? optActive : optNotActive;
                 const optBicycle = drive.optBicycle ? optActive : optNotActive;
                 const optPets = drive.optPets ? optActive : optNotActive;
@@ -65,9 +65,16 @@ window.base.searchController = (() => {
                 }
 
                 const driveNumberOfSeatsLeft = carNumberOfSeats - confirmedPassengers;
-
                 const tripStart = model.searchQuery.tripStart;
                 const tripStop = model.searchQuery.tripStop;
+
+                let passengerIcons = '';
+
+                for (let i = 0; i < carNumberOfSeats; i++) {
+                    passengerIcons += i < driveNumberOfSeatsLeft ?
+                        '<i class="fas fa-user-check text-info"></i>' :
+                        '<i class="fas fa-user-check text-muted"></i>'
+                }
 
                 // language=HTML
                 searchResults += `<div class="row border bg-white shadow-sm">
