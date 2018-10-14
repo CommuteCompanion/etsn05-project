@@ -13,11 +13,23 @@ window.base.rest = (() => {
         this.isAdmin = () => this.role.name === 'ADMIN';
         this.isNone = () => this.role.name === 'NONE';
     }
+    
+    function DriveWrap(driveWrap) {
+        this.name = role;
+        this.label = this.name[0] + this.name.toLowerCase().slice(1);
+    }
+    
+    function Drive(json) {
+        Object.assign(this, json);
+        this.driveWrap = new DriveWrap(json.driveWrap);
+        this.json = json;
+    }
 
     const objOrError = (json, cons) => json.error ? json : new cons(json);
 
     window.base.User = User;
     window.base.Role = Role;
+    window.base.Drive = Drive;
 
     const baseFetch = (url, config) => {
         config = config || {};
@@ -62,7 +74,20 @@ window.base.rest = (() => {
         })
             .then(response => response.json())
             .then(u => objOrError(u, User)),
-        deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'})
+        deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'}),
+        
+        getDrive: id => baseFetch('/rest/drive/' + id, {
+            method: 'GET'
+        })
+            .then(response => response.json())
+            .then(d => objOrError(d, Drive)),
+        addDrive: driveWrap => baseFetch('/rest/drive', {
+            method: 'POST',
+            body: JSON.stringify(driveWrap),
+            headers: jsonHeader
+        })
+            .then(response => response.json())
+            .then(u => objOrError(u, User))
     };
 })();
 

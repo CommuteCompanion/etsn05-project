@@ -93,8 +93,8 @@
                         <div class="form-check">
                             <label class="form-check-label">
                                 <div class="col">
-                                    <input class="form-check-input" type="checkbox" value="luggageOk">
-                                    Medium luggage ok
+                                    <input id="set-bikes" class="form-check-input" type="checkbox" value="noBike">
+                                    No bikes
                                 </div>
                             </label>
                         </div>
@@ -103,8 +103,8 @@
                         <div class="form-check">
                             <label class="form-check-label">
                                 <div class="col">
-                                    <input class="form-check-input" type="checkbox" value="hasWinter">
-                                    Has winter tires
+                                    <input id="set-pets" class="form-check-input" type="checkbox" value="petOk">
+                                    Pets ok
                                 </div>
                             </label>
                         </div>
@@ -115,18 +115,8 @@
                         <div class="form-check">
                             <label class="form-check-label">
                                 <div class="col">
-                                    <input class="form-check-input" type="checkbox" value="noBike">
-                                    No bikes
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="form-check">
-                            <label class="form-check-label">
-                                <div class="col">
-                                    <input class="form-check-input" type="checkbox" value="petOk">
-                                    Pets ok
+                                    <input id="set-tires" class="form-check-input" type="checkbox" value="hasWinter">
+                                    Has winter tires
                                 </div>
                             </label>
                         </div>
@@ -134,8 +124,22 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col">
+                        <div class="col-md">
+                            <label class="form-check-label w-100">
+                                <label for="set-luggage">Size of luggage</label>
+                                <select class="form-control" id="set-luggage">
+                                    <option value="0">Small</option>
+                                    <option value="1">Medium</option>
+                                    <option value="2">Large</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
                         <div class="col">
-                            <button type="submit" class="btn btn-secondary w-100">Create Drive</button>
+                            <button id="create-drive-btn" type="submit" class="btn btn-secondary w-100">Create Drive</button>
                         </div>
                     </div>
                 </div>
@@ -153,7 +157,7 @@
         </div>
         <div class="row mt-5">
             <div class="col my-5" style="border-top: 1px solid #000;">
-                <button type="button" class="btn btn-danger w-100 mt-4">Delete Drive</button>
+                <button id="delete-drive-btn" type="button" class="btn btn-danger w-100 mt-4">Delete Drive</button>
             </div>
         </div>
     </div>
