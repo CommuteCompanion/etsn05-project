@@ -39,7 +39,7 @@ window.base.rest = (() => {
     };
 
     return {
-        searchDrives: searchFilter => baseFetch('/rest/search', {
+        searchDrives: searchFilter => baseFetch('/rest/search/drives', {
             method: 'POST',
             body: JSON.stringify(searchFilter),
             headers: jsonHeader

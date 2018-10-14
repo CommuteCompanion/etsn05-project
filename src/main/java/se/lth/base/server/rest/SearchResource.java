@@ -38,10 +38,11 @@ public class SearchResource {
      *                    If trip start, trip stop are null and departure time is equal to -1, then all drives will be returned in the order of most recently added drive first.
      * @return A list of Drive-objects matching the input arguments.
      */
-    @Path("getDrives")
+    @Path("drives")
     @POST
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<DriveWrap> getDrives(SearchFilter searchFilter) {
 
         // Get requested trip start, stop and departure
