@@ -82,5 +82,7 @@ CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT,
 
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
 INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, phone_number, gender, date_of_birth)
-    VALUES (1, 'admin@lu.se', -2883142073796788660, '8dc0e2ab-4bf1-7671-c0c4-d22ffb55ee59', 'Admin', 'Admin', '0701234', 1, SELECT CURRENT_TIMESTAMP() - 1800000000),
-           (2, 'test@lu.se', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 1, SELECT CURRENT_TIMESTAMP() - 1800000000);
+    VALUES (1, 'admin@lu.se', 8486015201299423224, '54c89afb-d106-8cf7-ff28-9362aff5a6bc', 'Admin', 'Admin', '0701234', 1, SELECT CURRENT_TIMESTAMP() - 1800000000),
+           (2, 'test@lu.se', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 1, SELECT CURRENT_TIMESTAMP() - 1800000000),
+           (2, 'driver@lu.se', -8230560395748062196, '026edaa7-7e68-4bdf-b1d5-2acda6e9ec05', 'Driver', 'Test', '070123456', 1, SELECT CURRENT_TIMESTAMP() - 1800000000),
+           (2, 'passenger@lu.se', 7048289284615084861, 'f8444eec-5d7e-8b36-ac6b-2c6042623b30', 'Passenger', 'Test', '070123456', 1, SELECT CURRENT_TIMESTAMP() - 1800000000);
