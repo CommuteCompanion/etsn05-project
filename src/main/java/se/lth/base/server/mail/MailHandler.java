@@ -6,10 +6,10 @@ import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
 import se.lth.base.server.data.DriveWrap;
+import se.lth.base.server.data.SearchFilter;
 import se.lth.base.server.data.User;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Wrapper class for SimpleMail mail handler
@@ -79,10 +79,15 @@ public class MailHandler {
         sendMail(new CustomEmail(driveWrap,EmailType.RATING).getEmail());
     }
 
-    // TODO: Uncomment when SearchFilter DTO implemented
-    /*public void notifyUserSearchFilterMatch(DriveWrap driveWrap, SearchFilter searchFilter) {
-        sendMail(new CustomEmail(driveWrap, CustomEmail.FILTER_MATCH_EMAIL, searchFilter).getEmail());
-    }*/
+    /**
+     * Sends an email to a user notifying them that there is a new match for their search filter
+     *
+     * @param driveWrap    DriveWrap DTO
+     * @param searchFilter SearchFilter DTO
+     */
+    public void notifyUserSearchFilterMatch(DriveWrap driveWrap, User user, SearchFilter searchFilter) throws IOException {
+        sendMail(new CustomEmail(driveWrap, EmailType.FILTER_MATCH, user, searchFilter).getEmail());
+    }
 
     /**
      * Sends an email to a driver that passenger has cancelled trip

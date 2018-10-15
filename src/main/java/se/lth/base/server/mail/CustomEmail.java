@@ -5,10 +5,7 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.email.Recipient;
 import org.slf4j.LoggerFactory;
 import se.lth.base.server.Config;
-import se.lth.base.server.data.DriveUser;
-import se.lth.base.server.data.DriveWrap;
-import se.lth.base.server.data.User;
-import se.lth.base.server.data.UserDataAccess;
+import se.lth.base.server.data.*;
 
 import javax.mail.Message;
 import java.io.BufferedReader;
@@ -16,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +39,7 @@ public class CustomEmail {
     private final DriveWrap driveWrap;
     private final EmailType emailType;
     private final User singleUser;
+    private SearchFilter searchFilter;
     private List<Recipient> recipients;
 
     /**
@@ -71,6 +68,13 @@ public class CustomEmail {
         this.emailType = emailType;
         this.recipients = new ArrayList<>();
         this.singleUser = user;
+    }
+
+    public CustomEmail(DriveWrap driveWrap, EmailType emailType, User user, SearchFilter searchFilter) {
+        this.driveWrap = driveWrap;
+        this.emailType = emailType;
+        this.singleUser = user;
+        this.searchFilter = searchFilter;
     }
 
     public Email getEmail() throws IOException {

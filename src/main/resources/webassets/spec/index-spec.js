@@ -5,7 +5,7 @@
 describe('mainController', function() {
 
     var none = new base.User({email: '-', role: 'NONE'});
-    var test = new base.User({email: 'Test', role: 'USER'});
+    var test = new base.User({email: 'Test', firstName: 'Test', role: 'USER'});
     var admin = new base.User({email: 'Admin', role: 'ADMIN'});
 
     var r1 = jasmine.createSpyObj('r1', ['load']);
@@ -80,13 +80,13 @@ describe('mainController', function() {
             }).finally(done);
     });
 
-    it('should render email', function(done) {
+    it('should render first name', function(done) {
         var userPromise = Promise.resolve(test);
         spyOn(base.mainController, 'changeRoute');
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
         base.mainController.load();
         userPromise.then(function() {
-            expect(document.getElementById('email').textContent).toBe(test.email);
+            expect(document.getElementById('navbar-first-name').textContent).toBe(test.firstName);
         }).finally(done);
     });
 
