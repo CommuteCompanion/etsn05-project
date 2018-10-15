@@ -41,8 +41,9 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
     public void updateDrive() {
         long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
         long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
-        Drive drive2 = driveDao.addDrive(new Drive(-1, "A", "B", departureTime, arrivalTime, "i", "j", "k", "l", "m", 3, 2, false, false, false));
-
+        Drive drive2 = new Drive(drive1Id, "A", "B", departureTime, arrivalTime, "i", "j", "k", "l", "m", 3, 2, false, false, false);
+        driveDao.updateDrive(drive2);
+        
         assertEquals("A", drive2.getStart());
         assertEquals("B", drive2.getStop());
         assertEquals(departureTime, drive2.getDepartureTime());
