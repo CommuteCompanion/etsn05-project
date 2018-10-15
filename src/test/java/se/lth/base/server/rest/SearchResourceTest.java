@@ -123,7 +123,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter = new SearchFilter(-1, -1, "C", "E", -1);
         // We actually receive a List<LinkedTreeMap<String, Object>>
         List<DriveWrap> response = target("search")
-                .path("getDrives")
+                .path("drives")
                 .request()
                 .post(Entity.json(searchFilter), List.class);
 
@@ -147,7 +147,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
         List<DriveWrap> response1 = target("search")
-                .path("getDrives")
+                .path("drives")
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
 
@@ -158,7 +158,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
         List<DriveWrap> response2 = target("search")
-                .path("getDrives")
+                .path("drives")
                 .request()
                 .post(Entity.json(searchFilter2), List.class);
 
@@ -179,7 +179,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
         List<DriveWrap> response1 = target("search")
-                .path("getDrives")
+                .path("drives")
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
 
@@ -190,7 +190,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
         List<DriveWrap> response2 = target("search")
-                .path("getDrives")
+                .path("drives")
                 .request()
                 .post(Entity.json(searchFilter2), List.class);
 
@@ -210,7 +210,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter1 = new SearchFilter(-1, user2Id, null, null, -1);
 
         List<LinkedTreeMap<String, Object>> response = target("search")
-                .path("getDrives")
+                .path("drives")
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
 
