@@ -84,7 +84,12 @@ window.base.rest = (() => {
         })
             .then(response => response.json())
             .then(u => objOrError(u, User)),
-        deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'})
+        deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'}),
+
+        warnUser: (id) => baseFetch('/rest/user/warn/' + id, {
+            method: 'PUT',
+            headers: jsonHeader
+        }),
     };
 })();
 
