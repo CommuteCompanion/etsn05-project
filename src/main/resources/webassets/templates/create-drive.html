@@ -31,23 +31,44 @@
                             <input type="date" class="form-control" id="set-date" required="true">
                         </div>
                     </div>
+                </div>
+                <div class="row mt-2">
                     <div class="col">
-                        <div class="col"Z>
-                            <label for="set-time" class="col-md">Time Leave</label>
-                            <div class="col-md">
-                                <input type="time" class="form-control" id="set-time-leave" required="true">
-                            </div>
-                            <div class="col">
-                                <input type="time" class="form-control" id="set-time-arrival" required="true">
-                            </div>
+                        <label for="set-time" class="col-md">Time Leave</label>
+                        <div class="col-md">
+                            <input type="time" class="form-control" id="set-time-leave" required="true">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="set-time" class="col-md">Time Arrival</label>
+                        <div class="col-md">
+                            <input type="time" class="form-control" id="set-time-arrival" required="true">
                         </div>
                     </div>
                 </div>
+
+                <div class="row mt-4 mb-2">
+                    <div class="col">
+                        <div class="col-md text-center">
+                            <button id="add-stop-btn" type="button" class="btn btn-primary w-75">Add Stop</button>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="col-md text-center">
+                            <button id="remove-stop-btn" type="button" class="btn btn-warning w-75">Remove Stop</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Div where stops are added to-->
+                <div id="stop-row">
+                </div>
+
                 <div class="row mt-2">
                     <div class="col">
                         <div class="col-md">
                             <label for="set-comment">Drive comment</label>
-                            <textarea class="form-control" id="set-comment" rows="4" placeholder="Where do you stop...?"></textarea>
+                            <textarea class="form-control" id="set-comment" rows="4"></textarea>
                         </div>
                     </div>
                 </div>

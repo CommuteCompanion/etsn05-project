@@ -3,23 +3,66 @@ window.base = window.base || {};
 window.base.createDriveController = (() => {
     const model = {
         drive: {},
+        driveWrap: {},
         user: {}
     };
 
     const view = {
-        renderDrive: () => window.base.rest.getDrive().then(d => {
-            model.drive = d;
-            console.log(d);
-            return d;
+        renderDrive: id => window.base.rest.getDrive(id).then(dw => {
+            model.driveWrap = dw;
+            console.log(dw);
+            return dw;
         }),
         renderUser: () => window.base.rest.getUser().then(u => {
             model.user = u;
             console.log(u);
-            return u;
+        }).then(u => {
+            window.base.rest.getDriveForUser(model.user.userId).then(d => {
+                if (d === null) {
+                    
+                } else {
+                    model.drive = d;
+                    console.log(d);
+                    
+                }
+            })
         })
     };
 
     const controller = {
+        setInput: () => {
+            document.getElementById('set-')
+        },
+        
+        removeStop: () => {
+            const counter = document.querySelectorAll("#stop-row .stop-div").length;
+            console.log(counter);
+            if (counter > 0){
+                document.getElementById('stop-' + counter).remove();
+            }
+        },
+
+        addStop: () => {
+            const counter = document.querySelectorAll("#stop-row .stop-div").length;
+            const stopDiv = document.createElement('div');
+            const col = document.createElement('div')
+            const colMd = document.createElement('div');
+            col.className = 'col';
+            colMd.className = 'col-md';
+            stopDiv.className = 'row mt-2 stop-div';
+            stopDiv.id = 'stop-' + (counter + 1);
+            const textArea = document.createElement('textarea');
+            const label = document.createElement('label');
+            label.innerHTML = 'Stop ' + (counter + 1);
+            textArea.id = 'set-stop-' + (counter+1);
+            textArea.className = 'form-control';
+            colMd.append(label);
+            colMd.appendChild(textArea);
+            col.append(colMd);
+            stopDiv.append(col);
+            document.getElementById('stop-row').append(stopDiv);
+        },
+
         createDrive: () => {
             let optWinterTires;
             let optBicycle;
@@ -80,12 +123,18 @@ window.base.createDriveController = (() => {
 
             const drive = {driveId, start, stop, departureTime, arrivalTime, comment, carBrand, carModel, carColor, carLicensePlate, carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets};
 
-            const milestoneId = 0;
-            const milestone = comment;
+            const milestones = [];
+            let driveMilestone;
 
-            const driveMilestone = {milestoneId, driveId, milestone, departureTime};
-
-            const milestones = [driveMilestone];
+            for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
+                const milestoneId = i;
+                const milestone = document.getElementById('set-stop-' + i).value;
+                console.log(milestone);
+                driveMilestone = {milestoneId, driveId, milestone, departureTime};
+                milestones.push(driveMilestone);
+                console.log(driveMilestone);
+                console.log(milestones);
+            }
 
             const user = model.user;
             const users = [user];
@@ -94,10 +143,15 @@ window.base.createDriveController = (() => {
 
             const driveWrap = {drive, milestones, users, reports};
 
-            window.base.rest.addDrive(driveWrap).then(drive => {
-                if (drive.error) {
-                    alert(drive.error);
+            window.base.rest.addDrive(driveWrap).then(d => {
+                if (d.error) {
+                    alert(d.error);
                 }
+            }).then(() => {
+                view.renderDrive(1);
+                view.renderDrive(2);
+                view.renderDrive(3);
+                view.renderUser();
             });
         },
 
@@ -108,7 +162,9 @@ window.base.createDriveController = (() => {
         load: () => {
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
-            view.renderDrive();
+            document.getElementById('add-stop-btn').onclick = controller.addStop;
+            document.getElementById('remove-stop-btn').onclick = controller.removeStop;
+            //view.renderDrive();
             view.renderUser();
         }
     };

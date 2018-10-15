@@ -26,10 +26,8 @@ window.base.rest = (() => {
     }
     
     function DriveWrap(driveWrap) {
-        this.drive = new Drive(driveWrap.drive);
-        this.milestones = new DriveMilestone(driveWrap.milestones);
-        this.users = [new User(driveWrap.user)];
-        this.reports = [new DriveReport(driveWrap.reports)];
+        Object.assign(this, json);
+        this.json = json;
     }
     
     function Drive(json) {
@@ -113,17 +111,31 @@ window.base.rest = (() => {
         deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'}),
         
         getDrive: id => baseFetch('/rest/drive/' + id, {
-            method: 'GET'
+            method: 'GET',
         })
             .then(response => response.json())
-            .then(d => objOrError(d, Drive)),
+            .then(d => new DriveWrap(d)),
+        
         addDrive: driveWrap => baseFetch('/rest/drive', {
             method: 'POST',
             body: JSON.stringify(driveWrap),
             headers: jsonHeader
         })
             .then(response => response.json())
-            .then(d => objOrError(d, Drive))
+            .then(d => objOrError(d, DriveWrap)),
+        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, {
+            method: 'PUT',
+            body: JSON.stringify(drive),
+            headers: jsonHeader
+        })
+            .then(response => response.json())
+            .then(d => objOrError(d, DriveWrap)),
+        getDriveForUser: (id) => baseFetch('/rest/drive/' + id, {
+            method: 'GET',
+            headers: jsonHeader
+        })
+            .then(response => response.json())
+            .then(drives => drives.map(d => new Drive(d)))
     };
 })();
 
