@@ -99,7 +99,7 @@ window.base.searchController = (() => {
                 <table class="h-100 w-100">
                     <tr>
                         <td class="align-top">
-                            <a href="#/drive">
+                            <a id="drive-link" href="#/drive">
                                 <h5 class="mt-3 mb-0 text-danger font-weight-bold">${driveName}</h5>     
                             </a>
                             <div class="row">
@@ -195,13 +195,20 @@ window.base.searchController = (() => {
                 model.user = u;
             });
         },
+        goToDrive: () => {
+            window.base.driveController.load(model.searchQuery);
+            window.base.changeLocation('#/drive');
+        },
         load: () => {
             document.getElementById('drive-search').onsubmit = controller.submitSearch;
             controller.getUser();
 
+            document.getElementById('drive-link').onclick = controller.goToDrive();
+
             // Perform empty search
             controller.performSearch({searchFilterId: 0, userId: 0, start: null, stop: null, departureTime: 0});
-        }
+        },
+        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.searchController.load())
     };
 
     return controller;

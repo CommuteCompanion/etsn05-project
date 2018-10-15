@@ -58,6 +58,11 @@ window.base.rest = (() => {
                 .then(response => response.json())
                 .then(i => parseInt(i));
         },
+        requestSeat: (userId, driveUser) => baseFetch('/rest/drive/' + userId, {
+            method: 'POST',
+            body: JSON.stringify(driveUser),
+            headers: jsonHeader
+        })
         login: (email, password, rememberMe) => baseFetch('/rest/user/login?remember=' + rememberMe, {
             method: 'POST',
             body: JSON.stringify({email: email, password: password}),
