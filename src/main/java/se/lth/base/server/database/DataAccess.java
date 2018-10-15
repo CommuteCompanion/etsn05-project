@@ -53,7 +53,7 @@ public class DataAccess<T> {
         try {
             Connection conn = getConnection();
             PreparedStatement statement = conn.prepareStatement(sql);
-
+          
                for (int i = 0; i < objects.length; i++) {
                    statement.setObject(i + 1, objects[i]);
                }
