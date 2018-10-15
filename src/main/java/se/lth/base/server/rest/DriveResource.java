@@ -127,10 +127,13 @@ public class DriveResource {
     @DELETE
     @RolesAllowed(Role.Names.USER)
     public void removeUserFromDrive(@PathParam("driveId") int driveId, @PathParam("userId") int userId) {
-    	if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
-    		driveUserDao.deleteDriveUser(driveId, userId);
+        if (!driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+            throw new WebApplicationException("Only driver allowed to remove passengers", Status.UNAUTHORIZED);
+        }
+
+        driveUserDao.deleteDriveUser(driveId, userId);
     	
-    	throw new WebApplicationException("Only driver allowed to remove passengers", Status.UNAUTHORIZED);
+
     }
     
     @Path("{driveId}/rate")
