@@ -25,23 +25,24 @@ window.base.manageUsersController = (() => {
             }
             t.content.querySelector('.admin-warning').textContent = 
                 user.warning + ' warnings';
+            t.content.querySelector('.admin-warning').id = 'admin-warning' + user.userId;
 
             // Associate buttons and cards with correct Id
-            t.content.querySelector('.edit-profile-button').id   = 'edit-profile-' + user.userId;
-            t.content.querySelector('.give-warning-button').id   = 'give-warning-' + user.userId;
-            t.content.querySelector('.delete-account-button').id = 'delete-account-' + user.userId;
+            t.content.querySelector('.edit-profile-button').id   = 'edit-profile' + user.userId;
+            t.content.querySelector('.give-warning-button').id   = 'give-warning' + user.userId;
+            t.content.querySelector('.delete-account-button').id = 'delete-account' + user.userId;
             
-            t.content.querySelector('.manage-users-user').id = 'manage-user-card-' + user.userId;
+            t.content.querySelector('.manage-users-user').id = 'manage-user-card' + user.userId;
 
             var clone = document.importNode(t.content, true);
             t.parentElement.appendChild(clone);
 
             // Add functionality to buttons.
-            document.getElementById('edit-profile-' + user.userId).onclick = () =>
+            document.getElementById('edit-profile' + user.userId).onclick = () =>
                 controller.editProfile(user)
-            document.getElementById('give-warning-' + user.userId).onclick = () =>
+            document.getElementById('give-warning' + user.userId).onclick = () =>
                 controller.giveWarning(user)
-            document.getElementById('delete-account-' + user.userId).onclick = () =>
+            document.getElementById('delete-account' + user.userId).onclick = () =>
                 controller.deleteAccount(user)
         },
         render: function() {
@@ -51,17 +52,26 @@ window.base.manageUsersController = (() => {
 
     const controller = {
         giveWarning: function(user) {
-            window.base.rest.warnUser(user.userId);
+            window.base.rest.warnUser(user.userId).then(function () {
+                user.warning = user.warning + 1;
+                document.getElementById('admin-warning'+user.userId).textContent 
+                    = user.warning + ' warnings';
+                });
         },
         deleteAccount: function(user) {
             window.base.rest.deleteUser(user.userId).then(function () {
-                var item = document.getElementById('manage-user-card-' + user.userId);
+                var item = document.getElementById('manage-user-card' + user.userId);
                 item.parentElement.removeChild(item);
             }); 
             
         },
         editProfile: function(user) {
-            console.log('EDIT!! ID: ' + user.userId);
+            fetch('templates/user-profile.html')
+                    .then(response => response.text())
+                    .then(tabHtml => {
+                        document.getElementById('main-tab').innerHTML = tabHtml;
+                        window.base.userProfileController().loadWithUserId(user.userId);  //change to index when we have list of users
+                    });
         },
         load: function() {
             base.rest.getUsers().then(function(users) {

@@ -89,9 +89,7 @@ window.base.rest = (() => {
         warnUser: (id) => baseFetch('/rest/user/warn/' + id, {
             method: 'PUT',
             headers: jsonHeader
-        })
-        .then(response => response.json())
-        .then(u => objOrError(u, User)),
+        }),
     };
 })();
 
