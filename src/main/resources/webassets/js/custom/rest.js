@@ -135,7 +135,7 @@ window.base.rest = (() => {
             headers: jsonHeader
         })
             .then(response => response.json())
-            .then(drives => drives.map(d => new Drive(d)))
+            .then(driveWraps => driveWraps.map(d => new DriveWrap(d)))
     };
 })();
 

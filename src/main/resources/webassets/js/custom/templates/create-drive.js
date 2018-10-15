@@ -151,7 +151,7 @@ window.base.createDriveController = (() => {
                 view.renderDrive(1);
                 view.renderDrive(2);
                 view.renderDrive(3);
-                view.renderUser();
+                //view.renderUser();
             });
         },
 
