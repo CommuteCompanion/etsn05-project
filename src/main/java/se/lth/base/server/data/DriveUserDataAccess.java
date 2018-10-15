@@ -43,7 +43,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     }
 
     public DriveUser updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
-        execute("UPDATE drive_user SET start = ?, stop = ?, is_driver = ?, accepted = ?, rated = ?, WHERE drive_id = ? AND user_id = ?",
+        execute("UPDATE drive_user SET start = ?, stop = ?, is_driver = ?, accepted = ?, rated = ? WHERE drive_id = ? AND user_id = ?",
                 start, stop, driver, accepted, rated, driveId, userId);
     	
     	return getDriveUser(driveId, userId);
@@ -67,8 +67,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     }
     
     public int getNumberOfUsersInDrive(int driveId) {
-    	ResultSet result = openQuery("COUNT (*) FROM drive_user WHERE drive_id = ? AND accepted = ?", driveId, IS_ACCEPTED);
-    	
+    	ResultSet result = openQuery("SELECT COUNT(drive_id) FROM drive_user WHERE drive_id = ? AND accepted = ?", driveId, IS_ACCEPTED);
     	try {
     		result.next();
     		return result.getInt(1);
