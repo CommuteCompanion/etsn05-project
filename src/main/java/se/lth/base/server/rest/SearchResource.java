@@ -2,12 +2,14 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
+import se.lth.base.server.mail.MailHandler;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +23,8 @@ public class SearchResource {
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
     private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+    private final SearchFilterDataAccess searchFilterDao = new SearchFilterDataAccess(Config.instance().getDatabaseDriver());
+    private final MailHandler mailHandler = new MailHandler();
     private final User user;
 
     // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
@@ -30,12 +34,16 @@ public class SearchResource {
         this.user = (User) context.getProperty(User.class.getSimpleName());
     }
 
+    public SearchResource(User user) {
+        this.user = user;
+    }
+
     /**
      * This method lets a user search for drives by specifying search parameters such as trip start, stop and departure time
      * in the form of a SearchFilter object.
      *
      * @param searchFilter is used to filter out possible drives. If the timestamp attribute in this object is null, then filtering will be done only on trip start and stop.
-     *                    If trip start, trip stop are null and departure time is equal to -1, then all drives will be returned in the order of most recently added drive first.
+     *                     If trip start, trip stop are null and departure time is equal to -1, then all drives will be returned in the order of most recently added drive first.
      * @return A list of Drive-objects matching the input arguments.
      */
     @Path("getDrives")
@@ -118,6 +126,44 @@ public class SearchResource {
         }
 
         return users;
+    }
+
+    /**
+     * A user can call this method to subscribe to a search filter. Matches will be notified through email.
+     *
+     * @param searchFilter SearchFilter DTO.
+     * @return a new SearchFilter with correct searchFilterId
+     */
+    @Path("subsribe")
+    @POST
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public SearchFilter subscribeToSearch(SearchFilter searchFilter) {
+        return searchFilterDao.addSearchFilter(new SearchFilter(-1, user.getId(), searchFilter.getStart(), searchFilter.getStop(), searchFilter.getDepartureTime()));
+    }
+
+    /**
+     * This method will check for any possible matches between a Drive and existing SearchFilters.
+     * Matches will be notified through email.
+     *
+     * @param drive The drive one wishes to check matches against.
+     */
+    public void matchDriveWithSearchFilters(Drive drive) {
+        List<SearchFilter> searchFilters = searchFilterDao.getSearchFilters();
+        for (SearchFilter searchFilter : searchFilters) {
+            List<DriveWrap> drivesMatching = getDrives(searchFilter);
+            for (DriveWrap driveWrap : drivesMatching) {
+                Drive tempDrive = driveWrap.getDrive();
+                if (tempDrive.getDriveId() == drive.getDriveId()) {
+                    // Match found, notify user by email
+                    try {
+                        mailHandler.notifyUserSearchFilterMatch(driveWrap, userDao.getUser(searchFilter.getUserId()), searchFilter);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -255,7 +301,7 @@ public class SearchResource {
             int carSeats = drive.getCarNumberOfSeats();
 
             // Check if too many drive users start and stop overlap (seats taken > max seats)
-            if(checkMilestoneIntervalOverlap(driveMilestones, driveUsers, carSeats)) {
+            if (checkMilestoneIntervalOverlap(driveMilestones, driveUsers, carSeats)) {
                 iterator.remove();
                 continue;
             }
@@ -303,23 +349,23 @@ public class SearchResource {
     private boolean checkMilestoneIntervalOverlap(List<DriveMilestone> milestones, List<DriveUser> driveUsers, int carSeats) {
         // Create DriveUserIntervals
         List<DriveUserInterval> driveUserIntervals = new ArrayList<>();
-        for(DriveUser driveUser : driveUsers) {
+        for (DriveUser driveUser : driveUsers) {
             driveUserIntervals.add(new DriveUserInterval(driveUser.getStart(), driveUser.getStop(), milestones));
         }
 
-        for(int i = 0; i < milestones.size() - 1; i++) {
+        for (int i = 0; i < milestones.size() - 1; i++) {
             // Seats taken in this interval
             int seatsTaken = 0;
             int start = i;
             int stop = i + 1;
-            for(DriveUserInterval driveUserInterval : driveUserIntervals) {
+            for (DriveUserInterval driveUserInterval : driveUserIntervals) {
                 int startIndex = driveUserInterval.getStartIndex();
                 int endIndex = driveUserInterval.getStopIndex();
-                if(startIndex <= start && endIndex >= stop) {
+                if (startIndex <= start && endIndex >= stop) {
                     seatsTaken++;
                 }
             }
-            if(seatsTaken > carSeats) {
+            if (seatsTaken > carSeats) {
                 // The car will be too full at some interval if the new passenger is added!
                 return true;
             }
@@ -353,8 +399,8 @@ public class SearchResource {
         }
 
         private int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
-            for(int i = 0; i < milestones.size(); i++) {
-                if(milestones.get(i).getMilestone().equals(name)) {
+            for (int i = 0; i < milestones.size(); i++) {
+                if (milestones.get(i).getMilestone().equals(name)) {
                     return i;
                 }
             }
