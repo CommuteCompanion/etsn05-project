@@ -67,7 +67,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     }
     
     public int getNumberOfUsersInDrive(int driveId) {
-    	ResultSet result = openQuery("COUNT (*) FROM drive_user WHERE drive_id = ?", driveId);
+    	ResultSet result = openQuery("COUNT (*) FROM drive_user WHERE drive_id = ? AND accepted = ?", driveId, IS_ACCEPTED);
     	
     	try {
     		result.next();

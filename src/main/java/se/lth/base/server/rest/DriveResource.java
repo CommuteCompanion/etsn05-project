@@ -15,10 +15,10 @@ import java.util.List;
 
 @Path("drive")
 public class DriveResource {
-	private final boolean IS_DRIVER = true;
-	private final boolean IS_ACCEPTED = true;
-    private final boolean IS_RATED = false;
-
+	  private final boolean IS_DRIVER = true;
+	  private final boolean IS_ACCEPTED = true;
+    private final boolean IS_RATED = true;
+	
     private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
@@ -46,11 +46,14 @@ public class DriveResource {
         	returningMilestones.add(driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime()));
         
         // Add driver to list of users
-        List<DriveUser> users = new ArrayList<>();
-        users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED, IS_RATED));
+        List<DriveUser> users = new ArrayList<DriveUser>();
+        users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED, !IS_RATED));
 
         // No reports yet
         List<DriveReport> reports = new ArrayList<>();
+
+        // Check if any SearchFilters match with this drive, and if so notify these users by email
+        new SearchResource(user).matchDriveWithSearchFilters(drive);
         
         return new DriveWrap(drive, milestones, users, reports);
     }
@@ -103,7 +106,7 @@ public class DriveResource {
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public DriveUser addUserToDrive(@PathParam("driveId") int driveId, DriveUser driveUser) {
     	if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId))
-            return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, IS_RATED);
+            return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, !IS_RATED);
     	
     	throw new WebApplicationException("No available seats left", Status.PRECONDITION_FAILED);
     }
@@ -178,5 +181,14 @@ public class DriveResource {
             return driveDao.getDrivesForUser(userId);
         }
         throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
+    }
+
+
+    @Path("count/{userId}")
+    @GET
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.TEXT_PLAIN)
+    public int getNumberOfDrives(@PathParam("userId") int userId) {
+        return driveDao.getNumberOfDrivesForUser(userId);
     }
 }
