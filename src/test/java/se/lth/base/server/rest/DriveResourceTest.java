@@ -48,7 +48,7 @@ public class DriveResourceTest extends BaseResourceTest {
 
         //Add user to drive
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
-        Drive drive1 = new Drive(0,"A", "F", System.currentTimeMillis(), "Comment", "x", "x", "x", "x", 1, 1, false, false, false);
+        Drive drive1 = new Drive(0, "A", "F", System.currentTimeMillis(), System.currentTimeMillis() + 1, "Comment", "x", "x", "x", "x", 1, 1, false, false, false);
         drive1 = driveDao.addDrive(drive1);
         int drive1Id = drive1.getDriveId();
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
@@ -82,7 +82,7 @@ public class DriveResourceTest extends BaseResourceTest {
 
         //Add user to drive
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
-        Drive drive1 = new Drive(0,"A", "F", System.currentTimeMillis(), "Comment", "x", "x", "x", "x", 1, 1, false, false, false);
+        Drive drive1 = new Drive(0, "A", "F", System.currentTimeMillis(), System.currentTimeMillis() + 1, "Comment", "x", "x", "x", "x", 1, 1, false, false, false);
         drive1 = driveDao.addDrive(drive1);
         int drive1Id = drive1.getDriveId();
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
@@ -100,7 +100,7 @@ public class DriveResourceTest extends BaseResourceTest {
     @Test
     public void addUserToDrive() {
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
-        Drive drive1 = new Drive(0, "A", "F", 1, "x", "x", "x", "x", "x", 2, 1, false, false, false);
+        Drive drive1 = new Drive(0, "A", "F", 1, 2, "x", "x", "x", "x", "x", 2, 1, false, false, false);
         Drive drive2 = driveDao.addDrive(drive1);
         int drive2Id = drive2.getDriveId();
 
