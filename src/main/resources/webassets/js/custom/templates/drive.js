@@ -30,6 +30,9 @@ window.base.driveController = (() => {
     };
 
     const controller = {
+        getDrive: () => {
+
+        },
         submitRequest: () => window.base.rest.requestSeat(model.driveUser)
             .catch(e => view.showFailure(e.message))
             .then(() => view.showSuccess()),
@@ -37,7 +40,7 @@ window.base.driveController = (() => {
             model.user = u;
             model.driveUser.userId = u.userId;
         }),
-        load: searchQuery => {
+        loadQuery: searchQuery => {
             if (typeof searchQuery === 'undefined') {
                 window.base.changeLocation('#/search');
             }
@@ -46,13 +49,16 @@ window.base.driveController = (() => {
                 driveId: searchQuery.driveId,
                 start: searchQuery.tripStart,
                 stop: searchQuery.tripStop,
+                startTime: searchQuery.tripStartTime,
                 driver: false,
                 accepted: false,
                 rated: false
             };
-
+        },
+        load: () => {
             document.getElementById('drive-request').onclick = controller.submitRequest
         },
+        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.driveController().load())
     };
 
     return controller;
