@@ -15,8 +15,10 @@ import static org.junit.Assert.*;
 
 public class DriveResourceTest extends BaseResourceTest {
 
-    private static final GenericType<List<Drive>> DRIVE_LIST = new GenericType<List<Drive>>() {
-	    };
+	private static final GenericType<List<Drive>> DRIVE_LIST = new GenericType<List<Drive>>() {
+	};
+	private static final GenericType<List<DriveWrap>> DRIVEWRAP_LIST = new GenericType<List<DriveWrap>>() {
+	};
 
 	@Test(expected = ForbiddenException.class)
     public void getDrivesAsUser() {
@@ -40,10 +42,10 @@ public class DriveResourceTest extends BaseResourceTest {
     @Test
     public void getDrivesForUserAsRightUser() {
         login(TEST_CREDENTIALS);
-        List<Drive> drives = target("drive")
+        List<DriveWrap> drives = target("drive")
                 .path("user/" + TEST.getId())
                 .request()
-                .get(DRIVE_LIST);
+                .get(DRIVEWRAP_LIST);
         assertTrue(drives.isEmpty());
 
         //Add user to drive
@@ -57,27 +59,27 @@ public class DriveResourceTest extends BaseResourceTest {
         drives = target("drive")
                 .path("user/" + TEST.getId())
                 .request()
-                .get(DRIVE_LIST);
+                .get(DRIVEWRAP_LIST);
         assertEquals(1, drives.size());
-        assertEquals(drives.get(0).getDriveId(), drive1Id);
+        assertEquals(drives.get(0).getDrive().getDriveId(), drive1Id);
     }
 
     @Test(expected = WebApplicationException.class)
     public void getDrivesForUserAsWrongUser() {
         login(TEST_CREDENTIALS);
-        List<Drive> drives = target("drive")
+        List<DriveWrap> drives = target("drive")
                 .path("user/" + ADMIN.getId())
                 .request()
-                .get(DRIVE_LIST);
+                .get(DRIVEWRAP_LIST);
     }
 
     @Test
     public void getDrivesForUserAsAdmin() {
         login(ADMIN_CREDENTIALS);
-        List<Drive> drives = target("drive")
+        List<DriveWrap> drives = target("drive")
                 .path("user/" + TEST.getId())
                 .request()
-                .get(DRIVE_LIST);
+                .get(DRIVEWRAP_LIST);
         assertTrue(drives.isEmpty());
 
         //Add user to drive
@@ -92,9 +94,9 @@ public class DriveResourceTest extends BaseResourceTest {
         drives = target("drive")
                 .path("user/" + TEST.getId())
                 .request()
-                .get(DRIVE_LIST);
+                .get(DRIVEWRAP_LIST);
         assertEquals(1, drives.size());
-        assertEquals(drives.get(0).getDriveId(), drive1Id);
+        assertEquals(drives.get(0).getDrive().getDriveId(), drive1Id);
     }
 
     @Test
