@@ -28,6 +28,13 @@ public class SearchFilterDataAccessTest extends BaseDataAccessTest {
         searchFilters = searchFilterDao.getSearchFilters();
         Assert.assertEquals(1, searchFilters.size());
 
+        // Verify attributes
+        searchFilter = searchFilters.get(0);
+        Assert.assertEquals(TEST.getId(), searchFilter.getUserId());
+        Assert.assertEquals("A", searchFilter.getStart());
+        Assert.assertEquals("B", searchFilter.getStop());
+        Assert.assertEquals(departureTime, searchFilter.getDepartureTime());
+
         // Delete search filter
         Assert.assertTrue(searchFilterDao.deleteSearchFilter(searchFilter.getId()));
 
