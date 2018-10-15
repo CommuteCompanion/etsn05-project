@@ -70,7 +70,7 @@ window.base.manageUsersController = (() => {
                     .then(response => response.text())
                     .then(tabHtml => {
                         document.getElementById('main-tab').innerHTML = tabHtml;
-                        window.base.userProfileController().loadWithUserId(user.userId);  //change to index when we have list of users
+                        window.base.userProfileController().loadWithUserId(user.userId);  
                     });
         },
         load: function() {
