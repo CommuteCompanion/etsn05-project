@@ -20,12 +20,14 @@ public class Drive {
     private final boolean optPets;
     private final boolean optBicycle;
     private final long departureTime;
+    private final long arrivalTime;
 
     /**
      * @param driveId          the Id of the drive.
      * @param start            the start location of the drive.
      * @param stop             the final destination of the drive.
      * @param departureTime    the time and date of the departure.
+     * @param arrivalTime      the time and date of arrival
      * @param comment          additional comment, could be used when extra information about a drive is needed.
      * @param carBrand         the brand of the car.
      * @param carModel         the model of the car.
@@ -37,13 +39,14 @@ public class Drive {
      * @param optBicycle       specifies if it is possible to bring a bicycle.
      * @param optPets          specifies if pets are allowed in the car.
      */
-    public Drive(int driveId, String start, String stop, long departureTime, String comment, String carBrand,
+    public Drive(int driveId, String start, String stop, long departureTime, long arrivalTime, String comment, String carBrand,
                  String carModel, String carColor, String carLicensePlate, int carNumberOfSeats, int optLuggageSize,
                  boolean optWinterTires, boolean optBicycle, boolean optPets) {
         this.driveId = driveId;
         this.start = start;
         this.stop = stop;
         this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
         this.comment = comment;
         this.carBrand = carBrand;
         this.carModel = carModel;
@@ -73,6 +76,12 @@ public class Drive {
     public long getDepartureTime() {
         return departureTime;
     }
+    
+    /** Returns the arrival time. */
+    public long getArrivalTime() {
+        return arrivalTime;
+    }
+
     /** Returns the comment of a drive. */
     public String getComment() {
         return comment;
