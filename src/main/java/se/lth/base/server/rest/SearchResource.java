@@ -43,7 +43,7 @@ public class SearchResource {
      * in the form of a SearchFilter object.
      *
      * @param searchFilter is used to filter out possible drives. If the timestamp attribute in this object is null, then filtering will be done only on trip start and stop.
-     *                    If trip start, trip stop are null and departure time is equal to -1, then all drives will be returned in the order of most recently added drive first.
+     *                     If trip start, trip stop are null and departure time is equal to -1, then all drives will be returned in the order of most recently added drive first.
      * @return A list of Drive-objects matching the input arguments.
      */
     @Path("getDrives")
@@ -164,8 +164,9 @@ public class SearchResource {
                 }
             }
         }
-     
-      /**
+    }
+
+    /**
      * Checks if it is possible for a user to book a specific Drive.
      *
      * @param driveId the id of the drive that one wishes to see if it is possible to book
@@ -300,7 +301,7 @@ public class SearchResource {
             int carSeats = drive.getCarNumberOfSeats();
 
             // Check if too many drive users start and stop overlap (seats taken > max seats)
-            if(checkMilestoneIntervalOverlap(driveMilestones, driveUsers, carSeats)) {
+            if (checkMilestoneIntervalOverlap(driveMilestones, driveUsers, carSeats)) {
                 iterator.remove();
                 continue;
             }
@@ -348,23 +349,23 @@ public class SearchResource {
     private boolean checkMilestoneIntervalOverlap(List<DriveMilestone> milestones, List<DriveUser> driveUsers, int carSeats) {
         // Create DriveUserIntervals
         List<DriveUserInterval> driveUserIntervals = new ArrayList<>();
-        for(DriveUser driveUser : driveUsers) {
+        for (DriveUser driveUser : driveUsers) {
             driveUserIntervals.add(new DriveUserInterval(driveUser.getStart(), driveUser.getStop(), milestones));
         }
 
-        for(int i = 0; i < milestones.size() - 1; i++) {
+        for (int i = 0; i < milestones.size() - 1; i++) {
             // Seats taken in this interval
             int seatsTaken = 0;
             int start = i;
             int stop = i + 1;
-            for(DriveUserInterval driveUserInterval : driveUserIntervals) {
+            for (DriveUserInterval driveUserInterval : driveUserIntervals) {
                 int startIndex = driveUserInterval.getStartIndex();
                 int endIndex = driveUserInterval.getStopIndex();
-                if(startIndex <= start && endIndex >= stop) {
+                if (startIndex <= start && endIndex >= stop) {
                     seatsTaken++;
                 }
             }
-            if(seatsTaken > carSeats) {
+            if (seatsTaken > carSeats) {
                 // The car will be too full at some interval if the new passenger is added!
                 return true;
             }
@@ -398,8 +399,8 @@ public class SearchResource {
         }
 
         private int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
-            for(int i = 0; i < milestones.size(); i++) {
-                if(milestones.get(i).getMilestone().equals(name)) {
+            for (int i = 0; i < milestones.size(); i++) {
+                if (milestones.get(i).getMilestone().equals(name)) {
                     return i;
                 }
             }
