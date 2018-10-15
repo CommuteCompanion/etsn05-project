@@ -7,43 +7,83 @@ window.base.userProfileController = (() => {
 
     const view = {
         render: () => window.base.rest.getUser().then(u => {
-                model.user = u;
-                return u;
-        }).then(() => document.getElementById('set-email').value = model.user.email),
+            model.user = u;
+            return u;
+        }).then(() => {
+            document.getElementById('set-email').value = model.user.email;
+            document.getElementById('set-firstname').value = model.user.firstName;
+            document.getElementById('set-lastname').value = model.user.lastName;
+            if (model.user.gender === 1) {
+                document.getElementById('set-female').checked = true;
+            } else if (model.user.gender === 0) {
+                document.getElementById('set-male').checked = true;
+            }
+            if (model.user.drivingLicence === true) {
+                document.getElementById('set-licence-true').checked = true;
+            } else if (model.user.drivingLicence === false) {
+                document.getElementById('set-licence-false').checked = true;
+            }
+        }),
         clearChanges: () => {
             view.render();
             document.getElementById('set-password').value = '';
             document.getElementById('set-password-confirm').value = '';
         }
     };
+
     const controller = {
         deleteUser: () => window.base.rest.deleteUser(model.user.userId)
-                .then(window.base.rest.logout())
-                .then(() => window.location.replace('/')),
+        .then(window.base.rest.logout())
+        .then(() => window.location.replace('/')),
         submitUser: submitEvent => {
             submitEvent.preventDefault();
+
+            let gender;
+            let drivingLicence;
             const email = document.getElementById('set-email').value;
+            const firstName = document.getElementById('set-firstname').value;
+            const lastName = document.getElementById('set-lastname').value;
+            if(document.getElementById('set-male').checked) {
+                gender = 0;
+            } else if (document.getElementById('set-female').checked) {
+                gender = 1;
+            }
+            if (document.getElementById('set-licence-true').checked) {
+                drivingLicence = true;
+            } else if (document.getElementById('set-licence-false').checked) {
+                drivingLicence = false;
+            }
+            model.user.firstName = firstName;
+            model.user.lastName = lastName;
+            model.user.gender = gender;
+            model.user.drivingLicence = drivingLicence;
+
             const password = document.getElementById('set-password').value;
             const repeatPassword = document.getElementById('set-password-confirm').value;
             const id = model.user.userId;
             const role = model.user.role.name;
-            const credentials = {email, password, role};
+            const roleObj = model.user.role;
+            model.user.role = role;
+            const user = model.user;
+
+            const credentials = {email, password, role, user};
             if (password === '') {
                 delete credentials.password;
             }
             if (password === repeatPassword) {
-                window.base.rest.putUser(id, {email, password, role}).then(user => {
+                window.base.rest.putUser(id, {email, password, role, user}).then(user => {
                     if (user.error) {
+                        view.render();
                         alert(user.message);
                     } else {
+                        document.getElementById('email').innerText = email;
                         view.render();
-                        document.getElementById('email').textContent = email;
                     }
                 });
             } else {
                 alert('Passwords don\'t match');
             }
-            return false;
+            model.user.role = roleObj;
         },
         load: () => {
             document.getElementById('user-form').onsubmit = controller.submitUser;

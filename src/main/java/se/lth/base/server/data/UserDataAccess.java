@@ -64,21 +64,31 @@ public class UserDataAccess extends DataAccess<User> {
     }
 
     public User updateUser(int userId, Credentials credentials) {
+        User user = credentials.getUser();
+        Role role = credentials.getRole();
+        String email = credentials.getEmail();
+        String firstName = user.getFirstName();
+        String lastName = user.getLastName();
+        int gender = user.getGender();
+        boolean drivingLicence = user.getDrivingLicence();
+
         if (credentials.hasPassword()) {
             long salt = Credentials.generateSalt();
-            execute("UPDATE user SET email = ?, password_hash = ?, salt = ?, role_id = (" +
-                            "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
+            UUID passwordHash = credentials.generatePasswordHash(salt);
+            execute("UPDATE user SET email = ?, password_hash = ?, salt = ?, first_name = ?, last_name = ?, " +
+                            "gender = ?, driving_license = ?, " +
+                            "role_id = (SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    credentials.getEmail(), credentials.generatePasswordHash(salt), salt,
-                    credentials.getRole().name(), userId);
+                    email, passwordHash, salt, firstName, lastName, gender, drivingLicence, role.name(), userId);
         } else {
-            execute("UPDATE user SET email = ?, role_id = (" +
+            execute("UPDATE user SET email = ?, first_name = ?, last_name = ?, " +
+                            "gender = ?, driving_license = ?, role_id = (" +
                             "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    credentials.getEmail(), credentials.getRole().name(), userId);
+                    email, firstName, lastName, gender, drivingLicence, credentials.getRole().name(), userId);
         }
         return getUser(userId);
-    }
+    }	
 
     public User getUser(int userId) {
         return queryFirst("SELECT user_id, role, email, first_name, last_name, phone_number, gender, " +
