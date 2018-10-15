@@ -21,20 +21,22 @@ window.base.createDriveController = (() => {
 
     const controller = {
         createDrive: () => {
-            console.log('hej');
             let optWinterTires;
             let optBicycle;
             let optPets;
             const start = document.getElementById('set-from').value;
             const stop = document.getElementById('set-to').value;
             const date = document.getElementById('set-date').value;
-            const tmpTime = document.getElementById('set-time').value;
-            const splitTime = tmpTime.split(':');
-            const departureTime = ((+splitTime[0] * (60000 * 60)) + (+splitTime[1] * 60000));
+            const arrivalValue = document.getElementById('set-time-arrival').value;
+            const arrivalDate = new Date(date + "T" + arrivalValue + ":00+0000");
+            const arrivalTime = arrivalDate.getTime();
             const comment = document.getElementById('set-comment').value;
             const carBrand = document.getElementById('set-brand').value;
             const carModel = document.getElementById('set-model').value;
             const year = document.getElementById('set-year').value;
+            const departureValue = document.getElementById('set-time-leave').value;
+            const departureDate = new Date(date + "T" + departureValue + ":00+0000");
+            const departureTime = departureDate.getTime();
             const carColor = document.getElementById('set-color').value;
             const carLicensePlate = document.getElementById('set-licence').value;
             const carNumberOfSeats = document.getElementById('set-seats').value;
@@ -61,6 +63,7 @@ window.base.createDriveController = (() => {
             console.log(stop);
             console.log(date);
             console.log(departureTime);
+            console.log(arrivalTime);
             console.log(comment);
             console.log(carBrand);
             console.log(carModel);
@@ -72,10 +75,10 @@ window.base.createDriveController = (() => {
             console.log(optWinterTires);
             console.log(optBicycle);
             console.log(optPets);
-            
+
             const driveId = 0;
 
-            const drive = {driveId, start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets};
+            const drive = {driveId, start, stop, departureTime, arrivalTime, comment, carBrand, carModel, carColor, carLicensePlate, carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets};
 
             const milestoneId = 0;
             const milestone = comment;
