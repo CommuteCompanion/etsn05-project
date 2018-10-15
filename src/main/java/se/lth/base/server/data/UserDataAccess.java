@@ -110,6 +110,19 @@ public class UserDataAccess extends DataAccess<User> {
     }
 
     /**
+     * Updates the drivers rating after a drive.
+     *
+     * @param userId the userId of the driver.
+     * @param rating the rating that the driver recieves.
+     */
+    public boolean updateUserRating(int userId, int rating) {
+        return execute("UPDATE user SET ratingTotalScore = " +
+                "(SELECT ratingTotalScore FROM user WHERE user_id = ?) + ?, " +
+                "numberOfReviews =  (SELECT numberOfReviews FROM user WHERE user_id = ?) + 1 " +
+                "WHERE user_id = ?", userId, rating, userId, userId) > 0;
+    }
+
+    /**
      * Fetch session and the corresponding user.
      *
      * @param sessionId globally unqiue identifier, stored in the client.
