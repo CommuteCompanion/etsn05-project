@@ -48,7 +48,7 @@ window.base.rest = (() => {
         }),
 
         addDrive: (driveWrap) => baseFetch('/rest/drive/', {
-            method: 'post',
+            method: 'POST',
             body: JSON.stringify(driveWrap),
             headers: jsonHeader
         })
