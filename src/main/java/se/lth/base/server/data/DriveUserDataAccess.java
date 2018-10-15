@@ -50,6 +50,10 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
         return getDriveUser(driveId, userId);
     }
 
+    public boolean hasRated(int userId, int driveId) {
+        return execute("UPDATE drive_user SET rated = ? WHERE user_id = ? AND drive_id = ?", HAS_RATED, userId, driveId) > 0;
+    }
+
     public DriveUser getDriveUser(int driveId, int userId) {
         return queryFirst("SELECT drive_id, user_id, start, stop, is_driver, accepted, rated FROM drive_user WHERE drive_id = ? AND user_id = ?",
                 driveId, userId);
