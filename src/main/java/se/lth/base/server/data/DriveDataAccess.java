@@ -64,7 +64,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
         boolean optBicycle = drive.getOptBicycle();
         boolean optPets = drive.getOptPets();
 
-        execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, arrival_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?)",
+        execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, arrival_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?",
                 start, stop, new Timestamp(departureTime), new Timestamp(arrivalTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);
 
@@ -81,9 +81,9 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
 
     public List<Drive> getReportedDrives() {
-        return query("SELECT drive_id, start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive INNER JOIN drive_report ON drive_id");
+        return query("SELECT * FROM drive INNER JOIN drive_report ON drive.drive_id");
     }
-    
+
     private static final class DriveMapper implements Mapper<Drive> {
         @Override
         public Drive map(ResultSet resultSet) throws SQLException {

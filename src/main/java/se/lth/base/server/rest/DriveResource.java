@@ -176,9 +176,18 @@ public class DriveResource {
     @GET
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<Drive> getDrivesForUser(@PathParam("userId") int userId) {
+    public List<DriveWrap> getDrivesForUser(@PathParam("userId") int userId) {
         if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
-            return driveDao.getDrivesForUser(userId);
+        	List<DriveWrap> driveWraps = new ArrayList<DriveWrap>();
+        	List<Drive> drives = driveDao.getDrivesForUser(userId);
+        	
+        	for(Drive d : drives) {
+        		List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
+        		List<DriveUser> users = driveUserDao.getDriveUsersForDrive(d.getDriveId());
+        		List<DriveReport> reports = driveReportDao.getDriveReportsForDrive(d.getDriveId());
+        		driveWraps.add(new DriveWrap(d, milestones, users, reports));
+        	}
+            return driveWraps;
         }
         throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
     }
