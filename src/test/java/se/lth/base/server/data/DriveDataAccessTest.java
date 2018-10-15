@@ -5,12 +5,11 @@ import org.junit.Test;
 import se.lth.base.server.Config;
 import se.lth.base.server.database.BaseDataAccessTest;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -30,15 +29,12 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
         long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
         drive1 = driveDao.addDrive(new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive1Id = drive1.getDriveId();
-
     }
 
     @Test
     public void addDrive() {
         List<Drive> drives = driveDao.getDrives();
-        for (Drive d : drives) {
-            assertEquals(d.getDriveId(), drive1Id);
-        }
+        assertEquals(drives.get(0).getDriveId(), drive1Id);
     }
 
     @Test
@@ -65,67 +61,39 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void getReportedDrives() {
-        int idStart = 3;
-        User SEARCH_TEST_1 = new User(idStart, Role.USER, "test1@commutecompanion.se", "ST1FirstName", "ST1LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
-        Credentials SEARCH_TEST_CREDENTIALS_1 = new Credentials("test1@commutecompanion.se", "test", Role.USER, SEARCH_TEST_1);
-
-        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-
-        User user1 = userDao.addUser(SEARCH_TEST_CREDENTIALS_1);
-
-
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
-        driveUserDao.addDriveUser(drive1.getDriveId(), user1.getId(), "A", "F", true, true, false);
+        driveUserDao.addDriveUser(drive1.getDriveId(), TEST.getId(), "A", "F", true, true, false);
         DriveReportDataAccess driveReportDao = new DriveReportDataAccess(Config.instance().getDatabaseDriver());
-        driveReportDao.addDriveReport(drive1Id, user1.getId(), "Bad driver");
+        driveReportDao.addDriveReport(drive1Id, TEST.getId(), "Bad driver");
         assertEquals(1, driveDao.getReportedDrives().size());
     }
 
     @Test
     public void getNumberOfDrivesForUser() {
-        int idStart = 3;
-        User SEARCH_TEST_1 = new User(idStart, Role.USER, "test1@commutecompanion.se", "ST1FirstName", "ST1LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
-        Credentials SEARCH_TEST_CREDENTIALS_1 = new Credentials("test1@commutecompanion.se", "test", Role.USER, SEARCH_TEST_1);
-
-        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-
-        User user1 = userDao.addUser(SEARCH_TEST_CREDENTIALS_1);
-
-
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
-        driveUserDao.addDriveUser(drive1.getDriveId(), user1.getId(), "A", "F", true, true, false);
+        driveUserDao.addDriveUser(drive1.getDriveId(), TEST.getId(), "A", "F", true, true, false);
 
-        assertEquals(1, driveDao.getNumberOfDrivesForUser(user1.getId()));
-
+        assertEquals(1, driveDao.getNumberOfDrivesForUser(TEST.getId()));
     }
 
     @Test
     public void getDrivesForUser() {
-        int idStart = 3;
-        User SEARCH_TEST_1 = new User(idStart, Role.USER, "test1@commutecompanion.se", "ST1FirstName", "ST1LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
-        Credentials SEARCH_TEST_CREDENTIALS_1 = new Credentials("test1@commutecompanion.se", "test", Role.USER, SEARCH_TEST_1);
-
-        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-        User user1 = userDao.addUser(SEARCH_TEST_CREDENTIALS_1);
-
         long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
         long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
         Drive drive2 = driveDao.addDrive(new Drive(-1, "A", "B", departureTime, arrivalTime, "i", "j", "k", "l", "m", 3, 2, false, false, false));
 
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
 
-        driveUserDao.addDriveUser(drive1.getDriveId(), user1.getId(), "A", "F", true, true, false);
-        driveUserDao.addDriveUser(drive2.getDriveId(), user1.getId(), "A", "B", true, true, false);
-        assertEquals(2, driveDao.getNumberOfDrivesForUser(user1.getId()));
+        driveUserDao.addDriveUser(drive1.getDriveId(), TEST.getId(), "A", "F", true, true, false);
+        driveUserDao.addDriveUser(drive2.getDriveId(), TEST.getId(), "A", "B", true, true, false);
+        assertEquals(2, driveDao.getNumberOfDrivesForUser(TEST.getId()));
     }
 
     @Test
     public void deleteDrive() {
         driveDao.deleteDrive(drive1Id);
         List<Drive> drives = driveDao.getDrives();
-        for (Drive d : drives) {
-            assertNotEquals(d.getDriveId(), drive1Id);
-        }
-
+        assertTrue(drives.isEmpty());
     }
 }
+
