@@ -18,12 +18,13 @@ window.base.createDriveController = (() => {
             console.log(u);
         }).then(u => {
             window.base.rest.getDriveForUser(model.user.userId).then(d => {
+                console.log(d);
                 if (d === null) {
-                    document.getElementById('drive-header').value = 'Create Drive'
+                    document.getElementById('drive-header').value = 'Create Drive';
                 } else {
                     model.drive = d;
                     console.log(d);
-                    document.getElementById('drive-header').value = 'Edit Drive'
+                    document.getElementById('drive-header').value = 'Edit Drive';
                 }
             })
         })
@@ -151,13 +152,15 @@ window.base.createDriveController = (() => {
                 view.renderDrive(1);
                 view.renderDrive(2);
                 view.renderDrive(3);
-                //view.renderUser();
+                view.renderUser();
             });
         },
 
         updateDrive: () => window.base.rest.updateDrive(),
 
-        deleteDrive: () => widow.base.rest.deleteDrive(),
+        deleteDrive: () => {
+            widow.base.rest.deleteDrive(model.drive.driveId);
+        },
 
         load: () => {
             document.getElementById('user-form').onsubmit = controller.createDrive;

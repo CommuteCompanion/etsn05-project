@@ -111,7 +111,7 @@ window.base.rest = (() => {
         deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'}),
         
         getDrive: id => baseFetch('/rest/drive/' + id, {
-            method: 'GET',
+            method: 'GET'
         })
             .then(response => response.json())
             .then(d => new DriveWrap(d)),
@@ -135,7 +135,10 @@ window.base.rest = (() => {
             headers: jsonHeader
         })
             .then(response => response.json())
-            .then(driveWraps => driveWraps.map(d => new DriveWrap(d)))
+            .then(driveWraps => driveWraps.map(d => new DriveWrap(d))),
+        deleteDrive: (id) => baseFetch('/rest/drive/' + id, {
+            method: 'DELETE'
+        })     
     };
 })();
 
