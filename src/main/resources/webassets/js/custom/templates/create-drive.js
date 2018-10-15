@@ -36,7 +36,7 @@ window.base.createDriveController = (() => {
             const carModel = document.getElementById('set-model').value;
             const year = document.getElementById('set-year').value;
             const carColor = document.getElementById('set-color').value;
-            const carLicencePlate = document.getElementById('set-licence').value;
+            const carLicensePlate = document.getElementById('set-licence').value;
             const carNumberOfSeats = document.getElementById('set-seats').value;
             const tmpLuggage = document.getElementById('set-luggage');
             const optLuggageSize = tmpLuggage.options[tmpLuggage.selectedIndex].value;
@@ -66,7 +66,7 @@ window.base.createDriveController = (() => {
             console.log(carModel);
             console.log(year);
             console.log(carColor);
-            console.log(carLicencePlate);
+            console.log(carLicensePlate);
             console.log(carNumberOfSeats);
             console.log(optLuggageSize);
             console.log(optWinterTires);
@@ -75,14 +75,14 @@ window.base.createDriveController = (() => {
             
             const driveId = 0;
 
-            const drive = {driveId, start, stop, departureTime, comment, carBrand, carModel, carColor, carLicencePlate, carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets};
+            const drive = {driveId, start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate, carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets};
 
             const milestoneId = 0;
             const milestone = comment;
 
             const driveMilestone = {milestoneId, driveId, milestone, departureTime};
 
-            const milestones = [milestone];
+            const milestones = [driveMilestone];
 
             const user = model.user;
             const users = [user];

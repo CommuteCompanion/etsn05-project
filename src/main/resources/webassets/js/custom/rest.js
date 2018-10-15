@@ -5,6 +5,17 @@ window.base.rest = (() => {
         this.name = role;
         this.label = this.name[0] + this.name.toLowerCase().slice(1);
     }
+    
+    function DriveMilestone(driveMilestone) {
+        this.milestoneId = driveMilestone.milestoneId;
+        this.driveId = driveMilestone.driveId;
+        this.milestone = driveMilestone.milestone;
+        this.departureTime = driveMilestone.departureTime;
+    }
+    
+    function DriveReport(driveReport) {
+        
+    }
 
     function User(json) {
         Object.assign(this, json);
@@ -15,8 +26,10 @@ window.base.rest = (() => {
     }
     
     function DriveWrap(driveWrap) {
-        this.name = role;
-        this.label = this.name[0] + this.name.toLowerCase().slice(1);
+        this.drive = new Drive(driveWrap.drive);
+        this.milestones = new DriveMilestone(driveWrap.milestones);
+        this.users = [new User(driveWrap.user)];
+        this.reports = [new DriveReport(driveWrap.reports)];
     }
     
     function Drive(json) {
@@ -87,7 +100,7 @@ window.base.rest = (() => {
             headers: jsonHeader
         })
             .then(response => response.json())
-            .then(u => objOrError(u, User))
+            .then(d => objOrError(d, Drive))
     };
 })();
 
