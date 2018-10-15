@@ -12,21 +12,20 @@ window.base.searchController = (() => {
             console.log(msg); // to be implemented in to an alert box
         },
         renderSearchResults: () => {
+            const optActive = 'text-info';
+            const optNotActive = 'text-muted';
             let searchResultsWrapper = document.getElementById('search-results');
             let searchResults = '';
 
             for (let i = 0; i < model.searchResults.length; i++) {
                 const drive = model.searchResults[i].drive;
-                const driveName = drive.start + ' ' + drive.stop;
+                const driveName = drive.start + ' to ' + drive.stop;
                 const departureTime = drive.departureTime;
                 const carBrand = drive.carBrand;
                 const carModel = drive.carModel;
                 const carYear = drive.carYear;
                 const carLicensePlate = drive.carLicensePlate;
                 const carNumberOfSeats = drive.carNumberOfSeats;
-
-                const optActive = 'text-info';
-                const optNotActive = 'text-muted';
                 const optLuggage = drive.optLuggageSize > 0 ? optActive : optNotActive;
                 const optWinterTires = drive.optWinterTires ? optActive : optNotActive;
                 const optBicycle = drive.optBicycle ? optActive : optNotActive;
@@ -46,21 +45,24 @@ window.base.searchController = (() => {
 
                     if (users[j].driver) {
                         const userId = users[j].userId;
-                        const driver = window.base.rest.getUser(userId);
-                        driverFirstName = driver.firstName;
-                        driverGender = driver.gender === 0 ? 'Male' : 'Female';
 
-                        let today = new Date();
-                        let dob = new Date(driver.dateOfBirth);
-                        driverAge = today.getFullYear() - dob.getFullYear();
-                        let m = today.getMonth() - dob.getMonth();
-                        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-                            driverAge--;
-                        }
+                        window.base.rest.getUser(userId)
+                            .then(driver => {
+                                driverFirstName = driver.firstName;
+                                driverGender = driver.gender === 0 ? 'Male' : 'Female';
 
-                        driverNumberDriven = window.rest.getNumberOfDrivesForUser(userId);
-                        driverReviews = driver.numberOfRatings;
-                        driverRating = parseFloat(driver.ratingTotalScore / driverReviews).toFixed(2);
+                                let today = new Date();
+                                let dob = new Date(driver.dateOfBirth);
+                                driverAge = today.getFullYear() - dob.getFullYear();
+                                let m = today.getMonth() - dob.getMonth();
+                                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                                    driverAge--;
+                                }
+
+                                driverNumberDriven = window.base.rest.getNumberOfDrivesForUser(userId);
+                                driverReviews = driver.numberOfRatings;
+                                driverRating = parseFloat(driver.ratingTotalScore / driverReviews).toFixed(2);
+                            })
                     }
                 }
 
@@ -77,92 +79,13 @@ window.base.searchController = (() => {
                 }
 
                 // language=HTML
-                searchResults += `
-        <div class="row border bg-white shadow-sm">
-            <div class="col-2 border-right">
-                <h5 class="mt-3 mb-0 text-muted font-weight-bold">${driverFirstName}</h5>
-                <p class="text-muted">${driverGender}, ${driverAge}</p>
-                <div class="row mt-4">
-                    <div class="col-2">
-                        <p class="mb-0 text-muted"><i class="fas fa-car fa-sm"></i></p>
-                        <p class="text-muted mb-0"><i class="fas fa-star fa-sm"></i></p>
-                        <p class="text-muted"><i class="fas fa-chart-bar fa-sm"></i></p>
-                    </div>
-                    <div class="col-9">
-                        <p class="text-muted mb-0">${driverNumberDriven} driven</p>
-                        <p class="text-muted mb-0">${driverRating} rating</p>
-                        <p class="text-muted">${driverReviews} reviews</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-5 border-right">
-                <table class="h-100 w-100">
-                    <tr>
-                        <td class="align-top">
-                            <a id="drive-link" href="#/drive">
-                                <h5 class="mt-3 mb-0 text-danger font-weight-bold">${driveName}</h5>     
-                            </a>
-                            <div class="row">
-                                <div class="col-3">
-                                        <p class="text-muted">Leaving:</p>
-                                </div>
-                                <div class="col-9">
-                                    <p class="text-muted">${departureTime}</p>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    <td class="align-bottom">
-                        <div class="row mb-0">
-                            <div class="col-3">
-                                <p class="text-muted mb-0">Pickup:</p>
-                                <p class="text-muted">Dropoff:</p>
-                            </div>
-                            <div class="col-9">
-                                <p class="text-muted mb-0">${tripStart}</p>
-                                <p class="text-muted">${tripStop}</p>
-                            </div>
-                        </div>
-                    </td>
-                </table>
-            </div>
-            <div class="col-3 border-right">
-                <table class="h-100 w-100">
-                    <tr>
-                        <td class="align-top">
-                            <h5 class="mt-3 mb-0 text-muted font-weight-bold">${carBrand} ${carModel}</h5>
-                            <p class="text-muted mb-0">${carYear} | ${carLicensePlate}</p>
-                        </td>
-                    </tr>
-                    <td class="align-bottom">
-                        <p class="text-muted mb-0">Vehicle preferences</p>
-                        <p>
-                            <i class="fas fa-suitcase fa-lg ${optLuggage}"></i>
-                            <i class="fas fa-snowflake fa-lg ${optWinterTires}"></i>
-                            <i class="fas fa-bicycle fa-lg ${optBicycle}"></i>
-                            <i class="fas fa-paw fa-lg ${optPets}"></i>
-                        </p>
-                    </td>
-                </table>
-            </div>
-            <div class="col-2">
-                <table class="h-100 w-100">
-                    <tr>
-                        <td class="align-top">
-                            <h5 id="drive-seats-left" class="mt-3 text-muted font-weight-bold">${driveNumberOfSeatsLeft} seats left</h5>
-                            ${passengerIcons}
-                        </td>
-                    </tr>
-                    <td class="align-bottom">
-                        <button class="mb-3 btn btn-danger btn-sm btn-block request-btn">Request</button>
-                    </td>
-                </table>
-            </div>
-        </div>`
+                searchResults += `\n        <div class="row border bg-white shadow-sm">\n            <div class="col-2 border-right">\n                <h5 class="mt-3 mb-0 text-muted font-weight-bold">${driverFirstName}</h5>\n                <p class="text-muted">${driverGender}, ${driverAge}</p>\n                <div class="row mt-4">\n                    <div class="col-2">\n                        <p class="mb-0 text-muted"><i class="fas fa-car fa-sm"></i></p>\n                        <p class="text-muted mb-0"><i class="fas fa-star fa-sm"></i></p>\n                        <p class="text-muted"><i class="fas fa-chart-bar fa-sm"></i></p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted mb-0">${driverNumberDriven} driven</p>\n                        <p class="text-muted mb-0">${driverRating} rating</p>\n                        <p class="text-muted">${driverReviews} reviews</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-5 border-right">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <a id="drive-link" href="#/drive">\n                                <h5 class="mt-3 mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                            </a>\n                            <div class="row">\n                                <div class="col-3">\n                                        <p class="text-muted">Leaving:</p>\n                                </div>\n                                <div class="col-9">\n                                    <p class="text-muted">${departureTime}</p>\n                                </div>\n                            </div>\n                        </td>\n                    </tr>\n                    <td class="align-bottom">\n                        <div class="row mb-0">\n                            <div class="col-3">\n                                <p class="text-muted mb-0">Pickup:</p>\n                                <p class="text-muted">Dropoff:</p>\n                            </div>\n                            <div class="col-9">\n                                <p class="text-muted mb-0">${tripStart}</p>\n                                <p class="text-muted">${tripStop}</p>\n                            </div>\n                        </div>\n                    </td>\n                </table>\n            </div>\n            <div class="col-3 border-right">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <h5 class="mt-3 mb-0 text-muted font-weight-bold">${carBrand} ${carModel}</h5>\n                            <p class="text-muted mb-0">${carYear} | ${carLicensePlate}</p>\n                        </td>\n                    </tr>\n                    <td class="align-bottom">\n                        <p class="text-muted mb-0">Vehicle preferences</p>\n                        <p>\n                            <i class="fas fa-suitcase fa-lg ${optLuggage}"></i>\n                            <i class="fas fa-snowflake fa-lg ${optWinterTires}"></i>\n                            <i class="fas fa-bicycle fa-lg ${optBicycle}"></i>\n                            <i class="fas fa-paw fa-lg ${optPets}"></i>\n                        </p>\n                    </td>\n                </table>\n            </div>\n            <div class="col-2">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <h5 id="drive-seats-left" class="mt-3 text-muted font-weight-bold">${driveNumberOfSeatsLeft} seats left</h5>\n                            ${passengerIcons}\n                        </td>\n                    </tr>\n                    <td class="align-bottom">\n                        <button class="mb-3 btn btn-danger btn-sm btn-block request-btn">Request</button>\n                    </td>\n                </table>\n            </div>\n        </div>`
 
             }
 
             searchResultsWrapper.innerHTML = searchResults;
+
+            document.getElementsByClassName('drive-link').onclick = controller.goToDrive;
         }
     };
 
@@ -180,33 +103,64 @@ window.base.searchController = (() => {
 
             controller.performSearch({searchFilterId: 0, userId, start, stop, departureTime})
         },
-        performSearch: searchFilter => {
-            window.base.rest.searchDrives(searchFilter).then(drives => {
+        getDriverInfo: () => {
+            window.base.rest.getUser(userId)
+                .then(driver => {
+                    driverFirstName = driver.firstName;
+                    driverGender = driver.gender === 0 ? 'Male' : 'Female';
+
+                    let today = new Date();
+                    let dob = new Date(driver.dateOfBirth);
+                    driverAge = today.getFullYear() - dob.getFullYear();
+                    let m = today.getMonth() - dob.getMonth();
+                    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                        driverAge--;
+                    }
+
+                    driverNumberDriven = window.base.rest.getNumberOfDrivesForUser(userId);
+                    driverReviews = driver.numberOfRatings;
+                    driverRating = parseFloat(driver.ratingTotalScore / driverReviews).toFixed(2);
+                })
+        },
+        performSearch: searchFilter => window.base.rest.searchDrives(searchFilter)
+            .then(drives => {
                 if (drives.error) {
-                    view.showFailure(drives.message);
+                    throw drives;
                 } else {
                     model.searchResults = drives;
-                    view.renderSearchResults();
+
+                    return Promise.all(drives.map(drive => {
+
+                    }));
                 }
-            });
-        },
-        getUser: () => {
-            window.base.rest.getUser().then(u => {
-                model.user = u;
-            });
-        },
+            })
+            .then(() => {
+
+            }).then(() => {
+                view.renderSearchResults();
+
+            }),
+        getUser: () => window.base.rest.getUser().then(u => model.user = u),
         goToDrive: () => {
-            window.base.driveController.load(model.searchQuery);
-            window.base.changeLocation('#/drive');
+            fetch('templates/drive.html')
+                .then(response => response.text())
+                .then(tabHtml => {
+                    document.getElementById('main-tab').innerHtml = tabHtml;
+                    window.base.driveController.load(model.searchQuery);
+                })
         },
         load: () => {
             document.getElementById('drive-search').onsubmit = controller.submitSearch;
-            controller.getUser();
+            controller.getUser()
+                .then(() => controller.performSearch({
+                    searchFilterId: 0,
+                    userId: model.user.userId,
+                    start: null,
+                    stop: null,
+                    departureTime: -1
+                }))
+                .then(() => view.renderSearchResults())
 
-            document.getElementById('drive-link').onclick = controller.goToDrive();
-
-            // Perform empty search
-            controller.performSearch({searchFilterId: 0, userId: 0, start: null, stop: null, departureTime: 0});
         },
         initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.searchController.load())
     };

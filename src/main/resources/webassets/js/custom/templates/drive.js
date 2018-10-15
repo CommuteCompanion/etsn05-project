@@ -2,6 +2,7 @@ window.base = window.base || {};
 
 window.base.driveController = (() => {
     const model = {
+        user: {},
         driveUser: {}
     };
 
@@ -29,41 +30,31 @@ window.base.driveController = (() => {
     };
 
     const controller = {
-        submitRequest: e => {
-            e.preventDefault();
-
-            const driveId = 0;
-            const userId = 0;
-            const start = '';
-            const stop = '';
-            const driver = false;
-            const accepted = false;
-            const rated = false;
-            const comment = document.getElementById('request-comment').value;
-
-            const driveUser = {driveId, userId, start, stop, driver, accepted, rated, comment};
-
-            window.base.rest.requestSeat(driveUser)
-                .catch(e => {
-                    view.showFailure(e.message);
-                })
-                .then(() => {
-                    view.showSuccess();
-                })
-        },
+        submitRequest: () => window.base.rest.requestSeat(model.driveUser)
+            .catch(e => view.showFailure(e.message))
+            .then(() => view.showSuccess()),
+        getUser: () => window.base.rest.getUser().then(u => {
+            model.user = u;
+            model.driveUser.userId = u.userId;
+        }),
         load: searchQuery => {
-            if(typeof searchQuery === 'undefined') {
+            if (typeof searchQuery === 'undefined') {
                 window.base.changeLocation('#/search');
             }
 
-            model.driveUser.driveId = searchQuery.driveId;
-            model.driveUser.start = searchQuery.tripStart;
-            model.driveUser.stop = searchQuery.tripStop;
+            model.driveUser = {
+                driveId: searchQuery.driveId,
+                start: searchQuery.tripStart,
+                stop: searchQuery.tripStop,
+                driver: false,
+                accepted: false,
+                rated: false
+            };
 
-            document.getElementById('drive-request').onsubmit = controller.submitRequest;
+            document.getElementById('drive-request').onclick = controller.submitRequest
         },
-        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.driveController.load())
     };
 
     return controller;
-});
+})
+;

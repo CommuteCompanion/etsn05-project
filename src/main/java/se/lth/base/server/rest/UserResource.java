@@ -102,7 +102,7 @@ public class UserResource {
 
     @Path("{userId}")
     @GET
-    @RolesAllowed(Role.Names.ADMIN)
+    @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public User getUser(@PathParam("userId") int userId) {
         return userDao.getUser(userId);
