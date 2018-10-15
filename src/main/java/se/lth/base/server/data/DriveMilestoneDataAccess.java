@@ -25,8 +25,8 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
         super(driverUrl, new MilestoneMapper());
     }
 
-	public DriveMilestone updateMilestone(int milestoneId, String milestone) {
-        execute("UPDATE drive_milestone SET milestone_name = ? WHERE milestone_id = ?", milestone, milestoneId);
+    public DriveMilestone updateMilestone(int milestoneId, String milestone, long departureTime) {
+        execute("UPDATE drive_milestone SET milestone_name = ?, departure_time = ? WHERE milestone_id = ?", milestone, new Timestamp(departureTime), milestoneId);
 		return getMilestone(milestoneId);
 	}
 
@@ -38,6 +38,10 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
         return query("SELECT milestone_id, drive_id, milestone_name, departure_time FROM drive_milestone WHERE drive_id = ?", driveId);
     }
 
+    public boolean deleteMilestone(int milestoneId) {
+        return execute("DELETE FROM drive_milestone WHERE milestone_id = ?", milestoneId) > 0;
+    }
+
     private static final class MilestoneMapper implements Mapper<DriveMilestone> {
         @Override
         public DriveMilestone map(ResultSet resultSet) throws SQLException {
@@ -47,8 +51,4 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
                     resultSet.getObject("departure_time", Timestamp.class).getTime());
         }
     }
-
-	public boolean deleteMilestone(int milestoneId) {
-		return execute("DELETE FROM drive_milestone WHERE milestone_id = ?", milestoneId) > 0;
-	}
 }
