@@ -7,7 +7,20 @@ window.base.reportedDrivesController = (() => {
 
     const controller = {
         load: function() {
-            const driveId = 0;
+            // TODO: Add responsiveness to buttons!
+
+            base.rest.getReportedDrives().then(function(drives) {
+                model.drives = drives;
+                return drives;
+            }).then(function() {
+                console.log(model.drives);
+            });
+            //debug();
+        },
+        debug: function() {
+            // TODO: Add responsiveness to buttons!
+
+            const driveId = 1;
             const start = 'start';
             const stop = 'stop';
             const departureTime = Date.parse('2011-10-10T14:48:00');
@@ -42,9 +55,25 @@ window.base.reportedDrivesController = (() => {
             const driveWrap = {
                 drive, milestones, users, reports
             };
-            base.rest.addDrive(driveWrap).then(d => {
-                alert(d.message);
+
+            const reportId = 0;
+            //const driveId = 0;
+            const reportedByUserId = 1;
+            const reportMessage = 'HE HIT ME!';
+            const driveReport = {reportId, driveId, reportedByUserId, reportMessage};
+            
+            base.rest.addReport(driveId, driveReport).then(d => {
+                console.log(d);
             });
+           // base.rest.getReportedDrives().then( {
+
+            //});
+
+/*             base.rest.addDrive(driveWrap).then(d => {
+                alert(d.message);
+            }).then( */
+
+           // );
             
             //base.rest.getReportedDrives().then(function(drives) {
             //    model.drives = drives;

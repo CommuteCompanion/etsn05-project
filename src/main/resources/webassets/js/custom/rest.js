@@ -15,9 +15,15 @@ window.base.rest = (() => {
     }
 
     function Drive(json) {
-        Object.assign(this, json) ;
+        Object.assign(this, json);
+        this.json = json;
+    }
         
     function DriveWrap(json) {
+        Object.assign(this, json);
+        this.json = json;
+    }
+    function DriveReport(json) {
         Object.assign(this, json);
         this.json = json;
     }
@@ -27,6 +33,7 @@ window.base.rest = (() => {
     window.base.User = User;
     window.base.Role = Role;
     window.base.DriveWrap = DriveWrap;
+    window.base.DriveReport = DriveReport;
 
     const baseFetch = (url, config) => {
         config = config || {};
@@ -42,15 +49,23 @@ window.base.rest = (() => {
     };
 
     return {
-        getReportedDrives: () => baseFetch('/rest/drive/all')
+        getReportedDrives: () => baseFetch('/rest/drive/all-reports')
         .then(response => response.json())
-        .then(drives => drives.map(d => new Drive(d))),
+        .then(drives => drives.map(d => new DriveReport(d))),
+
+        getDrive: (id) => baseFetch('/rest/user/' + id, {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(d => new DriveWrap(d)),
 
         putDrive: (id, drive) => baseFetch('/rest/drive/' + id, {
             method: 'PUT',
             body: JSON.stringify(drive),
             headers: jsonHeader
-        }),
+        })
+        .then(response => response.json())
+        .then(d => objOrError(d, DriveWrap)),
 
         addDrive: (driveWrap) => baseFetch('/rest/drive/', {
             method: 'POST',
@@ -58,7 +73,15 @@ window.base.rest = (() => {
             headers: jsonHeader
         })
         .then(response => response.json())
-        .then(d => objOrError(d, Drive)),
+        .then(d => objOrError(d, DriveWrap)),
+
+        addReport: (id, driveReport) => baseFetch('rest/drive/' + id + '/report', {
+            method: 'POST',
+            body: JSON.stringify(driveReport),
+            headers: jsonHeader
+        })
+        .then(response => response.json())
+        .then(d => objOrError(d, DriveReport)),
 
         searchDrives: searchFilter => baseFetch('/rest/search/drives', {
             method: 'POST',
@@ -67,7 +90,7 @@ window.base.rest = (() => {
         })
             .then(response => response.json())
             .then(drives => drives.map(d => new DriveWrap(d))),
-            
+
         getUser: userId => typeof userId === 'undefined' ?
             baseFetch('/rest/user')
                 .then(response => response.json())
@@ -75,6 +98,7 @@ window.base.rest = (() => {
             baseFetch('/rest/user/' + userId)
                 .then(response => response.json())
                 .then(u => new User(u)),
+
         getNumberOfDrivesForUser: userId => {
             baseFetch('/rest/drive/count/' + userId)
                 .then(response => response.json())
@@ -86,9 +110,11 @@ window.base.rest = (() => {
             headers: jsonHeader
         }),
         logout: () => baseFetch('/rest/user/logout', {method: 'POST'}),
+
         getUsers: () => baseFetch('/rest/user/all')
             .then(response => response.json())
             .then(users => users.map(u => new User(u))),
+
         getRoles: () => baseFetch('/rest/user/roles')
             .then(response => response.json())
             .then(roles => roles.map(r => new Role(r))),
@@ -99,6 +125,7 @@ window.base.rest = (() => {
         })
             .then(response => response.json())
             .then(u => objOrError(u, User)),
+
         putUser: (id, credentials) => baseFetch('/rest/user/' + id, {
             method: 'PUT',
             body: JSON.stringify(credentials),
