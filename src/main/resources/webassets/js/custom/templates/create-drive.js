@@ -19,11 +19,11 @@ window.base.createDriveController = (() => {
         }).then(u => {
             window.base.rest.getDriveForUser(model.user.userId).then(d => {
                 if (d === null) {
-                    
+                    document.getElementById('drive-header').value = 'Create Drive'
                 } else {
                     model.drive = d;
                     console.log(d);
-                    
+                    document.getElementById('drive-header').value = 'Edit Drive'
                 }
             })
         })
