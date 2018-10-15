@@ -52,7 +52,7 @@ window.base.mainController = (() => {
         },
         hideAdminLinks: () => document.querySelectorAll('#main-nav li.admin-only').forEach(li => li.style.display = 'none'),
         hideUserLinks: () => document.querySelectorAll('#main-nav li.user-only').forEach(li => li.style.display = 'none'),
-        renderFirstName: () => document.getElementById('email').textContent = model.user.firstName
+        renderFirstName: () => document.getElementById('navbar-first-name').textContent = model.user.firstName
     };
 
     const controller = {
