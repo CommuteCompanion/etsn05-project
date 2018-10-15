@@ -120,6 +120,93 @@ public class SearchResource {
         return users;
     }
 
+    /**
+     * Checks if it is possible for a user to book a specific Drive.
+     *
+     * @param driveId the id of the drive that one wishes to see if it is possible to book
+     * @param start   at what milestone the user will be starting at
+     * @param stop    at what milestone the user will stop at
+     * @return a list of drives associated with this user, conflicting with the entered drive
+     */
+    @Path("checkbookingoverlap/{driveId}/{start}/{stop}")
+    @GET
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public List<Drive> checkBookingOverlap(@PathParam("driveId") int driveId, @PathParam("start") String start, @PathParam("stop") String stop) {
+        Drive drive = driveDao.getDrive(driveId);
+        List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(driveId);
+        // Add drive start and stop as milestones to list
+        driveMilestones.add(0, new DriveMilestone(-1, -1, drive.getStart(), drive.getDepartureTime()));
+        driveMilestones.add(new DriveMilestone(-1, -1, drive.getStop(), drive.getArrivalTime()));
+
+        // Find the time that the user would be busy if user participated in drive
+        long busyTimeStart = -1;
+        long busyTimeEnd = -1;
+
+        for (DriveMilestone dm : driveMilestones) {
+            if (dm.getMilestone().equals(start)) {
+                busyTimeStart = dm.getDepartureTime();
+            } else if (dm.getMilestone().equals(stop)) {
+                busyTimeEnd = dm.getDepartureTime();
+            }
+        }
+
+        // Check for time conflicts with other already booked drives/trips
+        List<Drive> associatedDrives = getDriveAssociatedWithUser(user.getId());
+        Iterator<Drive> driveIterator = associatedDrives.iterator();
+        while (driveIterator.hasNext()) {
+            Drive d = driveIterator.next();
+            List<DriveMilestone> tempDriveMilestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
+            // Add drive start and stop as milestones to list
+            tempDriveMilestones.add(0, new DriveMilestone(-1, -1, d.getStart(), d.getDepartureTime()));
+            tempDriveMilestones.add(new DriveMilestone(-1, -1, d.getStop(), d.getArrivalTime()));
+
+            // Find the time that the user is busy in this drive
+            long tempBusyTimeStart = -1;
+            long tempBusyTimeEnd = -1;
+
+            DriveUser driveUser = driveUserDao.getDriveUser(d.getDriveId(), user.getId());
+
+            for (DriveMilestone dm : tempDriveMilestones) {
+                if (dm.getMilestone().equals(driveUser.getStart())) {
+                    tempBusyTimeStart = dm.getDepartureTime();
+                } else if (dm.getMilestone().equals(driveUser.getStop())) {
+                    tempBusyTimeEnd = dm.getDepartureTime();
+                }
+            }
+
+            if (tempBusyTimeEnd < busyTimeStart || tempBusyTimeStart > busyTimeEnd) {
+                // No conflict
+                driveIterator.remove();
+            }
+        }
+
+        // Return all booked drives that are in conflict with the new booking
+        return associatedDrives;
+    }
+
+    private List<Drive> getDriveAssociatedWithUser(int userId) {
+        List<Drive> drives = driveDao.getDrives();
+        Iterator<Drive> iterator = drives.iterator();
+        while (iterator.hasNext()) {
+            Drive drive = iterator.next();
+            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(drive.getDriveId());
+            for (int i = 0; i < driveUsers.size(); i++) {
+                DriveUser driveUser = driveUsers.get(i);
+                if (driveUser.getUserId() == userId) {
+                    // User is associated with this drive, keep drive in list
+                    break;
+                }
+                if (i + 1 == driveUsers.size()) {
+                    // User is not associated with this drive, remove drive from list
+                    iterator.remove();
+                }
+            }
+
+        }
+        return drives;
+    }
+
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
         // Get all drives
         List<Drive> drives = driveDao.getDrives();

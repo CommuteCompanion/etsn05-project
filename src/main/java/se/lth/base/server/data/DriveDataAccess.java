@@ -20,6 +20,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
         String start = drive.getStart();
         String stop = drive.getStop();
         long departureTime = drive.getDepartureTime();
+        long arrivalTime = drive.getArrivalTime();
         String comment = drive.getComment();
         String carBrand = drive.getCarBrand();
         String carModel = drive.getCarModel();
@@ -31,12 +32,12 @@ public class DriveDataAccess extends DataAccess<Drive> {
         boolean optBicycle = drive.getOptBicycle();
         boolean optPets = drive.getOptPets();
 
-    	int driveId = insert("INSERT INTO drive (start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate,"
-    			+ " car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                start, stop, new Timestamp(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
+        int driveId = insert("INSERT INTO drive (start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate,"
+                        + " car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                start, stop, new Timestamp(departureTime), new Timestamp(arrivalTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
 
-        return new Drive(driveId, start, stop, departureTime, comment, carBrand, carModel, carColor, carLicensePlate,
+        return new Drive(driveId, start, stop, departureTime, arrivalTime, comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
     }
 
@@ -49,6 +50,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
         String start = drive.getStart();
         String stop = drive.getStop();
         long departureTime = drive.getDepartureTime();
+        long arrivalTime = drive.getArrivalTime();
         String comment = drive.getComment();
         String carBrand = drive.getCarBrand();
         String carModel = drive.getCarModel();
@@ -60,13 +62,26 @@ public class DriveDataAccess extends DataAccess<Drive> {
         boolean optBicycle = drive.getOptBicycle();
         boolean optPets = drive.getOptPets();
 
-    	execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?)",
-                start, stop, new Timestamp(departureTime), comment, carBrand, carModel, carColor, carLicensePlate,
+        execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, arrival_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?)",
+                start, stop, new Timestamp(departureTime), new Timestamp(arrivalTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);
 
     	return getDrive(driveId);
     }
 
+    public Drive getDrive(int driveId) {
+        return queryFirst("SELECT drive_id, start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive WHERE drive_id = ?",
+                driveId);
+    }
+
+    public List<Drive> getDrives() {
+        return query("SELECT drive_id, start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive");
+    }
+
+    public List<Drive> getReportedDrives() {
+        return query("SELECT drive_id, start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive INNER JOIN drive_report ON drive_id");
+    }
+    
     private static final class DriveMapper implements Mapper<Drive> {
         @Override
         public Drive map(ResultSet resultSet) throws SQLException {
@@ -74,6 +89,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
                     resultSet.getString("start"),
                     resultSet.getString("stop"),
                     resultSet.getObject("departure_time", Timestamp.class).getTime(),
+                    resultSet.getObject("arrival_time", Timestamp.class).getTime(),
                     resultSet.getString("comment"),
                     resultSet.getString("car_brand"),
                     resultSet.getString("car_model"),
@@ -85,19 +101,6 @@ public class DriveDataAccess extends DataAccess<Drive> {
                     resultSet.getBoolean("opt_bicycle"),
                     resultSet.getBoolean("opt_pets"));
         }
-    }
-    
-    public Drive getDrive(int driveId) {
-        return queryFirst("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive WHERE drive_id = ?",
-    			driveId);
-    }
-    
-    public List<Drive> getDrives() {
-    	return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive");
-    }
-    
-    public List<Drive> getReportedDrives() {
-    	return query("SELECT drive_id, start, stop, departure_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive INNER JOIN drive_report ON drive_id");
     }
 
     public List<Drive> getDrivesForUser(int userId) {
