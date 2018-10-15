@@ -38,11 +38,18 @@ window.base.rest = (() => {
         this.json = json;
     }
 
+    function DriveWrap(json) {
+        Object.assign(this, json);
+        this.json = json;
+    }
+
     const objOrError = (json, cons) => json.error ? json : new cons(json);
 
     window.base.User = User;
     window.base.Role = Role;
     window.base.Drive = Drive;
+    window.base.DriveWrap = DriveWrap;
+
 
     const baseFetch = (url, config) => {
         config = config || {};
@@ -58,9 +65,25 @@ window.base.rest = (() => {
     };
 
     return {
-        getUser: () => baseFetch('/rest/user')
+        searchDrives: searchFilter => baseFetch('/rest/search/drives', {
+            method: 'POST',
+            body: JSON.stringify(searchFilter),
+            headers: jsonHeader
+        })
             .then(response => response.json())
-            .then(u => new User(u)),
+            .then(drives => drives.map(d => new DriveWrap(d))),
+        getUser: userId => typeof userId === 'undefined' ?
+            baseFetch('/rest/user')
+                .then(response => response.json())
+                .then(u => new User(u)) :
+            baseFetch('/rest/user/' + userId)
+                .then(response => response.json())
+                .then(u => new User(u)),
+        getNumberOfDrivesForUser: userId => {
+            baseFetch('/rest/drive/count/' + userId)
+                .then(response => response.json())
+                .then(i => parseInt(i));
+        },
         login: (email, password, rememberMe) => baseFetch('/rest/user/login?remember=' + rememberMe, {
             method: 'POST',
             body: JSON.stringify({email: email, password: password}),

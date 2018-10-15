@@ -13,6 +13,15 @@ body {
 
 @import "../vendors/bootstrap/bootstrap";
 
+
+.search-bg {
+    width: 100vw;
+    position: relative;
+    background-color: $gray-100;
+    left: calc(-1 * (100vw - 100%) / 2);
+    min-height: calc(100vh - 50px);
+}
+
 hr {
     border: 0;
     clear:both;
@@ -45,7 +54,7 @@ hr {
 }
 
 .drive-bot {
-    background-color: $info; 
+    background-color: $info;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
 }
@@ -90,9 +99,7 @@ hr {
 }
 
 .search-card {
-    height: 100%;
-    background-color: $secondary;
-    border-radius: 10px;
+    height: 200px;
 }
 
 .search-card-pc {
@@ -118,6 +125,10 @@ hr {
 
 .search-card-body {
     padding: 0px;
+}
+
+.push-to-bottom {
+  position: absolute;
 }
 
 .search-request-btn {
