@@ -23,6 +23,7 @@ public class DriveResource {
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
     private final DriveReportDataAccess driveReportDao = new DriveReportDataAccess(Config.instance().getDatabaseDriver());
+    private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
     private final User user;
 
     public DriveResource(@Context ContainerRequestContext context) {
@@ -133,17 +134,22 @@ public class DriveResource {
         throw new WebApplicationException("Only driver or yourself allowed to delete", Status.UNAUTHORIZED);
     }
 
-    @Path("{driveId}/rate")
-    @POST
+    @Path("{driveId}/rate/{rating}")
+    @PUT
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void rateUsers(@PathParam("driveId") int driveId) {
+    public void rateUsers(@PathParam("driveId") int driveId, @PathParam("rating") int rating) {
     	if (!driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
-    		// Need a UserRate and updated User data object for this, doing this later
-    		// Should return a UserRate object
-    		// Should add a method in DriveUserAccess to has rated
+
+            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(driveId);
+
+            for (DriveUser dU : driveUsers) {
+                if (dU.isDriver()) {
+                    userDao.updateUserRating(user.getId(), rating);
+                }
+            }
+            driveUserDao.hasRated(user.getId(), driveId);
     	}
-    	
     	throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
     }
 
