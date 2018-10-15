@@ -55,7 +55,6 @@ window.base.rest = (() => {
         this.comment = json.comment;
         this.carBrand = json.carBrand;
         this.carModel = json.carModel;
-        this.carYear = json.carYear;
         this.carColor = json.carColor;
         this.carLicensePlate = json.carLicensePlate;
         this.optWinterTires = json.optWinterTires;
@@ -106,11 +105,9 @@ window.base.rest = (() => {
             baseFetch('/rest/user/' + userId)
                 .then(response => response.json())
                 .then(user => new User(user)),
-        getNumberOfDrivesForUser: userId => {
-            baseFetch('/rest/drive/count/' + userId)
-                .then(response => response.json())
-                .then(i => parseInt(i));
-        },
+        getNumberOfDrivesForUser: userId => baseFetch('/rest/drive/count/' + userId)
+            .then(response => response.text())
+                .then(i => parseInt(i)),
         requestSeat: (userId, driveUser) => baseFetch('/rest/drive/' + userId, createJsonPost(driveUser)),
         login: (email, password, rememberMe) => baseFetch('/rest/user/login?remember=' + rememberMe, createJsonPost({email: email, password: password})),
         logout: () => baseFetch('/rest/user/logout', {method: 'POST'}),

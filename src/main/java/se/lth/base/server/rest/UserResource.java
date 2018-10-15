@@ -146,4 +146,11 @@ public class UserResource {
             throw new WebApplicationException("You are not permitted to delete this user", Response.Status.FORBIDDEN);
         }
     }
+
+    @Path("warn/{userId}")
+    @RolesAllowed(Role.Names.ADMIN)
+    @PUT
+    public void warnUser(@PathParam("userId") int userId) {
+        userDao.warnUser(userId);
+    }
 }
