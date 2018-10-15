@@ -81,9 +81,9 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
 
     public List<Drive> getReportedDrives() {
-        return query("SELECT drive_id, start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive INNER JOIN drive_report ON drive_id");
+        return query("SELECT * FROM drive INNER JOIN drive_report ON drive.drive_id");
     }
-    
+
     private static final class DriveMapper implements Mapper<Drive> {
         @Override
         public Drive map(ResultSet resultSet) throws SQLException {
@@ -114,7 +114,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
 
     public int getNumberOfDrivesForUser(int userId) {
-        ResultSet result = openQuery("COUNT(*) FROM drive_user WHERE driver = true and user_id = ?", userId);
+        ResultSet result = openQuery("SELECT COUNT(*) FROM drive_user WHERE is_driver = ? and user_id = ?", true, userId);
 
         try {
             result.next();
