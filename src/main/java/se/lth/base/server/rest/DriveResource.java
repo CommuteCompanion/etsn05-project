@@ -138,7 +138,7 @@ public class DriveResource {
     @PUT
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void rateUsers(@PathParam("driveId") int driveId, @PathParam("{rating}") int rating) {
+    public void rateUsers(@PathParam("driveId") int driveId, @PathParam("rating") int rating) {
     	if (!driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
 
             List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(driveId);
