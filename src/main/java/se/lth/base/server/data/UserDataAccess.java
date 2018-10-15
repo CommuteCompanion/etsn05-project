@@ -100,9 +100,6 @@ public class UserDataAccess extends DataAccess<User> {
         return execute("DELETE FROM user WHERE user_id = ?", userId) > 0;
     }
 
-    public boolean warnUser(int userId) {
-        return execute("UPDATE user SET warning = (SELECT warning FROM user WHERE user_id = ?) + 1 WHERE user_id = ?", userId, userId) > 0;
-    }
     /**
      * @return all users in the system.
      */
@@ -150,6 +147,10 @@ public class UserDataAccess extends DataAccess<User> {
      */
     public boolean removeSession(UUID sessionId) {
         return execute("DELETE FROM session WHERE session_uuid = ?", sessionId) > 0;
+    }
+
+    public boolean warnUser(int userId) {
+        return execute("UPDATE user SET warning = (SELECT warning FROM user WHERE user_id = ?) + 1 WHERE user_id = ?", userId) > 0;
     }
 
     /**

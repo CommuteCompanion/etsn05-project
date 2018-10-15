@@ -112,18 +112,6 @@ public class DriveDataAccess extends DataAccess<Drive> {
     public boolean deleteDrive(int driveId) {
         return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
     }
-
-    public int getNumberOfDrivesForUser(int userId) {
-        ResultSet result = openQuery("SELECT COUNT(*) FROM drive_user WHERE is_driver = ? and user_id = ?", true, userId);
-
-        try {
-            result.next();
-            return result.getInt(1);
-        } catch (SQLException e) {
-            throw new DataAccessException(ErrorType.NOT_FOUND);
-        }
-    }
-
 }
 
 
