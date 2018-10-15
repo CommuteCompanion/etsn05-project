@@ -123,7 +123,12 @@ window.base.rest = (() => {
         putUser: (id, credentials) => baseFetch('/rest/user/' + id, createJsonPost(credentials))
             .then(response => response.json())
             .then(u => objOrError(u, User)),
-        deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'})
+        deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'}),
+
+        warnUser: (id) => baseFetch('/rest/user/warn/' + id, {
+            method: 'PUT',
+            headers: jsonHeader
+        }),
     };
 })();
 

@@ -134,6 +134,13 @@ public class UserResource {
         return userDao.updateUser(userId, credentials);
     }
 
+    @Path("warn/{userId}")
+    @RolesAllowed(Role.Names.ADMIN)
+    @PUT
+    public void warnUser(@PathParam("userId") int userId) {
+        userDao.warnUser(userId);
+    }
+
     @Path("{userId}")
     @RolesAllowed(Role.Names.USER)
     @DELETE

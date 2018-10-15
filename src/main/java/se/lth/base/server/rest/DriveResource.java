@@ -94,10 +94,11 @@ public class DriveResource {
     @DELETE
     @RolesAllowed(Role.Names.USER)
     public void deleteDrive(@PathParam("driveId") int driveId) {
-        if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
-            driveDao.deleteDrive(driveId);
+        if (!driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+            throw new WebApplicationException("Only driver allowed to delete drive", Status.UNAUTHORIZED);
+        }
 
-        throw new WebApplicationException("Only driver allowed to delete drive", Status.UNAUTHORIZED);
+        driveDao.deleteDrive(driveId);
     }
 
     @Path("{driveId}/user")
@@ -127,10 +128,10 @@ public class DriveResource {
     @DELETE
     @RolesAllowed(Role.Names.USER)
     public void removeUserFromDrive(@PathParam("driveId") int driveId, @PathParam("userId") int userId) {
-        if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
+        if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver() || user.getId() == userId)
             driveUserDao.deleteDriveUser(driveId, userId);
 
-        throw new WebApplicationException("Only driver allowed to remove passengers", Status.UNAUTHORIZED);
+        throw new WebApplicationException("Only driver or yourself allowed to delete", Status.UNAUTHORIZED);
     }
 
     @Path("{driveId}/rate")
