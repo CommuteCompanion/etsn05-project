@@ -50,8 +50,10 @@ public class DataAccess<T> {
     }
     
     public ResultSet openQuery(String sql, Object... objects) {
-    	try (Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement(sql);) {
+        try {
+            Connection conn = getConnection();
+            PreparedStatement statement = conn.prepareStatement(sql);
+          
                for (int i = 0; i < objects.length; i++) {
                    statement.setObject(i + 1, objects[i]);
                }
