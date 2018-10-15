@@ -179,4 +179,13 @@ public class DriveResource {
         }
         throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
     }
+
+
+    @Path("count/{userId}")
+    @GET
+    @RolesAllowed(Role.Names.USER)
+    @Produces(MediaType.TEXT_PLAIN)
+    public int getNumberOfDrives(@PathParam("userId") int userId) {
+        return driveDao.getNumberOfDrivesForUser(userId);
+    }
 }
