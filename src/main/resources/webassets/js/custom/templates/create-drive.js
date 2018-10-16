@@ -9,20 +9,14 @@ window.base.createDriveController = (() => {
     };
 
     const view = {
-        renderDrive: () => {
-            controller.setInput();
-            console.log('SUCK');
-        },
-        renderUser: () => window.base.rest.getUser().then(u => {
+        render: () => window.base.rest.getUser().then(u => {
             model.user = u;
         }).then(u => {
             window.base.rest.getDriveForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
                 if (d.length === 0 || model.theId.id === undefined) {
-                    console.log(d);
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                 } else {
-                    console.log(d);
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     for (var i = 0; i < d.length; i++) {
                         if (d[i].drive.driveId === model.theId.id) {
@@ -32,10 +26,7 @@ window.base.createDriveController = (() => {
                 }
             }).then(() => {
                 if (model.driveWraps.length === 0 || model.theId.id === undefined) {
-                    console.log(model.driveWraps.length);
-                    console.log(model.theId.id);
                 }else {
-                    console.log('FEL');
                     controller.setInput();
                 }
             });
@@ -56,11 +47,8 @@ window.base.createDriveController = (() => {
             };
             document.getElementById('set-from').value = model.driveWrap.drive.start;
             document.getElementById('set-to').value = model.driveWrap.drive.stop;
-            console.log(model.driveWrap.drive.departureTime);
             const leaveDate = new Date(model.driveWrap.drive.departureTime);
-            console.log(leaveDate.toString());
             const arrivalDate = new Date(model.driveWrap.drive.arrivalTime);
-            console.log(leaveDate.yyyymmdd());
             document.getElementById('set-date').value = leaveDate.yyyymmdd();
             document.getElementById('set-time-leave').value = leaveDate.toString().split(' ')[4];
             document.getElementById('set-time-arrival').value = arrivalDate.toString().split(' ')[4];
@@ -99,33 +87,41 @@ window.base.createDriveController = (() => {
 
             //Get passengers for drive
             const nbrPassengers = model.driveWrap.users.length;
-            for(var i = 0; i < 5; i++) {
-                console.log(nbrPassengers);
-                console.log(model.driveWrap.users);
-                console.log(model.user);
+            for(var i = 1; i < nbrPassengers; i++) {
+                const userId = model.driveWrap.users[i].userId;
                 const nameCol = document.createElement('div');
                 const nameText = document.createElement('p');
                 nameCol.className = 'col-6 mt-3';
+                nameCol.id = 'remove-col-' + i;
                 window.base.rest.getUser(model.driveWrap.users[i].userId).then(u => {
                     nameText.innerHTML = u.firstName;
                 });
                 const removeCol = document.createElement('div');
                 const removeBtn = document.createElement('button');
                 removeCol.className = 'col-6 mt-3';
+                removeCol.id = 'remove-col-' + i;
                 removeBtn.type = 'button';
                 removeBtn.className = 'btn btn-danger w-100';
                 removeBtn.innerHTML = 'Remove';
+                removeBtn.id = 'removePass-' + i;
+                (function(i){
+                    removeBtn.onclick = (function (callback) {
+                        //Vad ska göras när man klickar på remove user?
+                        document.getElementById('remove-col-' + i).remove();
+                        document.getElementById('remove-col-' + i).remove();
+                        window.base.rest.removeUserFromDrive(model.driveWrap.drive.driveId, userId);
+                    });
+                })(i);
                 nameCol.append(nameText);
                 removeCol.append(removeBtn);
                 document.getElementById('passenger-row').append(nameCol);
                 document.getElementById('passenger-row').append(removeCol);
-                removeBtn.onclick = console.log(i);
+                incrementer++;
             }
         },
 
         removeStop: () => {
             const counter = document.querySelectorAll("#stop-row .stop-div").length;
-            console.log(counter);
             if (counter > 0){
                 document.getElementById('stop-' + counter).remove();
             }
@@ -191,22 +187,6 @@ window.base.createDriveController = (() => {
                 optPets = false;
             };
 
-            console.log(start);
-            console.log(stop);
-            console.log(date);
-            console.log(departureTime);
-            console.log(arrivalTime);
-            console.log(comment);
-            console.log(carBrand);
-            console.log(carModel);
-            console.log(carColor);
-            console.log(carLicensePlate);
-            console.log(carNumberOfSeats);
-            console.log(optLuggageSize);
-            console.log(optWinterTires);
-            console.log(optBicycle);
-            console.log(optPets);
-
             const driveId = 0;
 
             const drive = {driveId, start, stop, departureTime, arrivalTime, comment, carBrand, carModel, carColor, carLicensePlate, carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets};
@@ -217,11 +197,8 @@ window.base.createDriveController = (() => {
             for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
                 const milestoneId = i;
                 const milestone = document.getElementById('set-stop-' + i).value;
-                console.log(milestone);
                 driveMilestone = {milestoneId, driveId, milestone, departureTime};
                 milestones.push(driveMilestone);
-                console.log(driveMilestone);
-                console.log(milestones);
             }
 
             const user = model.user;
@@ -236,28 +213,22 @@ window.base.createDriveController = (() => {
                     alert(d.error);
                 }
             }).then(() => {
-                view.renderDrive(1);
-                view.renderDrive(2);
-                view.renderDrive(3);
-                view.renderUser();
+                view.render();
             });
         },
 
         updateDrive: () => window.base.rest.updateDrive(),
 
-        deleteDrive: () => {
-            widow.base.rest.deleteDrive(model.driveWrap.drive.driveId);
-        },
+        deleteDrive: () => window.base.rest.deleteDrive(model.driveWrap.drive.driveId)
+        .then(() => window.location.replace('/')),
 
         load: (id) => {
-            model.theId.id = 3;
-            console.log(model.theId.id);
+            model.theId.id = id;
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
             document.getElementById('remove-stop-btn').onclick = controller.removeStop;
-            //view.renderDrive();
-            view.renderUser(id);
+            view.render(id);
         },
 
         loadWithUserId: (id) => {

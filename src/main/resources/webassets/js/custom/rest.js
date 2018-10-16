@@ -172,7 +172,10 @@ window.base.rest = (() => {
             .then(driveWraps => driveWraps.map(driveWrap => new DriveWrap(driveWrap))),
         deleteDrive: (id) => baseFetch('/rest/drive/' + id, {
             method: 'DELETE'
-        }),   
+        }),
+        removeUserFromDrive: (driveId, userId) => baseFetch('/rest/drive/' + driveId + '/user/' + userId, {
+            method: 'DELETE'
+        }),
 
         warnUser: (id) => baseFetch('/rest/user/warn/' + id, {
             method: 'PUT',
