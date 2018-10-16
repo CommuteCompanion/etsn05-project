@@ -83,7 +83,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
     }
 
     public int getNumberOfDrivesForUser(int userId) {
-        ResultSet result = openQuery("SELECT COUNT(*) FROM drive_user, drive WHERE drive_user.is_driver = ? " +
+        ResultSet result = openQuery("SELECT COUNT(*) FROM drive_user INNER JOIN drive ON drive_user.drive_id = drive.drive_id WHERE drive_user.is_driver = ? " +
                 "AND drive_user.user_id = ? AND drive.drive_id = drive_user.drive_id " +
                 "AND drive.arrival_time < CURRENT_TIMESTAMP()", IS_DRIVER, userId);
 
