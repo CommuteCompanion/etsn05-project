@@ -13,7 +13,6 @@ window.base.createDriveController = (() => {
         }).then(u => {
             window.base.rest.getDriveForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
-                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     document.getElementById('passenger-header').remove();
@@ -131,8 +130,6 @@ window.base.createDriveController = (() => {
 
         addStop: (text) => {
             if (typeof(text) == 'object'){
-                console.log(typeof(text));
-                console.log('hejdå');
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
                 const col = document.createElement('div')
@@ -153,8 +150,6 @@ window.base.createDriveController = (() => {
                 document.getElementById('stop-row').append(stopDiv);
                 textArea.innerHTML = '';
             } else {
-                console.log(typeof(text));
-                console.log('hej');
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
                 const col = document.createElement('div')
@@ -253,8 +248,6 @@ window.base.createDriveController = (() => {
 
         load: (id) => {
             model.theId.id = id;
-            console.log(model.theId.id);
-            console.log(id);
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
