@@ -152,6 +152,7 @@ public class DriveResource {
                 }
             }
             driveUserDao.hasRated(user.getId(), driveId);
+            return;
     	}
       
     	throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
