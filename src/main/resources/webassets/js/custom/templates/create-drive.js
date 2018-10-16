@@ -11,7 +11,7 @@ window.base.createDriveController = (() => {
         render: () => window.base.rest.getUser().then(u => {
             model.user = u;
         }).then(u => {
-            window.base.rest.getDriveForUser(model.user.userId).then(d => {
+            window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
