@@ -50,7 +50,7 @@ describe('mainController', function() {
         }).finally(done);
     });
 
-    it('should load controller of r1', function(done) {
+    it('should not load controller of r1 if not valid login', function(done) {
         const userPromise = Promise.resolve(admin);
         const fetchPromise = Promise.resolve({text: () => 'html'});
         spyOn(base.rest, 'getUser').and.returnValue(userPromise);
@@ -60,7 +60,7 @@ describe('mainController', function() {
         base.mainController.load();
         Promise.all([userPromise, fetchPromise])
             .then(function() {
-                expect(r1.load).toHaveBeenCalled();
+                expect(r1.load).not.toHaveBeenCalled();
             }).finally(done);
     });
 
