@@ -103,6 +103,8 @@ window.base.rest = (() => {
     };
 
     return {
+        deleteDrive: id => baseFetch('/rest/drive/' + id, {method: 'DELETE'}),
+
         getReportedDrives: () => baseFetch('/rest/drive/all-reports')
         .then(response => response.json())
         .then(drives => drives.map(d => new DriveWrap(d))),

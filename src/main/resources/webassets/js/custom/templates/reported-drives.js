@@ -19,7 +19,6 @@ window.base.reportedDrivesController = (() => {
             return 'No rating';
         },
         renderCard: function(drive) {
-            //console.log(drive);
             drive.reports.forEach(report => {
                 var t = document.getElementById('reported-drives-template');
                 var reporter;
@@ -32,34 +31,54 @@ window.base.reportedDrivesController = (() => {
                     driver = user;
                 });
                 Promise.all([p1, driver]).then(function() {
-                    //console.log(driver);
-                    //console.log(reporter);
                     t.content.querySelector('.report-start-destination-time').textContent 
                         = drive.drive.start + ' to ' + drive.drive.stop 
                         + ', ' + Date(drive.drive.departureTime);
 
                     t.content.querySelector('.report-driver').textContent 
                         = 'Driver: ' + driver.firstName + ' ' + driver.lastName;
-
                     t.content.querySelector('.report-driver-rating-warning').textContent 
                         = view.getRenderedRating(driver) + ' | ' + driver.warning + ' warnings';
+                    t.content.querySelector('.report-driver-rating-warning').id 
+                        = 'report-driver-rating-warning' + report.reportId;
 
 
                     t.content.querySelector('.report-reported-by').textContent
                         = 'Reported by: ' + reporter.firstName + ' ' + reporter.lastName;
                     t.content.querySelector('.report-reported-by-rating-warning').textContent 
                         = view.getRenderedRating(reporter) + ' | ' + reporter.warning + ' warnings';
+                    t.content.querySelector('.report-reported-by-rating-warning').id 
+                        = 'report-reported-by-rating-warning' + report.reportId;
 
 
                     t.content.querySelector('.report-comment').textContent = report.reportMessage;
 
-                    // Associate buttons and cards with correct Id
+                    // Associate buttons correct Id
                     t.content.querySelector('.dismiss-report-button').id   = 'dismiss-report-button' + report.reportId;
-                    
+                    t.content.querySelector('.warn-driver-button').id   = 'warn-driver-button' + report.reportId;
+                    t.content.querySelector('.warn-reporter-button').id   = 'warn-reporter-button' + report.reportId;
+                    t.content.querySelector('.remove-driver-button').id   = 'remove-driver-button' + report.reportId;
+                    t.content.querySelector('.remove-reporter-button').id   = 'remove-reporter-button' + report.reportId;
+                    t.content.querySelector('.delete-drive-button').id   = 'delete-drive-button' + report.reportId;
+
+                    // Associate card with correct id
                     t.content.querySelector('.reported-drives').id = 'reported-drives' + report.reportId;
 
                     var clone = document.importNode(t.content, true);
                     t.parentElement.appendChild(clone);
+
+                    document.getElementById('dismiss-report-button' + report.reportId).onclick = () =>
+                        controller.dismissReport(report);
+                    document.getElementById('warn-driver-button' + report.reportId).onclick = () =>
+                        controller.giveWarningDriver(report, driver);
+                    document.getElementById('warn-reporter-button' + report.reportId).onclick = () =>
+                        controller.giveWarningReporter(report, reporter);
+                    document.getElementById('remove-driver-button' + report.reportId).onclick = () =>
+                        controller.deleteDriver(report, driver);
+                    document.getElementById('remove-reporter-button' + report.reportId).onclick = () =>
+                        controller.deleteReporter(report, reporter);
+                    document.getElementById('delete-drive-button' + report.reportId).onclick = () =>
+                        controller.deleteDrive(drive);
                 });
 
             });
@@ -70,26 +89,38 @@ window.base.reportedDrivesController = (() => {
     };
 
     const controller = {
-        dismissReport: function(user) {
-            alert('NOT IMPLEMENTED');
+        dismissReport: function(report) {
+            alert('Waiting on backend functionality!');
+            var item = document.getElementById('reported-drives' + report.reportId);
+            item.parentElement.removeChild(item);
         },
-        giveWarning: function(user) {
+        giveWarningDriver: function(report, user) {
             window.base.rest.warnUser(user.userId).then(function () {
                 user.warning = user.warning + 1;
-                document.getElementById('admin-warning'+user.userId).textContent 
-                    = user.warning + ' warnings';
+                document.getElementById('report-driver-rating-warning' + report.reportId).textContent 
+                = view.getRenderedRating(user) + ' | ' + user.warning + ' warnings';
                 });
         },
-        deleteAccount: function(user) {
-            window.base.rest.deleteUser(user.userId).then(function () {
-                var item = document.getElementById('manage-user-card' + user.userId);
-                item.parentElement.removeChild(item);
-            }); 
-            
+        giveWarningReporter: function(report, user) {
+            window.base.rest.warnUser(user.userId).then(function () {
+                user.warning = user.warning + 1;
+                document.getElementById('report-reported-by-rating-warning' + report.reportId).textContent 
+                = view.getRenderedRating(user) + ' | ' + user.warning + ' warnings';
+                });
         },
-        deleteDrive: function(driveWrap) {
+        deleteDriver: function(report, user) {
             window.base.rest.deleteUser(user.userId).then(function () {
-                var item = document.getElementById('manage-user-card' + user.userId);
+                alert('Driver deleted!');
+            }); 
+        },
+        deleteReporter: function(report, user) {
+            window.base.rest.deleteUser(user.userId).then(function () {
+                alert('Reporter deleted!');
+            }); 
+        },
+        deleteDrive: function(report) {
+            window.base.rest.deleteDrive(report.drive.driveId).then(function () {
+                var item = document.getElementById('reported-drives' + report.reportId);
                 item.parentElement.removeChild(item);
             }); 
             
@@ -104,10 +135,12 @@ window.base.reportedDrivesController = (() => {
             
             //controller.debug();
         },
-        debug: function() {
+/*         
+            TODO:: REMOVE WHEN EASY TO ADD DRIVES AND REPORTS.....
+            debug: function() {
             // TODO: Add responsiveness to buttons!
 
-            const driveId = 1;
+            const driveId = 3;
             const start = 'start';
             const stop = 'stop';
             const departureTime = Date.parse('2011-10-10T14:48:00');
@@ -163,14 +196,7 @@ window.base.reportedDrivesController = (() => {
                 alert(d.message);
             })
 
-           // );
-            
-            //base.rest.getReportedDrives().then(function(drives) {
-            //    model.drives = drives;
-            //    return drives;
-            //});
-            //alert(model.drives);
-        }
+        } */
     };
 
     return controller;
