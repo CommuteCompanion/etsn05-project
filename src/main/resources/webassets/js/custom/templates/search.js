@@ -243,7 +243,7 @@ window.base.searchController = (() => {
                     departureTime: -1
                 }))
                 .then(() => view.renderSearchResults())
-                //.catch(e => view.showFailure(e.message));
+                .catch(e => view.showFailure(e.message));
         },
         initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.searchController.load())
     };

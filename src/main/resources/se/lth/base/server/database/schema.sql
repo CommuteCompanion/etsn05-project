@@ -92,3 +92,4 @@ INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, ph
 --VALUES ('Gothenburg', 'Lund', CURRENT_TIMESTAMP() + 0000000020, CURRENT_TIMESTAMP() + 0000000022, 'This is test comment', 'Audi', 'A3 Sportsback', 'Black', 'DBG400', 5, 1, TRUE, FALSE, FALSE);
 --INSERT INTO drive_user (drive_id, user_id, start, stop, is_driver, accepted, rated) VALUES (1, 3, 'Gothenburg', 'Lund', TRUE, TRUE, FALSE);
 --INSERT INTO drive_milestone (drive_id, milestone_name, departure_time) VALUES (1, 'Halmstad', CURRENT_TIMESTAMP() + 0000000021,);
+--INSERT INTO drive_report (drive_id, reported_by_user_id, report_message) VALUES (1, 3, 'Hello');
