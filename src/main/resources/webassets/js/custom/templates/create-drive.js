@@ -138,17 +138,20 @@ window.base.createDriveController = (() => {
                 colMd.className = 'col-md';
                 stopDiv.className = 'row mt-2 stop-div';
                 stopDiv.id = 'stop-' + (counter + 1);
-                const textArea = document.createElement('textarea');
+                const input = document.createElement('input');
                 const label = document.createElement('label');
                 label.innerHTML = 'Stop ' + (counter + 1);
-                textArea.id = 'set-stop-' + (counter+1);
-                textArea.className = 'form-control';
+                input.type = 'text';
+                input.placeholder = 'Enter the city where you will stop...';
+                input.id = 'set-stop-' + (counter+1);
+                input.className = 'form-control';
+                input.pattern = "^[a-zA-Z-æøåÆØÅ]+${1,}";
                 colMd.append(label);
-                colMd.appendChild(textArea);
+                colMd.appendChild(input);
                 col.append(colMd);
                 stopDiv.append(col);
                 document.getElementById('stop-row').append(stopDiv);
-                textArea.innerHTML = '';
+                input.innerHTML = '';
             } else {
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
@@ -158,17 +161,20 @@ window.base.createDriveController = (() => {
                 colMd.className = 'col-md';
                 stopDiv.className = 'row mt-2 stop-div';
                 stopDiv.id = 'stop-' + (counter + 1);
-                const textArea = document.createElement('textarea');
+                const input = document.createElement('input');
                 const label = document.createElement('label');
                 label.innerHTML = 'Stop ' + (counter + 1);
-                textArea.id = 'set-stop-' + (counter+1);
-                textArea.className = 'form-control';
+                input.type = 'text';
+                input.placeholder = 'Enter the city where you will stop...';
+                input.id = 'set-stop-' + (counter+1);
+                input.pattern = "^[a-zA-Z-æøåÆØÅ]+${1,}";
+                input.className = 'form-control';
                 colMd.append(label);
-                colMd.appendChild(textArea);
+                colMd.appendChild(input);
                 col.append(colMd);
                 stopDiv.append(col);
                 document.getElementById('stop-row').append(stopDiv);
-                textArea.innerHTML = text;
+                input.innerHTML = text;
             }
         },
 
