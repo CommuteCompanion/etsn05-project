@@ -13,8 +13,11 @@ window.base.createDriveController = (() => {
         }).then(u => {
             window.base.rest.getDriveForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
+                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
+                    document.getElementById('passenger-header').remove();
+                    document.getElementById('passenger-col').remove();
                 } else {
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     for (var i = 0; i < d.length; i++) {
@@ -127,7 +130,8 @@ window.base.createDriveController = (() => {
         },
 
         addStop: (text) => {
-            if (text == undefined){
+            if (typeof(text) == 'object'){
+                console.log(typeof(text));
                 console.log('hejdå');
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
@@ -149,6 +153,7 @@ window.base.createDriveController = (() => {
                 document.getElementById('stop-row').append(stopDiv);
                 textArea.innerHTML = '';
             } else {
+                console.log(typeof(text));
                 console.log('hej');
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
@@ -236,7 +241,8 @@ window.base.createDriveController = (() => {
                     alert(d.error);
                 }
             }).then(() => {
-                view.render();
+                view.render(model.theId.id);
+                alert('Drive has been created');
             });
         },
 
@@ -247,6 +253,8 @@ window.base.createDriveController = (() => {
 
         load: (id) => {
             model.theId.id = id;
+            console.log(model.theId.id);
+            console.log(id);
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
