@@ -44,7 +44,7 @@
         <div class="border border-r-5 pl-2 pr-2">
             <h5 class="mb-0 font-weight-bold"><span id="car-brand"></span> <span id="car-model"></span>
             </h5>
-            <p class="mb-0 text-muted">
+            <p class="text-muted mb-2">
                 <span id="car-color"></span> |
                 <span id="car-license-plate"></span>
                 <a target="_blank" id="car-license-plate-link" href="">(car details)</a>
@@ -123,7 +123,7 @@
             </div>
             <div class="col-md-4">
                 <div class="border border-top-0 border-rb-5 p-2 bg-white">
-                    <div id="alert-box" class="alert d-none" role="alert"></div>
+                    <div id="request-alert-box" class="alert d-none" role="alert"></div>
                     <p class="text-muted">Book your seat online to ensure a spot on the trip, it's safer and more reliable!
                     </p>
                     <button id="drive-request" class="btn btn-secondary mt-2 btn-block">Request</button>
@@ -132,7 +132,3 @@
         </div>
     </div>
 </div>
-
-<script type="application/javascript">
-    window.base.driveController.initOnLoad();
-</script>

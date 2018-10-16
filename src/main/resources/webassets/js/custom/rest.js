@@ -5,17 +5,6 @@ window.base.rest = (() => {
         this.name = role;
         this.label = this.name[0] + this.name.toLowerCase().slice(1);
     }
-    
-    function DriveMilestone(driveMilestone) {
-        this.milestoneId = driveMilestone.milestoneId;
-        this.driveId = driveMilestone.driveId;
-        this.milestone = driveMilestone.milestone;
-        this.departureTime = driveMilestone.departureTime;
-    }
-    
-    function DriveReport(driveReport) {
-        
-    }
 
     function User(json) {
         this.userId = json.userId;
@@ -33,17 +22,18 @@ window.base.rest = (() => {
         this.isAdmin = () => this.role.name === 'ADMIN';
         this.isNone = () => this.role.name === 'NONE';
     }
-    
-    function Drive(json) {
-        Object.assign(this, json);
-        this.driveWrap = new DriveWrap(json.driveWrap);
-        this.json = json;
-    }
 
     function DriveWrap(json) {
         this.drive = new Drive(json.drive);
         this.milestones = json.milestones.map(milestone => new DriveMilestone(milestone));
         this.users = json.users.map(user => new DriveUser(user));
+    }
+
+    function DriveReport(json) {
+        this.reportId = json.reportId;
+        this.driveId = json.driveId;
+        this.reportedByUserId = json.reportedByUserId;
+        this.reportMessage = json.reportMessage;
     }
 
     function DriveMilestone(json) {
@@ -127,7 +117,9 @@ window.base.rest = (() => {
         getNumberOfDrivesForUser: userId => baseFetch('/rest/drive/count/' + userId)
             .then(response => response.text())
                 .then(i => parseInt(i)),
-        requestSeat: (userId, driveUser) => baseFetch('/rest/drive/' + userId, createJsonPost(driveUser)),
+        requestSeat: (userId, driveUser) => baseFetch('/rest/drive/' + userId + '/user', createJsonPost(driveUser))
+            .then(response => response.json())
+            .then(driveUser => new DriveUser(driveUser)),
         login: (email, password, rememberMe) => baseFetch('/rest/user/login?remember=' + rememberMe, createJsonPost({email: email, password: password})),
         logout: () => baseFetch('/rest/user/logout', {method: 'POST'}),
         getUsers: () => baseFetch('/rest/user/all')
@@ -149,19 +141,11 @@ window.base.rest = (() => {
         putDrive: (id, drive) => baseFetch('/rest/drive/' + id, createJsonPost(drive))
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
-        getDriveForUser: (id) => baseFetch('/rest/drive/user/' + id, {
-            method: 'GET',
-            headers: jsonHeader
-        })
+        getDrivesForUser: (id) => baseFetch('/rest/drive/user/' + id)
             .then(response => response.json())
             .then(driveWraps => driveWraps.map(driveWrap => new DriveWrap(driveWrap))),
-        deleteDrive: (id) => baseFetch('/rest/drive/' + id, {
-            method: 'DELETE'
-        }),
-        removeUserFromDrive: (driveId, userId) => baseFetch('/rest/drive/' + driveId + '/user/' + userId, {
-            method: 'DELETE'
-        }),
-
+        deleteDrive: (id) => baseFetch('/rest/drive/' + id, { method: 'DELETE' }),
+        removeUserFromDrive: (driveId, userId) => baseFetch('/rest/drive/' + driveId + '/user/' + userId, { method: 'DELETE' }),
         warnUser: (id) => baseFetch('/rest/user/warn/' + id, {
             method: 'PUT',
             headers: jsonHeader

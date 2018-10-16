@@ -8,25 +8,23 @@ window.base.driveController = (() => {
     };
 
     const view = {
-        showFailure: msg => {
-            let alert = document.getElementById('alert-box');
-            let alertClasses = alert.classList;
+        showFailure: (msg, element) => {
+            let alertClasses = element.classList;
 
             alertClasses.remove('d-none');
-            alertClasses.remove('alert-secondary');
+            alertClasses.remove('alert-info');
             alertClasses.add('alert-danger');
 
-            alert.innerHTML = `<h4 class="alert-heading">Oops!</h4><p>Something went wrong, error message: ${msg}.</p>`;
+            element.innerHTML = `<h5 class="alert-heading">Oops!</h5><p>Something went wrong, error message: ${msg}.</p>`;
         },
-        showSuccess: () => {
-            let alert = document.getElementById('alert-box');
-            let alertClasses = alert.classList;
+        showSuccess: (msg, element) => {
+            let alertClasses = element.classList;
 
             alertClasses.remove('d-none');
             alertClasses.remove('alert-danger');
-            alertClasses.add('alert-secondary');
+            alertClasses.add('alert-info');
 
-            alert.innerHTML = `<h4 class="alert-heading">Done</h4><p>We've sent a request to the driver letting the person know you want a seat.</p>`;
+            element.innerHTML = `<h5 class="alert-heading">Done</h5><p>${msg}</p>`;
         },
         renderDrive: () => {
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -71,16 +69,13 @@ window.base.driveController = (() => {
                     noDrives = user.noDrives;
                     driverReviews = reviews;
                     driverRating = rating;
-                } else {
-                    passengerHtml += `${firstName} (<i class="fas fa-star fa-sm">${rating})`
-
-                    if (i < driveUsers.length - 1) {
-                        passengerHtml += ', ';
-                    }
+                } else if (user.accepted) {
+                    passengerHtml += `${firstName} (<i class="fas fa-star fa-sm">${rating}), `
                 }
             }
 
-            passengerHtml = passengerHtml.length === 0 ? 'None' : passengerHtml;
+            passengerHtml = passengerHtml.length === 0 ? 'None' : passengerHtml.slice(0, passengerHtml.length - 2);
+            ;
 
             document.getElementById('driver-driven').textContent = noDrives;
             document.getElementById('driver-rating').textContent = driverRating;
@@ -99,11 +94,13 @@ window.base.driveController = (() => {
 
             document.getElementById('drive-pickup').textContent = model.driveUser.start;
             document.getElementById('drive-pickup-time').textContent = model.driveUser.startTime;
+
             document.getElementById('drive-dropoff').textContent = model.driveUser.stop;
 
             document.getElementById('drive-comment').textContent = '"' + drive.comment + '"';
 
             document.getElementById('car-brand').textContent = drive.carBrand;
+            document.getElementById('car-model').textContent = drive.carModel;
             document.getElementById('car-color').textContent = drive.carColor;
             document.getElementById('car-license-plate').textContent = drive.carLicensePlate;
             document.getElementById('car-license-plate-link').setAttribute('href', 'https://biluppgifter.se/fordon/' + drive.carLicensePlate);
@@ -115,15 +112,23 @@ window.base.driveController = (() => {
 
             let luggageText = '';
             switch (drive.optLuggageSize) {
-                case 0: luggageText = 'No luggage allowed'; break;
-                case 1: luggageText = 'Small sized luggage only'; break;
-                case 2: luggageText = 'Medium sized luggage only'; break;
-                case 3: luggageText = 'Big luggage ok'; break;
+                case 0:
+                    luggageText = 'No luggage allowed';
+                    break;
+                case 1:
+                    luggageText = 'Small sized luggage only';
+                    break;
+                case 2:
+                    luggageText = 'Medium sized luggage only';
+                    break;
+                case 3:
+                    luggageText = 'Big luggage ok';
+                    break;
             }
 
             const winterTiresText = drive.optWinterTires ? 'Has winter tires' : 'Does not have winter tires';
-            const bicycleText = drive.optWinterTires ? 'Bicycle ok' : 'No bicycle';
-            const petsText = drive.optWinterTires ? 'Pets ok' : 'No pets';
+            const bicycleText = drive.optBicycle ? 'Bicycle ok' : 'No bicycle';
+            const petsText = drive.optPets ? 'Pets ok' : 'No pets';
 
             document.getElementById('opt-luggage-text').textContent = luggageText;
             document.getElementById('opt-winter-tires-text').textContent = winterTiresText;
@@ -140,10 +145,23 @@ window.base.driveController = (() => {
     const controller = {
         getDrive: () => window.base.rest.getDriveWrap(model.driveUser.driveId)
             .then(driveWrap => model.driveWrap = driveWrap),
-        submitRequest: () => window.base.rest.requestSeat(model.driveUser)
-            .catch(e => view.showFailure(e.message))
-            .then(() => view.showSuccess()),
-        reportDrive: () => {},
+        submitRequest: () => window.base.rest.requestSeat(model.driveUser.driveId, model.driveUser)
+            .then(e => {
+                console.log(e);
+                if (e.error) {
+                    view.showFailure(e.message, document.getElementById('request-alert-box'));
+                } else {
+                    view.showSuccess('We\'ve sent a request to the driver letting the person know you want a seat.', document.getElementById('request-alert-box'));
+                }
+            }),
+        reportDrive: () => window.base.rest.requestSeat(model.driveUser)
+            .then(e => {
+                if (e.error) {
+                    view.showFailure(e.message, document.getElementById('report-alert-box'));
+                } else {
+                    view.showSuccess('Your report has been sent', document.getElementById('report-alert-box'));
+                }
+            }),
         getUser: () => window.base.rest.getUser().then(u => {
             model.user = u;
             return model.driveUser.userId = u.userId;
@@ -191,8 +209,7 @@ window.base.driveController = (() => {
                 .then(() => controller.getDriverAndPassengers())
                 .then((() => view.renderDrive()))
         },
-        load: () => controller.loadQuery(),
-        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.driveController.load())
+        load: () => controller.loadQuery()
     };
 
     return controller;

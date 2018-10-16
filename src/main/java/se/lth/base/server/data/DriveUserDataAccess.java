@@ -40,7 +40,7 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
         execute("INSERT INTO drive_user (drive_id, user_id, start, stop, is_driver, accepted, rated) VALUES (?,?,?,?,?,?,?)",
                 driveId, userId, start, stop, driver, accepted, rated);
 
-        return new DriveUser(driveId, userId, start, stop, driver, accepted, !HAS_RATED);
+        return new DriveUser(driveId, userId, start, stop, driver, accepted, rated);
     }
 
     public DriveUser updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
