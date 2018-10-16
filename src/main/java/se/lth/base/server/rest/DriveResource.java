@@ -63,7 +63,7 @@ public class DriveResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public Drive putDrive(@PathParam("driveId") int driveId, Drive drive) throws URISyntaxException {
+    public Drive putDrive(@PathParam("driveId") int driveId, Drive drive) {
         if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
             return driveDao.updateDrive(drive);
 
@@ -74,11 +74,11 @@ public class DriveResource {
     @GET
     @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public DriveWrap getDrive(@PathParam("driveId") int driveId) throws URISyntaxException {
+    public DriveWrap getDrive(@PathParam("driveId") int driveId) {
         Drive drive = driveDao.getDrive(driveId);
         List<DriveUser> users = driveUserDao.getDriveUsersForDrive(driveId);
         List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(driveId);
-        List<DriveReport> reports = user.getRole().clearanceFor(Role.ADMIN) ? driveReportDao.getDriveReportsForDrive(driveId) : new ArrayList<DriveReport>();
+        List<DriveReport> reports = user.getRole().clearanceFor(Role.ADMIN) ? driveReportDao.getDriveReportsForDrive(driveId) : new ArrayList<>();
 
         return new DriveWrap(drive, milestones, users, reports);
     }
@@ -107,8 +107,9 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public DriveUser addUserToDrive(@PathParam("driveId") int driveId, DriveUser driveUser) {
-        if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId))
+        if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId)) {
             return driveUserDao.addDriveUser(driveId, user.getId(), driveUser.getStart(), driveUser.getStop(), !IS_DRIVER, !IS_ACCEPTED, !IS_RATED);
+        }
 
         throw new WebApplicationException("No available seats left", Status.PRECONDITION_FAILED);
     }
@@ -171,13 +172,8 @@ public class DriveResource {
     public List<DriveWrap> getReportedDrives() {
         List<DriveWrap> driveWraps = new ArrayList<DriveWrap>();
         List<Drive> reportedDrives = driveDao.getReportedDrives();
+        attachDriveDetails(reportedDrives, driveWraps);
 
-        for (Drive d : reportedDrives) {
-            List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
-            List<DriveUser> users = driveUserDao.getDriveUsersForDrive(d.getDriveId());
-            List<DriveReport> reports = driveReportDao.getDriveReportsForDrive(d.getDriveId());
-            driveWraps.add(new DriveWrap(d, milestones, users, reports));
-        }
         return driveWraps;
     }
 
@@ -189,13 +185,8 @@ public class DriveResource {
         if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
         	List<DriveWrap> driveWraps = new ArrayList<DriveWrap>();
         	List<Drive> drives = driveDao.getDrivesForUser(userId);
-        	
-        	for(Drive d : drives) {
-        		List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
-        		List<DriveUser> users = driveUserDao.getDriveUsersForDrive(d.getDriveId());
-        		List<DriveReport> reports = driveReportDao.getDriveReportsForDrive(d.getDriveId());
-        		driveWraps.add(new DriveWrap(d, milestones, users, reports));
-        	}
+        	attachDriveDetails(drives, driveWraps);
+
             return driveWraps;
         }
         throw new WebApplicationException("You do not have access to these drives", Status.UNAUTHORIZED);
@@ -208,5 +199,14 @@ public class DriveResource {
     @Produces(MediaType.TEXT_PLAIN)
     public int getNumberOfDrives(@PathParam("userId") int userId) {
         return driveUserDao.getNumberOfDrivesForUser(userId);
+    }
+
+    private void attachDriveDetails(List<Drive> drives, List<DriveWrap> driveWraps) {
+        for(Drive d : drives) {
+            List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
+            List<DriveUser> users = driveUserDao.getDriveUsersForDrive(d.getDriveId());
+            List<DriveReport> reports = driveReportDao.getDriveReportsForDrive(d.getDriveId());
+            driveWraps.add(new DriveWrap(d, milestones, users, reports));
+        }
     }
 }
