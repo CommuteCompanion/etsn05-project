@@ -5,11 +5,13 @@ import se.lth.base.server.BaseResourceTest;
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericType;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -111,27 +113,25 @@ public class DriveResourceTest extends BaseResourceTest {
 
     @Test
     public void addUserToDrive() {
-        DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
-        Drive drive1 = new Drive(0, "A", "F", 1, 2, "x", "x", "x", "x", "x", 2, 1, false, false, false);
-        Drive drive2 = driveDao.addDrive(drive1);
-        int drive2Id = drive2.getDriveId();
-
-        login(TEST_CREDENTIALS);
-        DriveWrap wrap = target("drive")
-                .path(Integer.toString(drive2Id))
+    	login(TEST_CREDENTIALS);
+		long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
+		DriveWrap driveWrap= new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		driveWrap = target("drive")
+				.request()
+				.post(Entity.json(driveWrap), DriveWrap.class);
+		int driveId = driveWrap.getDrive().getDriveId();
+    	DriveUser driveUser = new DriveUser(driveId, TEST.getId(), "A", "F", false, false, false);
+		driveUser = target("drive")
+				.path(Integer.toString(driveId) + "/user")
+				.request()
+				.post(Entity.json(driveUser), DriveUser.class);
+		driveWrap = target("drive")
+                .path(Integer.toString(driveWrap.getDrive().getDriveId()))
                 .request()
                 .get(DriveWrap.class);
-        
-        assertTrue(wrap.getUsers().isEmpty());
-        DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
-        driveUserDao.addDriveUser(drive2Id, TEST.getId(), "A", "B", false, false, false);
-        wrap = target("drive")
-                .path(Integer.toString(drive2Id))
-                .request()
-                .get(DriveWrap.class);
-        for (DriveUser user : wrap.getUsers()) {
-            assertEquals(user.getUserId(), TEST.getId());
-        }
+		assertEquals(driveWrap.getUsers().get(0).getUserId(), TEST.getId());
     }
 
     @Test
@@ -168,5 +168,59 @@ public class DriveResourceTest extends BaseResourceTest {
         }
     }
     
+	@Test
+	public void createAndUpdateDrive() {
+		login(TEST_CREDENTIALS);
+		long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
+		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		newDriveWrap = target("drive")
+				.request()
+				.post(Entity.json(newDriveWrap), DriveWrap.class);
+		DriveWrap actual = target("drive")
+                .path(Integer.toString(newDriveWrap.getDrive().getDriveId()))
+                .request()
+                .get(DriveWrap.class);
+		
+		//Test if the correct drive was added
+		assertEquals(actual.getDrive().getDriveId(), newDriveWrap.getDrive().getDriveId());
+		assertEquals(actual.getDrive().getCarLicensePlate(), newDriveWrap.getDrive().getCarLicensePlate());
+		
+		int driveId = actual.getDrive().getDriveId();
+		drive = new Drive(driveId, "A", "B", departureTime, arrivalTime, "Comment", "Audi", "Q8", "White Walker White", "ABC123", 4, 1, false, false, false);
+		Drive updatedDrive = target("drive")
+				.path(Integer.toString(driveId))
+				.request()
+				.put(Entity.json(drive), Drive.class);
+		assertEquals(updatedDrive.getCarColor(), "White Walker White");
+	}
+	
+	@Test(expected = WebApplicationException.class)
+	public void updateDriveNotAsDriver() {
+		login(TEST_CREDENTIALS);
+		long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
+		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		newDriveWrap = target("drive")
+				.request()
+				.post(Entity.json(newDriveWrap), DriveWrap.class);
+		logout();
+		login(ADMIN_CREDENTIALS);
+		int driveId = newDriveWrap.getDrive().getDriveId();
+		DriveUser du = new DriveUser(driveId, ADMIN.getId(), "A", "F", false, false, false);
+		DriveUser driveUser = target("drive")
+				.path(Integer.toString(driveId) + "/user")
+				.request()
+				.post(Entity.json(du), DriveUser.class);
+		
+		drive = new Drive(driveId, "A", "B", departureTime, arrivalTime, "Comment", "Audi", "Q8", "White Walker White", "ABC123", 4, 1, false, false, false);
+		Drive updatedDrive = target("drive")
+				.path(Integer.toString(driveId))
+				.request()
+				.put(Entity.json(drive), Drive.class);
+	}
+	
     
 }
