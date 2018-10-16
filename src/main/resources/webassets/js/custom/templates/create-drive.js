@@ -16,8 +16,13 @@ window.base.createDriveController = (() => {
                 console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
+                    if(document.getElementById('passenger-header') != null){
+                        document.getElementById('passenger-header').remove();
+                        document.getElementById('passenger-col').remove();
+                    }
                 } else {
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
+                    document.getElementById('create-drive-btn').value = 'Edit Drive'
                     for (var i = 0; i < d.length; i++) {
                         if (d[i].drive.driveId === model.theId.id) {
                             model.driveWrap = d[i];
@@ -260,15 +265,11 @@ window.base.createDriveController = (() => {
         .then(() => window.location.replace('/')),
 
         load: (id) => {
-            model.theId.id = 1;
+            model.theId.id = id;
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
             document.getElementById('remove-stop-btn').onclick = controller.removeStop;
-            if(model.theId.id === undefined){
-                document.getElementById('passenger-header').remove();
-                document.getElementById('passenger-col').remove();
-            }
             view.render(id);
         },
 
