@@ -13,6 +13,7 @@ window.base.createDriveController = (() => {
         }).then(u => {
             window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
+                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                 } else {

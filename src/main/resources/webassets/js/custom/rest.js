@@ -110,6 +110,14 @@ window.base.rest = (() => {
             headers: jsonHeader
         };
     };
+    
+    const updateJsonPost = body => {
+        return {
+            method: 'PUT',
+            body: JSON.stringify(body),
+            headers: jsonHeader
+        };
+    };
 
     return {
         deleteDrive: id => baseFetch('/rest/drive/' + id, {method: 'DELETE'}),
@@ -183,7 +191,7 @@ window.base.rest = (() => {
         addDrive: driveWrap => baseFetch('/rest/drive', createJsonPost(driveWrap))
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
-        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, createJsonPost(drive))
+        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, updateJsonPost(drive))
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
         getDrivesForUser: (id) => baseFetch('/rest/drive/user/' + id)
