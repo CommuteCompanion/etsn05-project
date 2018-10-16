@@ -176,7 +176,7 @@ public class DriveResource {
     @RolesAllowed(Role.Names.ADMIN)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<DriveWrap> getReportedDrives() {
-        List<DriveWrap> driveWraps = new ArrayList<DriveWrap>();
+        List<DriveWrap> driveWraps = new ArrayList<>();
         List<Drive> reportedDrives = driveDao.getReportedDrives();
         attachDriveDetails(reportedDrives, driveWraps);
 
@@ -189,7 +189,7 @@ public class DriveResource {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<DriveWrap> getDrivesForUser(@PathParam("userId") int userId) {
         if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
-        	List<DriveWrap> driveWraps = new ArrayList<DriveWrap>();
+        	List<DriveWrap> driveWraps = new ArrayList<>();
         	List<Drive> drives = driveDao.getDrivesForUser(userId);
         	attachDriveDetails(drives, driveWraps);
 

@@ -4,12 +4,13 @@ window.base.driveController = (() => {
     let model = {
         user: {},
         driveUser: {},
-        driveWrap: {}
+        driveWrap: {},
+        driveReport: {}
     };
 
     const view = {
         showReportModal: () => {
-            new Modal(document.getElementById('report-modal'), { keyboard: false }).show();
+            new Modal(document.getElementById('report-modal'), {keyboard: false}).show();
         },
         showFailure: (msg, element) => {
             let alertClasses = element.classList;
@@ -62,12 +63,23 @@ window.base.driveController = (() => {
             let driverReviews;
             let driverRating;
 
+            const requestButton = document.getElementById('drive-request');
+
             for (let i = 0; i < driveUsers.length; i++) {
                 const user = driveUsers[i];
                 const firstName = user.info.firstName;
                 const score = user.info.ratingTotalScore;
                 const reviews = user.info.numberOfRatings;
                 const rating = reviews === 0 ? 'No' : parseFloat(score / reviews).toFixed(2);
+
+                if (user.userId === model.user.userId) {
+                    requestButton.setAttribute('disabled', '');
+                    requestButton.textContent = 'Requested';
+                }
+
+                if (user.userId === model.user.userId && user.driver) {
+                    requestButton.textContent = 'Driving';
+                }
 
                 if (user.driver) {
                     noDrives = user.noDrives;
@@ -101,7 +113,8 @@ window.base.driveController = (() => {
 
             document.getElementById('drive-dropoff').textContent = model.driveUser.stop;
 
-            document.getElementById('drive-comment').textContent = '"' + drive.comment + '"';
+            const driveComment = drive.comment.length > 0 ? '"' + drive.comment + '"' : '';
+            document.getElementById('drive-comment').textContent = driveComment;
 
             document.getElementById('car-brand').textContent = drive.carBrand;
             document.getElementById('car-model').textContent = drive.carModel;
@@ -143,6 +156,8 @@ window.base.driveController = (() => {
 
             const noSeatsLeft = drive.carNumberOfSeats - acceptedPassengers;
             document.getElementById('drive-seats-left').textContent = noSeatsLeft;
+
+            document.getElementById('drive-content').classList.remove('d-none');
         }
     };
 
@@ -156,16 +171,29 @@ window.base.driveController = (() => {
                     view.showFailure(e.message, document.getElementById('request-alert-box'));
                 } else {
                     view.showSuccess('We\'ve sent a request to the driver letting the person know you want a seat.', document.getElementById('request-alert-box'));
+                    const requestButton = document.getElementById('drive-request');
+                    requestButton.setAttribute('disabled', '');
+                    requestButton.textContent = 'Requested';
                 }
             }),
-        submitReport: () => window.base.rest.requestSeat(model.driveUser)
-            .then(e => {
-                if (e.error) {
-                    view.showFailure(e.message, document.getElementById('report-alert-box'));
-                } else {
-                    view.showSuccess('Your report has been sent', document.getElementById('report-alert-box'));
-                }
-            }),
+        submitReport: e => {
+            e.preventDefault();
+
+            model.driveReport.reportId = 0;
+            model.driveReport.driveId = model.driveUser.driveId;
+            model.driveReport.reportedByUser = model.user.userId;
+            model.driveReport.reportMessage = document.getElementById('report-message').value;
+
+            window.base.rest.reportDrive(model.driveUser.driveId, model.driveReport)
+                .then(e => {
+                    if (e.error) {
+                        view.showFailure(e.message, document.getElementById('report-alert-box'));
+                    } else {
+                        view.showSuccess('Your report has been sent', document.getElementById('report-alert-box'));
+                        document.getElementById('report-message').value = '';
+                    }
+                });
+        },
         getUser: () => window.base.rest.getUser().then(u => {
             model.user = u;
             return model.driveUser.userId = u.userId;

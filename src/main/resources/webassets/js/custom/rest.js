@@ -190,7 +190,11 @@ window.base.rest = (() => {
         warnUser: id => baseFetch('/rest/user/warn/' + id, {
             method: 'PUT',
             headers: jsonHeader
-        })
+        }),
+
+        reportDrive: (driveId, driveReport) => baseFetch('rest/drive/' + driveId + '/report', createJsonPost(driveReport))
+            .then(response => response.json())
+            .then(r => objOrError(r, DriveReport))
     };
 })();
 
