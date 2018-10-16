@@ -15,8 +15,6 @@ window.base.createDriveController = (() => {
                 model.driveWraps = d;
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
-                    document.getElementById('passenger-header').remove();
-                    document.getElementById('passenger-col').remove();
                 } else {
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     for (var i = 0; i < d.length; i++) {
@@ -56,7 +54,7 @@ window.base.createDriveController = (() => {
             document.getElementById('set-comment').value = model.driveWrap.drive.comment;
             document.getElementById('set-brand').value = model.driveWrap.drive.carBrand;
             document.getElementById('set-model').value = model.driveWrap.drive.carModel;
-            document.getElementById('set-color').value = model.driveWrap.drive.color;
+            document.getElementById('set-color').value = model.driveWrap.drive.carColor;
             document.getElementById('set-licence').value = model.driveWrap.drive.carLicensePlate;
             document.getElementById('set-seats').value = model.driveWrap.drive.carNumberOfSeats;
             if (model.driveWrap.drive.optWinterTires === true) {
@@ -145,14 +143,15 @@ window.base.createDriveController = (() => {
                 input.placeholder = 'Enter the city where you will stop...';
                 input.id = 'set-stop-' + (counter+1);
                 input.className = 'form-control';
-                input.pattern = "^[a-zA-Z-æøåÆØÅ]+${1,}";
+                input.pattern = "[a-zA-Z-æøåÆØÅ]{1,20}";
                 colMd.append(label);
                 colMd.appendChild(input);
                 col.append(colMd);
                 stopDiv.append(col);
                 document.getElementById('stop-row').append(stopDiv);
-                input.innerHTML = '';
+                input.value = '';
             } else {
+                console.log(text);
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
                 const col = document.createElement('div')
@@ -167,14 +166,14 @@ window.base.createDriveController = (() => {
                 input.type = 'text';
                 input.placeholder = 'Enter the city where you will stop...';
                 input.id = 'set-stop-' + (counter+1);
-                input.pattern = "^[a-zA-Z-æøåÆØÅ]+${1,}";
+                input.pattern = "[a-zA-Z-æøåÆØÅ]{1,20}";
                 input.className = 'form-control';
                 colMd.append(label);
                 colMd.appendChild(input);
                 col.append(colMd);
                 stopDiv.append(col);
                 document.getElementById('stop-row').append(stopDiv);
-                input.innerHTML = text;
+                input.value = text;
             }
         },
 
@@ -237,27 +236,38 @@ window.base.createDriveController = (() => {
 
             const driveWrap = {drive, milestones, users, reports};
 
-            window.base.rest.addDrive(driveWrap).then(d => {
-                if (d.error) {
-                    alert(d.error);
-                }
-            }).then(() => {
-                view.render(model.theId.id);
-                alert('Drive has been created');
-            });
+            if (model.theId.id === undefined){
+                console.log("ny drive skapas");
+                window.base.rest.addDrive(driveWrap).then(d => {
+                    if (d.error) {
+                        alert(d.error);
+                    }
+                }).then(() => {
+                    console.log(drive);
+                    view.render(model.theId.id);
+                    alert('Drive has been created');
+                });
+            } else {
+                console.log("drive uppdateras");
+                controller.updateDrive(drive);
+            }
         },
 
-        updateDrive: () => window.base.rest.updateDrive(),
+        updateDrive: (drive) => window.base.rest.putDrive(model.theId.id, drive),
 
         deleteDrive: () => window.base.rest.deleteDrive(model.driveWrap.drive.driveId)
         .then(() => window.location.replace('/')),
 
         load: (id) => {
-            model.theId.id = id;
+            model.theId.id = 1;
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
             document.getElementById('remove-stop-btn').onclick = controller.removeStop;
+            if(model.theId.id === undefined){
+                document.getElementById('passenger-header').remove();
+                document.getElementById('passenger-col').remove();
+            }
             view.render(id);
         },
 
