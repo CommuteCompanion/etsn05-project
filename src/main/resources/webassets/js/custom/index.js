@@ -93,13 +93,6 @@ window.base.mainController = (() => {
 
                     document.getElementById('logout').onclick = controller.logout;
                     window.onhashchange = window.base.mainController.changeRoute;
-
-                    // Too make sure you can click on find to get back
-                    const links = document.getElementsByClassName('nav-link');
-                    for (let i = 0; i < links.length; i++) {
-                        links[i].onclick = window.base.mainController.changeRoute;
-                    }
-
                     window.base.mainController.changeRoute();
 
                     if (!user.isAdmin()) {
