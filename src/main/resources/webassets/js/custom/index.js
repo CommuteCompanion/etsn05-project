@@ -73,18 +73,23 @@ window.base.mainController = (() => {
             view.render();
         },
         load: () => {
-            document.getElementById('logout').onclick = controller.logout;
-            window.onhashchange = window.base.mainController.changeRoute;
-            window.base.mainController.changeRoute();
             window.base.rest.getUser().then(user => {
-                model.user = user;
-                view.renderFirstName();
                 if (user.isNone()) {
                     window.base.changeLocation('/login.html');
-                } else if (!user.isAdmin()) {
-                    view.hideAdminLinks();
                 } else {
-                    view.hideUserLinks();
+                    document.getElementsByTagName('html')[0].classList.remove('d-none');
+                    model.user = user;
+                    view.renderFirstName();
+
+                    document.getElementById('logout').onclick = controller.logout;
+                    window.onhashchange = window.base.mainController.changeRoute;
+                    window.base.mainController.changeRoute();
+
+                    if (!user.isAdmin()) {
+                        view.hideAdminLinks();
+                    } else {
+                        view.hideUserLinks();
+                    }
                 }
             });
         },

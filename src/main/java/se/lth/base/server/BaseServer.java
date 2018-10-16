@@ -70,7 +70,7 @@ public class BaseServer {
         return new AbstractHandler() {
 
             @Override
-            public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+            public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
                 if (target.equals("/")) {
                     response.addHeader("Content-Type", "text/html");
                     copyStream(BaseServer.class.getResourceAsStream("/webassets/index.html"), response.getOutputStream());
