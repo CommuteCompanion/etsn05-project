@@ -99,7 +99,7 @@ window.base.createDriveController = (() => {
 
             //Get passengers for drive
             const nbrPassengers = model.driveWrap.users.length;
-            for(var i = 0; i < nbrPassengers; i++) {
+            for(var i = 0; i < 5; i++) {
                 console.log(nbrPassengers);
                 console.log(model.driveWrap.users);
                 console.log(model.user);
@@ -119,6 +119,7 @@ window.base.createDriveController = (() => {
                 removeCol.append(removeBtn);
                 document.getElementById('passenger-row').append(nameCol);
                 document.getElementById('passenger-row').append(removeCol);
+                removeBtn.onclick = console.log(i);
             }
         },
 

@@ -111,15 +111,6 @@ public class UserResourceTest extends BaseResourceTest {
                 .get(USER_LIST);
     }
 
-    @Test(expected = ForbiddenException.class)
-    public void getUserAsUser() {
-        login(TEST_CREDENTIALS);
-        target("user")
-                .path(Integer.toString(ADMIN.getId()))
-                .request()
-                .get(User.class);
-    }
-
     @Test
     public void testCreateUser() {
         Credentials newCredentials = new Credentials("pelle", "passphrase", Role.USER, TEST);

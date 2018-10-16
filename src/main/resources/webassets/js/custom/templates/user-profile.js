@@ -2,11 +2,12 @@ window.base = window.base || {};
 
 window.base.userProfileController = (() => {
     const model = {
-        user: {}
+        user: {},
+        userId: '',
     };
 
     const view = {
-        render: () => window.base.rest.getUser().then(u => {
+        render: () => window.base.rest.getUser(model.userId).then(u => {
             model.user = u;
             return u;
         }).then(() => {
@@ -90,6 +91,10 @@ window.base.userProfileController = (() => {
             document.querySelector('#clear-changes').onclick = view.clearChanges;
             document.querySelector('#delete-account').onclick = controller.deleteUser;
             view.render();
+        },
+        loadWithUserId: (id) => {
+            model.userId = id;
+            controller.load();
         },
     };
 

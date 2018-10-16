@@ -9,7 +9,8 @@ import java.sql.Timestamp;
  * @see DriveMilestoneDataAccess
  */
 public class DriveMilestone {
-	private final int milestoneId, driveId;
+	private final int milestoneId;
+    private final int driveId;
 	private final String milestone;
 	private final long departureTime;
 
