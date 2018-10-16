@@ -102,7 +102,7 @@ public class UserResource {
 
     @Path("{userId}")
     @GET
-    @RolesAllowed(Role.Names.ADMIN)
+    @RolesAllowed(Role.Names.USER)
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public User getUser(@PathParam("userId") int userId) {
         return userDao.getUser(userId);
@@ -132,6 +132,13 @@ public class UserResource {
         credentials.sanitizeAndValidate(credentials.hasPassword());
 
         return userDao.updateUser(userId, credentials);
+    }
+
+    @Path("warn/{userId}")
+    @RolesAllowed(Role.Names.ADMIN)
+    @PUT
+    public void warnUser(@PathParam("userId") int userId) {
+        userDao.warnUser(userId);
     }
 
     @Path("{userId}")

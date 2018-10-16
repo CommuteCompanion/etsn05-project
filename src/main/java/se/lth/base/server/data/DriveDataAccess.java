@@ -64,7 +64,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
         boolean optBicycle = drive.getOptBicycle();
         boolean optPets = drive.getOptPets();
 
-        execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, arrival_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?)",
+        execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, arrival_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?",
                 start, stop, new Timestamp(departureTime), new Timestamp(arrivalTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);
 
@@ -112,18 +112,6 @@ public class DriveDataAccess extends DataAccess<Drive> {
     public boolean deleteDrive(int driveId) {
         return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
     }
-
-    public int getNumberOfDrivesForUser(int userId) {
-        ResultSet result = openQuery("SELECT COUNT(*) FROM drive_user WHERE is_driver = ? and user_id = ?", true, userId);
-
-        try {
-            result.next();
-            return result.getInt(1);
-        } catch (SQLException e) {
-            throw new DataAccessException(ErrorType.NOT_FOUND);
-        }
-    }
-
 }
 
 

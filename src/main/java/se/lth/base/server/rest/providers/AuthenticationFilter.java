@@ -31,7 +31,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     private final UserDataAccess userDataAccess = new UserDataAccess(Config.instance().getDatabaseDriver());
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) {
         Cookie cookie = requestContext.getCookies().get("USER_TOKEN");
         Session session = new Session(null, User.NONE);
         if (cookie != null) {

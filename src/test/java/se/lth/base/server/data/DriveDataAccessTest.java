@@ -5,6 +5,7 @@ import org.junit.Test;
 import se.lth.base.server.Config;
 import se.lth.base.server.database.BaseDataAccessTest;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -25,8 +26,8 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
 
     @Before
     public void registerTestDrive() {
-        long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+        long departureTime = new Timestamp(Date.valueOf("2017-07-22").getTime()).getTime();
+        long arrivalTime = new Timestamp(Date.valueOf("2017-07-23").getTime()).getTime();
         drive1 = driveDao.addDrive(new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive1Id = drive1.getDriveId();
     }
@@ -39,10 +40,11 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void updateDrive() {
-        long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
-        Drive drive2 = driveDao.addDrive(new Drive(-1, "A", "B", departureTime, arrivalTime, "i", "j", "k", "l", "m", 3, 2, false, false, false));
-
+        long departureTime = new Timestamp(Date.valueOf("2017-07-22").getTime()).getTime();
+        long arrivalTime = new Timestamp(Date.valueOf("2017-07-23").getTime()).getTime();
+        Drive drive2 = new Drive(drive1Id, "A", "B", departureTime, arrivalTime, "i", "j", "k", "l", "m", 3, 2, false, false, false);
+        driveDao.updateDrive(drive2);
+        
         assertEquals("A", drive2.getStart());
         assertEquals("B", drive2.getStop());
         assertEquals(departureTime, drive2.getDepartureTime());
@@ -73,20 +75,20 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
         driveUserDao.addDriveUser(drive1.getDriveId(), TEST.getId(), "A", "F", true, true, false);
 
-        assertEquals(1, driveDao.getNumberOfDrivesForUser(TEST.getId()));
+        assertEquals(1, driveUserDao.getNumberOfDrivesForUser(TEST.getId()));
     }
 
     @Test
     public void getDrivesForUser() {
-        long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+        long departureTime = new Timestamp(Date.valueOf("2017-07-22").getTime()).getTime();
+        long arrivalTime = new Timestamp(Date.valueOf("2017-07-23").getTime()).getTime();
         Drive drive2 = driveDao.addDrive(new Drive(-1, "A", "B", departureTime, arrivalTime, "i", "j", "k", "l", "m", 3, 2, false, false, false));
 
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
 
         driveUserDao.addDriveUser(drive1.getDriveId(), TEST.getId(), "A", "F", true, true, false);
         driveUserDao.addDriveUser(drive2.getDriveId(), TEST.getId(), "A", "B", true, true, false);
-        assertEquals(2, driveDao.getNumberOfDrivesForUser(TEST.getId()));
+        assertEquals(2, driveUserDao.getNumberOfDrivesForUser(TEST.getId()));
     }
 
     @Test

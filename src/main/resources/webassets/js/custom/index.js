@@ -39,7 +39,8 @@ window.base.mainController = (() => {
     };
 
     const model = {
-        route: ''
+        route: '',
+        user: {}
     };
 
     const view = {
@@ -52,7 +53,14 @@ window.base.mainController = (() => {
         },
         hideAdminLinks: () => document.querySelectorAll('#main-nav li.admin-only').forEach(li => li.style.display = 'none'),
         hideUserLinks: () => document.querySelectorAll('#main-nav li.user-only').forEach(li => li.style.display = 'none'),
-        renderFirstName: () => document.getElementById('navbar-first-name').textContent = model.user.firstName
+        renderFirstName: () => document.getElementById('navbar-first-name').textContent = model.user.firstName,
+        renderRating: () => {
+            const reviews = model.user.numberOfRatings;
+            const score = model.user.ratingTotalScore;
+            const rating = reviews === 0 ? 'N/A' : parseFloat(score / reviews).toFixed(2);
+            document.getElementById('navbar-user-rating').textContent = rating;
+        },
+        hideAdminRating: () => document.getElementById('navbar-user-rating').parentElement.style.display = 'none'
     };
 
     const controller = {
@@ -73,18 +81,26 @@ window.base.mainController = (() => {
             view.render();
         },
         load: () => {
-            document.getElementById('logout').onclick = controller.logout;
-            window.onhashchange = window.base.mainController.changeRoute;
-            window.base.mainController.changeRoute();
-            window.base.rest.getUser().then(user => {
-                model.user = user;
-                view.renderFirstName();
+            window.base.rest.getUser()
+                .then(user => {
                 if (user.isNone()) {
                     window.base.changeLocation('/login.html');
-                } else if (!user.isAdmin()) {
-                    view.hideAdminLinks();
                 } else {
-                    view.hideUserLinks();
+                    document.getElementsByTagName('html')[0].classList.remove('d-none');
+                    model.user = user;
+                    view.renderFirstName();
+                    view.renderRating();
+
+                    document.getElementById('logout').onclick = controller.logout;
+                    window.onhashchange = window.base.mainController.changeRoute;
+                    window.base.mainController.changeRoute();
+
+                    if (!user.isAdmin()) {
+                        view.hideAdminLinks();
+                    } else {
+                        view.hideUserLinks();
+                        view.hideAdminRating();
+                    }
                 }
             });
         },
