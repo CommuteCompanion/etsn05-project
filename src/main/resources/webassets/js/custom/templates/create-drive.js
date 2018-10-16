@@ -136,7 +136,7 @@ window.base.createDriveController = (() => {
                     removeCol.id = 'remove-col-' + i;
                     removeBtn.type = 'button';
                     removeBtn.className = 'btn btn-success w-100';
-                    removeBtn.innerHTML = 'Remove';
+                    removeBtn.innerHTML = 'Accept';
                     removeBtn.id = 'removePass-' + i;
                     (function(i){
                         removeBtn.onclick = (function (callback) {
