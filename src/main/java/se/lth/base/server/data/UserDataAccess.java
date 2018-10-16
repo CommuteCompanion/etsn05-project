@@ -161,18 +161,21 @@ public class UserDataAccess extends DataAccess<User> {
      * @throws DataAccessException if the email or password does not match.
      */
     public Session authenticate(Credentials credentials) {
-        Supplier<DataAccessException> onError = () ->
-                new DataAccessException("Email or password incorrect", ErrorType.DATA_QUALITY);
         long salt = new DataAccess<>(getDriverUrl(), (rs) -> rs.getLong(1))
                 .queryFirst("SELECT salt FROM user WHERE email = ?", credentials.getEmail());
         UUID hash = credentials.generatePasswordHash(salt);
-        User user = queryFirst("SELECT user_id, role, email, first_name, last_name, phone_number, " +
-                "gender, date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, " +
-                "user_role WHERE user_role.role_id = user.role_id AND email = ? AND password_hash = ?",
-                credentials.getEmail(), hash);
-        UUID sessionId = insert("INSERT INTO session (user_id) SELECT user_id FROM user WHERE email = ?",
-                user.getEmail());
-        return new Session(sessionId, user);
+
+        try {
+            User user = queryFirst("SELECT user_id, role, email, first_name, last_name, phone_number, " +
+                            "gender, date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, " +
+                            "user_role WHERE user_role.role_id = user.role_id AND email = ? AND password_hash = ?",
+                    credentials.getEmail(), hash);
+            UUID sessionId = insert("INSERT INTO session (user_id) SELECT user_id FROM user WHERE email = ?",
+                    user.getEmail());
+            return new Session(sessionId, user);
+        } catch (DataAccessException e) {
+            throw new DataAccessException("Email or password incorrect", ErrorType.DATA_QUALITY);
+        }
     }
 
     private static class UserMapper implements Mapper<User> {
