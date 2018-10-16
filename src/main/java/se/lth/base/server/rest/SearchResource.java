@@ -27,7 +27,7 @@ public class SearchResource {
     private final MailHandler mailHandler = new MailHandler();
     private final User user;
 
-    // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
+    // A trip with departure time within interval 13.00-14.00 will match drive milestone with departure time 14.00
     private final int SEARCH_MINUTES_MARGIN = 60;
 
     public SearchResource(@Context ContainerRequestContext context) {

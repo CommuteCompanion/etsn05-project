@@ -8,6 +8,9 @@ window.base.driveController = (() => {
     };
 
     const view = {
+        showReportModal: () => {
+            new Modal(document.getElementById('report-modal'), { keyboard: false }).show();
+        },
         showFailure: (msg, element) => {
             let alertClasses = element.classList;
 
@@ -32,6 +35,7 @@ window.base.driveController = (() => {
             const driveUsers = model.driveWrap.users;
             let driver;
             let passengerHtml = '';
+            let acceptedPassengers = 1;
 
             for (let i = 0; i < driveUsers.length; i++) {
                 if (driveUsers[i].driver) {
@@ -70,12 +74,12 @@ window.base.driveController = (() => {
                     driverReviews = reviews;
                     driverRating = rating;
                 } else if (user.accepted) {
+                    acceptedPassengers++;
                     passengerHtml += `${firstName} (<i class="fas fa-star fa-sm">${rating}), `
                 }
             }
 
             passengerHtml = passengerHtml.length === 0 ? 'None' : passengerHtml.slice(0, passengerHtml.length - 2);
-            ;
 
             document.getElementById('driver-driven').textContent = noDrives;
             document.getElementById('driver-rating').textContent = driverRating;
@@ -137,7 +141,7 @@ window.base.driveController = (() => {
 
             document.getElementById('drive-passengers').innerHTML = passengerHtml;
 
-            const noSeatsLeft = drive.carNumberOfSeats - driveUsers.length;
+            const noSeatsLeft = drive.carNumberOfSeats - acceptedPassengers;
             document.getElementById('drive-seats-left').textContent = noSeatsLeft;
         }
     };
@@ -154,7 +158,7 @@ window.base.driveController = (() => {
                     view.showSuccess('We\'ve sent a request to the driver letting the person know you want a seat.', document.getElementById('request-alert-box'));
                 }
             }),
-        reportDrive: () => window.base.rest.requestSeat(model.driveUser)
+        submitReport: () => window.base.rest.requestSeat(model.driveUser)
             .then(e => {
                 if (e.error) {
                     view.showFailure(e.message, document.getElementById('report-alert-box'));
@@ -192,7 +196,8 @@ window.base.driveController = (() => {
             }
 
             document.getElementById('drive-request').onclick = controller.submitRequest;
-            document.getElementById('report-drive').onclick = controller.reportDrive;
+            document.getElementById('report-modal-trigger').onclick = view.showReportModal;
+            document.getElementById('report-form').onsubmit = controller.submitReport;
 
             model.driveUser = {
                 driveId: searchQuery.driveId,
