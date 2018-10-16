@@ -4,18 +4,105 @@ window.base.reportedDrivesController = (() => {
     var model = {
         drives: [],
     };
+    var view = {
+        getDriverUserId: function(drive) {
+            drive.users.forEach(user => {
+                if (user.driver === true) {
+                    return user.userId;
+                }
+            });
+        },
+        getRenderedRating: function(user) {
+            if (user.numberOfRatings !== 0) {
+                return 'Rating' + user.ratingTotalScore/user.numberOfRatings;
+            }
+            return 'No rating';
+        },
+        renderCard: function(drive) {
+            //console.log(drive);
+            drive.reports.forEach(report => {
+                var t = document.getElementById('reported-drives-template');
+                var reporter;
+                const p1 = window.base.rest.getUser(report.reportedByUserId).then(function(user) {
+                    reporter = user;
+                });
+                var driver;
+                var driverId = view.getDriverUserId(drive);
+                const p2 = window.base.rest.getUser(driverId).then(function(user) {
+                    driver = user;
+                });
+                Promise.all([p1, driver]).then(function() {
+                    //console.log(driver);
+                    //console.log(reporter);
+                    t.content.querySelector('.report-start-destination-time').textContent 
+                        = drive.drive.start + ' to ' + drive.drive.stop 
+                        + ', ' + Date(drive.drive.departureTime);
+
+                    t.content.querySelector('.report-driver').textContent 
+                        = 'Driver: ' + driver.firstName + ' ' + driver.lastName;
+
+                    t.content.querySelector('.report-driver-rating-warning').textContent 
+                        = view.getRenderedRating(driver) + ' | ' + driver.warning + ' warnings';
+
+
+                    t.content.querySelector('.report-reported-by').textContent
+                        = 'Reported by: ' + reporter.firstName + ' ' + reporter.lastName;
+                    t.content.querySelector('.report-reported-by-rating-warning').textContent 
+                        = view.getRenderedRating(reporter) + ' | ' + reporter.warning + ' warnings';
+
+
+                    t.content.querySelector('.report-comment').textContent = report.reportMessage;
+
+                    // Associate buttons and cards with correct Id
+                    t.content.querySelector('.dismiss-report-button').id   = 'dismiss-report-button' + report.reportId;
+                    
+                    t.content.querySelector('.reported-drives').id = 'reported-drives' + report.reportId;
+
+                    var clone = document.importNode(t.content, true);
+                    t.parentElement.appendChild(clone);
+                });
+
+            });
+        },
+        render: function() {
+            model.drives.forEach(drive => view.renderCard(drive));
+        },
+    };
 
     const controller = {
+        dismissReport: function(user) {
+            alert('NOT IMPLEMENTED');
+        },
+        giveWarning: function(user) {
+            window.base.rest.warnUser(user.userId).then(function () {
+                user.warning = user.warning + 1;
+                document.getElementById('admin-warning'+user.userId).textContent 
+                    = user.warning + ' warnings';
+                });
+        },
+        deleteAccount: function(user) {
+            window.base.rest.deleteUser(user.userId).then(function () {
+                var item = document.getElementById('manage-user-card' + user.userId);
+                item.parentElement.removeChild(item);
+            }); 
+            
+        },
+        deleteDrive: function(driveWrap) {
+            window.base.rest.deleteUser(user.userId).then(function () {
+                var item = document.getElementById('manage-user-card' + user.userId);
+                item.parentElement.removeChild(item);
+            }); 
+            
+        },
         load: function() {
-            // TODO: Add responsiveness to buttons!
-
-            base.rest.getReportedDrives().then(function(drives) {
+            window.base.rest.getReportedDrives().then(function(drives) {
                 model.drives = drives;
                 return drives;
             }).then(function() {
-                console.log(model.drives);
+                view.render();
             });
-            //debug();
+            
+            //controller.debug();
         },
         debug: function() {
             // TODO: Add responsiveness to buttons!
@@ -55,8 +142,11 @@ window.base.reportedDrivesController = (() => {
             const driveWrap = {
                 drive, milestones, users, reports
             };
+            //base.rest.addDrive(driveWrap).then(d => {
+            //    console.log(d);
+            //});
 
-            const reportId = 0;
+            const reportId = 1;
             //const driveId = 0;
             const reportedByUserId = 1;
             const reportMessage = 'HE HIT ME!';
@@ -69,9 +159,9 @@ window.base.reportedDrivesController = (() => {
 
             //});
 
-/*             base.rest.addDrive(driveWrap).then(d => {
+             base.rest.addDrive(driveWrap).then(d => {
                 alert(d.message);
-            }).then( */
+            })
 
            // );
             

@@ -23,15 +23,12 @@ window.base.rest = (() => {
         this.isNone = () => this.role.name === 'NONE';
     }
 
-    function Drive(json) {
-        Object.assign(this, json);
-        this.json = json;
-    }
         
     function DriveWrap(json) {
         this.drive = new Drive(json.drive);
         this.milestones = json.milestones.map(milestone => new DriveMilestone(milestone));
         this.users = json.users.map(user => new DriveUser(user));
+        this.reports = json.reports.map(report => new DriveReport(report));
     }
 
     function DriveMilestone(json) {
@@ -69,8 +66,10 @@ window.base.rest = (() => {
         this.arrivalTime = json.arrivalTime;
     }
     function DriveReport(json) {
-        Object.assign(this, json);
-        this.json = json;
+        this.reportId = json.reportId;
+		this.driveId = json.driveId;
+		this.reportedByUserId = json.reportedByUserId;
+		this.reportMessage = json.reportMessage;
     }
 
     const objOrError = (json, cons) => json.error ? json : new cons(json);
@@ -106,7 +105,7 @@ window.base.rest = (() => {
     return {
         getReportedDrives: () => baseFetch('/rest/drive/all-reports')
         .then(response => response.json())
-        .then(drives => drives.map(d => new DriveReport(d))),
+        .then(drives => drives.map(d => new DriveWrap(d))),
 
         getDrive: (id) => baseFetch('/rest/user/' + id, {
             method: 'GET',
