@@ -4,7 +4,14 @@ window.base.changeLocation = url => window.location.replace(url);
 
 window.base.loginController = (() => {
     const view = {
-        showFailure: msg => alert(msg)
+        showFailure: msg => {
+            const alert = document.getElementById('login-alert');
+            const classList = alert.classList;
+
+            classList.remove('d-none');
+
+            alert.innerHTML = `<h4 class="alert-heading">Oops!</h4><p>Something went wrong, error message: ${msg}</p>`;
+        }
     };
 
     const controller = {
