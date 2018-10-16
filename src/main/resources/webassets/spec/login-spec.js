@@ -3,15 +3,13 @@
  * Author: Rasmus Ros, rasmus.ros@cs.lth.se
  */
 describe('loginController', function() {
+    const none = new base.User({email: '-', role: 'NONE'});
+    const test = new base.User({email: 'Test', role: 'USER'});
 
-    var none = new base.User({username: '-', role: 'NONE'});
-    var test = new base.User({username: 'Test', role: 'USER'});
-    var admin = new base.User({username: 'Admin', role: 'ADMIN'});
-
-    var node;
+    let node;
     // Creates the controller by loading the index.html and put it in the node variable
     beforeEach(function(done) {
-        specHelper.fetchHtml('login/login.html', document.body).then(function(n) {
+        specHelper.fetchHtml('login.html', document.body).then(function(n) {
             node = n;
         }).finally(done);
     });
@@ -21,7 +19,7 @@ describe('loginController', function() {
     });
 
     it('should redirect user to "/" if already logged in', function(done) {
-        var userPromise = Promise.resolve(test);
+        const userPromise = Promise.resolve(test);
         spyOn(base.rest, 'getUser').and.returnValue(Promise.resolve(test));
         spyOn(base, 'changeLocation');
         base.loginController.load();
@@ -32,14 +30,14 @@ describe('loginController', function() {
 
     describe('login submit', function() {
         beforeEach(function(done) {
-            var userPromise = Promise.resolve(none);
+            const userPromise = Promise.resolve(none);
             spyOn(base.rest, 'getUser').and.returnValue(userPromise);
             base.loginController.load();
             userPromise.finally(done);
         });
 
         it('should call loginUser on form submit', function() {
-            document.getElementById('username').value = 'test';
+            document.getElementById('email').value = 'test';
             document.getElementById('password').value = 'password1';
             spyOn(base.loginController, 'loginUser');
             document.querySelector('#login-form button').click();
@@ -47,10 +45,10 @@ describe('loginController', function() {
         });
 
         it('should do post to rest/login', function(done) {
-            document.getElementById('username').value = 'test';
+            document.getElementById('email').value = 'test';
             document.getElementById('password').value = 'password2';
             spyOn(base, 'changeLocation');
-            var loginPromise = Promise.resolve({ok: true});
+            const loginPromise = Promise.resolve({ok: true});
             spyOn(base.rest, 'login').and.returnValue(loginPromise);
             document.querySelector('button').click();
             loginPromise.then(function() {
@@ -60,10 +58,10 @@ describe('loginController', function() {
         });
 
         it('should show error on failed login', function(done) {
-            document.getElementById('username').value = 'test';
+            document.getElementById('email').value = 'test';
             document.getElementById('password').value = 'password3';
-            var errorPromise = Promise.resolve({message: 'mock error'});
-            var loginPromise = Promise.resolve({
+            const errorPromise = Promise.resolve({message: 'mock error'});
+            const loginPromise = Promise.resolve({
                 ok: false,
                 json: () => errorPromise});
             spyOn(base.rest, 'login').and.returnValue(loginPromise);

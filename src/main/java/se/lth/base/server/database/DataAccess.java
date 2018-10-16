@@ -49,6 +49,19 @@ public class DataAccess<T> {
         }
     }
 
+    public ResultSet openQuery(String sql, Object... objects) {
+        try {
+            PreparedStatement statement = getConnection().prepareStatement(sql);
+
+            for (int i = 0; i < objects.length; i++) {
+                statement.setObject(i + 1, objects[i]);
+            }
+            return statement.executeQuery();
+        } catch (SQLException e) {
+            throw toException(e, e.getErrorCode());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     public <S> S insert(String sql, Object... objects) {
         try (Connection conn = getConnection();

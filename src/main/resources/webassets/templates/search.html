@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-md-12 p-0">
+        <form id="drive-search">
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" id="search-start" placeholder="From">
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" id="search-stop" placeholder="To">
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" class="form-control" id="search-departure-time" placeholder="Leaving">
+                </div>
+                <div class="form-group col-md-3">
+                    <button type="submit" class="btn btn-info text-white btn-block">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="search-bg border-top pt-3">
+    <div id="search-results" class="container"></div>
+</div>
+
+
+<script type="application/javascript">
+    window.base.searchController.initOnLoad();
+</script>

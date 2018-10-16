@@ -1,0 +1,46 @@
+<h1>Manage users</h1>
+<div class="row manage-users-search-row">
+    <div class="col-md-5">
+        <input type="text" class="form-control" id="search-name" placeholder="Name">
+    </div>
+    <div class="col-md-5">
+        <input type="text" class="form-control" id="search-email" placeholder="Email">
+    </div>
+    <div class="col-md-2">
+        <button id="submit-user" type="submit" class="w-100 btn btn-primary">Search</button>
+    </div>
+</div>
+
+<template id="manage-users-template">
+    <div class="card manage-users-user">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="admin-name"></p>
+                            <p class="admin-email"></p>
+                        </div>
+                        <div class="col-md-4">
+                            <p class="admin-rating"></p>
+                            <p class="admin-warning"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button type="button" class="btn-block btn btn-primary edit-profile-button">Edit profile</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn-block btn btn-warning give-warning-button">Give warning</button>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn-block btn btn-danger delete-account-button">Delete account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
