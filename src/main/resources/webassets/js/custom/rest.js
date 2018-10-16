@@ -112,7 +112,7 @@ window.base.rest = (() => {
         };
     };
     
-    const updateJsonPost = body => {
+    const createJsonPut = body => {
         return {
             method: 'PUT',
             body: JSON.stringify(body),
@@ -182,7 +182,7 @@ window.base.rest = (() => {
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
 
-        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, createJsonPost(drive))
+        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, createJsonPut(drive))
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
 
