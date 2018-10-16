@@ -221,5 +221,57 @@ public class DriveResourceTest extends BaseResourceTest {
                 .get(DriveWrap.class);
 	}
 	
+	@Test
+    public void reportDriveAndgetAllReports() {
+    	login(ADMIN_CREDENTIALS);
+    	long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+        Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 4, 1, false, false, false);
+        DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		newDriveWrap = target("drive")
+				.request()
+				.post(Entity.json(newDriveWrap), DriveWrap.class);
+		//Look for reported drives, expect 0
+		List<DriveWrap> reportWraps = target("drive")
+				.path("all-reports")
+				.request()
+				.get(DRIVEWRAP_LIST);
+		assertTrue(reportWraps.isEmpty());
+		//Add report
+		int driveId = newDriveWrap.getDrive().getDriveId();
+		DriveReport report = new DriveReport(-1, driveId, ADMIN.getId(), "Driving like a mad man");
+		DriveReport newReport = target("drive")
+				.path(Integer.toString(driveId) + "/report")
+				.request()
+				.post(Entity.json(report), DriveReport.class);
+		reportWraps = target("drive")
+				.path("all-reports")
+				.request()
+				.get(DRIVEWRAP_LIST);
+		assertEquals(reportWraps.get(0).getReports().get(0).getReportMessage(), "Driving like a mad man");
+    }
+    
+    @Test
+    public void numberOfDrivesForUser() {
+    	login(TEST_CREDENTIALS);
+    	long departureTime = new Timestamp(2018 - 1900, 1, 1, 1, 1, 1, 1).getTime();
+        long arrivalTime = new Timestamp(2018 - 1900, 2, 2, 2, 2, 2, 2).getTime();
+        Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 4, 1, false, false, false);
+        DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		newDriveWrap = target("drive")
+				.request()
+				.post(Entity.json(newDriveWrap), DriveWrap.class);
+		int driveId1 = newDriveWrap.getDrive().getDriveId();
+		newDriveWrap = target("drive")
+				.request()
+				.post(Entity.json(newDriveWrap), DriveWrap.class);
+		int driveId2 = newDriveWrap.getDrive().getDriveId();
+		int numberOfDrives = target("drive")
+				.path("count/" + TEST.getId())
+				.request()
+				.get(int.class);
+		assertEquals(2, numberOfDrives);
+    }
+	
     
 }
