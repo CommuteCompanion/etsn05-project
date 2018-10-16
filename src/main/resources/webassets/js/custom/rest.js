@@ -25,11 +25,6 @@ window.base.rest = (() => {
         this.isNone = () => this.role.name === 'NONE';
     }
     
-    function DriveWrap(driveWrap) {
-        Object.assign(this, json);
-        this.json = json;
-    }
-    
     function Drive(json) {
         Object.assign(this, json);
         this.driveWrap = new DriveWrap(json.driveWrap);
@@ -130,12 +125,12 @@ window.base.rest = (() => {
         })
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
-        getDriveForUser: (id) => baseFetch('/rest/drive/' + id, {
+        getDriveForUser: (id) => baseFetch('/rest/drive/user/' + id, {
             method: 'GET',
             headers: jsonHeader
         })
             .then(response => response.json())
-            .then(driveWraps => driveWraps.map(d => new DriveWrap(d))),
+            .then(driveWraps => driveWraps.map(driveWrap => new DriveWrap(driveWrap))),
         deleteDrive: (id) => baseFetch('/rest/drive/' + id, {
             method: 'DELETE'
         })     
