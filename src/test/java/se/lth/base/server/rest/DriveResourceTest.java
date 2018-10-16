@@ -121,9 +121,8 @@ public class DriveResourceTest extends BaseResourceTest {
                 .path(Integer.toString(drive2Id))
                 .request()
                 .get(DriveWrap.class);
-        for (DriveUser user : wrap.getUsers()) {
-            assertNotEquals(user.getUserId(), TEST.getId());
-        }
+        
+        assertTrue(wrap.getUsers().isEmpty());
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
         driveUserDao.addDriveUser(drive2Id, TEST.getId(), "A", "B", false, false, false);
         wrap = target("drive")
@@ -168,4 +167,6 @@ public class DriveResourceTest extends BaseResourceTest {
             assertNotEquals(user.getUserId(), user1Id);
         }
     }
+    
+    
 }
