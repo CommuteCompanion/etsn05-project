@@ -11,6 +11,7 @@ import se.lth.base.server.data.*;
 import javax.ws.rs.client.Entity;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
 public class SearchResourceTest extends BaseResourceTest {
@@ -64,15 +65,16 @@ public class SearchResourceTest extends BaseResourceTest {
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
 
         // Drive 1
-        long timestamp1 = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        long timestamp1_5 = new Timestamp(2018 - 1900, 10, 20, 12, 25, 0, 0).getTime();
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestamp1 = Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestamp1_5 = Timestamp.valueOf("2018-10-20 12:25:00").getTime();
         Drive drive1 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp1, timestamp1_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive1Id = drive1.getDriveId();
-
-        long timestamp1_1 = new Timestamp(2018 - 1900, 10, 20, 12, 5, 0, 0).getTime();
-        long timestamp1_2 = new Timestamp(2018 - 1900, 10, 20, 12, 10, 0, 0).getTime();
-        long timestamp1_3 = new Timestamp(2018 - 1900, 10, 20, 12, 15, 0, 0).getTime();
-        long timestamp1_4 = new Timestamp(2018 - 1900, 10, 20, 12, 20, 0, 0).getTime();
+        
+        long timestamp1_1 = Timestamp.valueOf("2018-10-20 12:05:00").getTime();
+        long timestamp1_2 = Timestamp.valueOf("2018-10-20 12:10:00").getTime();
+        long timestamp1_3 = Timestamp.valueOf("2018-10-20 12:15:00").getTime();
+        long timestamp1_4 = Timestamp.valueOf("2018-10-20 12:20:00").getTime();
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "B", timestamp1_1);
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "C", timestamp1_2);
         driveMilestoneDao.addMilestone(drive1.getDriveId(), "D", timestamp1_3);
@@ -81,14 +83,14 @@ public class SearchResourceTest extends BaseResourceTest {
         driveUserDao.addDriveUser(drive1.getDriveId(), user1.getId(), "A", "F", true, true, false);
 
         // Drive 2
-        long timestamp2 = new Timestamp(2018 - 1900, 10, 20, 13, 0, 0, 0).getTime();
-        long timestamp2_5 = new Timestamp(2018 - 1900, 10, 20, 13, 25, 0, 0).getTime();
+        long timestamp2 =Timestamp.valueOf("2018-10-20 13:00:0").getTime();
+        long timestamp2_5 = Timestamp.valueOf("2018-10-20 13:25:00").getTime();
         Drive drive2 = driveDao.addDrive(new Drive(-1, "A", "F", timestamp2, timestamp2_5, "Comment", "x", "x", "x", "x", 3, 1, false, false, false));
         drive2Id = drive2.getDriveId();
-        long timestamp2_1 = new Timestamp(2018 - 1900, 10, 20, 13, 5, 0, 0).getTime();
-        long timestamp2_2 = new Timestamp(2018 - 1900, 10, 20, 13, 10, 0, 0).getTime();
-        long timestamp2_3 = new Timestamp(2018 - 1900, 10, 20, 13, 15, 0, 0).getTime();
-        long timestamp2_4 = new Timestamp(2018 - 1900, 10, 20, 13, 20, 0, 0).getTime();
+        long timestamp2_1 = Timestamp.valueOf("2018-10-20 13:05:00").getTime();
+        long timestamp2_2 = Timestamp.valueOf("2018-10-20 13:10:00").getTime();
+        long timestamp2_3 = Timestamp.valueOf("2018-10-20 13:15:00").getTime();
+        long timestamp2_4 = Timestamp.valueOf("2018-10-20 13:20:00").getTime();
         driveMilestoneDao.addMilestone(drive2.getDriveId(), "B", timestamp2_1);
         driveMilestoneDao.addMilestone(drive2.getDriveId(), "C", timestamp2_2);
         driveMilestoneDao.addMilestone(drive2.getDriveId(), "D", timestamp2_3);
@@ -97,14 +99,14 @@ public class SearchResourceTest extends BaseResourceTest {
         driveUserDao.addDriveUser(drive2.getDriveId(), user1.getId(), "A", "F", true, true, false);
 
         // Drive 3
-        long timestamp3 = new Timestamp(2018 - 1900, 10, 20, 14, 0, 0, 0).getTime();
-        long timestamp3_5 = new Timestamp(2018 - 1900, 10, 20, 14, 25, 0, 0).getTime();
+        long timestamp3 = Timestamp.valueOf("2018-10-20 14:00:00").getTime();
+        long timestamp3_5 = Timestamp.valueOf("2018-10-20 14:25:00").getTime();
         Drive drive3 = driveDao.addDrive(new Drive(-1, "A2", "F2", timestamp3, timestamp3_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive3Id = drive3.getDriveId();
-        long timestamp3_1 = new Timestamp(2018 - 1900, 10, 20, 14, 5, 0, 0).getTime();
-        long timestamp3_2 = new Timestamp(2018 - 1900, 10, 20, 14, 10, 0, 0).getTime();
-        long timestamp3_3 = new Timestamp(2018 - 1900, 10, 20, 14, 15, 0, 0).getTime();
-        long timestamp3_4 = new Timestamp(2018 - 1900, 10, 20, 14, 20, 0, 0).getTime();
+        long timestamp3_1 = Timestamp.valueOf("2018-10-20 14:05:00").getTime();
+        long timestamp3_2 = Timestamp.valueOf("2018-10-20 14:10:00").getTime();
+        long timestamp3_3 = Timestamp.valueOf("2018-10-20 14:15:00").getTime();
+        long timestamp3_4 = Timestamp.valueOf("2018-10-20 14:20:00").getTime();
         driveMilestoneDao.addMilestone(drive3.getDriveId(), "B2", timestamp3_1);
         driveMilestoneDao.addMilestone(drive3.getDriveId(), "C2", timestamp3_2);
         driveMilestoneDao.addMilestone(drive3.getDriveId(), "D2", timestamp3_3);
@@ -142,7 +144,7 @@ public class SearchResourceTest extends BaseResourceTest {
         driveUserDao.addDriveUser(drive1Id, user2Id, "A", "C", false, false, false);
 
         login(SEARCH_TEST_CREDENTIALS_2);
-        long timestamp1User = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        long timestamp1User = Timestamp.valueOf("2018-10-20 12:00:00").getTime();
         SearchFilter searchFilter1 = new SearchFilter(-1, -1, "B", "C", timestamp1User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
@@ -153,7 +155,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         Assert.assertEquals(0, response1.size());
 
-        long timestamp2User = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
+        long timestamp2User = Timestamp.valueOf("2018-10-20 12:00:00").getTime();
         SearchFilter searchFilter2 = new SearchFilter(-1, -1, "C", "E", timestamp2User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
@@ -174,7 +176,7 @@ public class SearchResourceTest extends BaseResourceTest {
     public void getDrivesMatchingTime() {
         login(SEARCH_TEST_CREDENTIALS_2);
 
-        long timestamp1User = new Timestamp(2018 - 1900, 10, 20, 13, 0, 0, 0).getTime();
+        long timestamp1User = Timestamp.valueOf("2018-10-20 13:00:00").getTime();
         SearchFilter searchFilter1 = new SearchFilter(-1, user2Id, "B", "C", timestamp1User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
@@ -185,7 +187,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         Assert.assertEquals(1, response1.size());
 
-        long timestamp2User = new Timestamp(2018 - 1900, 10, 20, 17, 0, 0, 0).getTime();
+        long timestamp2User = Timestamp.valueOf("2018-10-20 17:00:00").getTime();
         SearchFilter searchFilter2 = new SearchFilter(-1, user2Id, "B", "C", timestamp2User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
