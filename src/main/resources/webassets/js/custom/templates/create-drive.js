@@ -127,25 +127,49 @@ window.base.createDriveController = (() => {
         },
 
         addStop: (text) => {
-            const counter = document.querySelectorAll("#stop-row .stop-div").length;
-            const stopDiv = document.createElement('div');
-            const col = document.createElement('div')
-            const colMd = document.createElement('div');
-            col.className = 'col';
-            colMd.className = 'col-md';
-            stopDiv.className = 'row mt-2 stop-div';
-            stopDiv.id = 'stop-' + (counter + 1);
-            const textArea = document.createElement('textarea');
-            const label = document.createElement('label');
-            label.innerHTML = 'Stop ' + (counter + 1);
-            textArea.id = 'set-stop-' + (counter+1);
-            textArea.className = 'form-control';
-            textArea.innerHTML = text;
-            colMd.append(label);
-            colMd.appendChild(textArea);
-            col.append(colMd);
-            stopDiv.append(col);
-            document.getElementById('stop-row').append(stopDiv);
+            if (text == undefined){
+                console.log('hejdå');
+                const counter = document.querySelectorAll("#stop-row .stop-div").length;
+                const stopDiv = document.createElement('div');
+                const col = document.createElement('div')
+                const colMd = document.createElement('div');
+                col.className = 'col';
+                colMd.className = 'col-md';
+                stopDiv.className = 'row mt-2 stop-div';
+                stopDiv.id = 'stop-' + (counter + 1);
+                const textArea = document.createElement('textarea');
+                const label = document.createElement('label');
+                label.innerHTML = 'Stop ' + (counter + 1);
+                textArea.id = 'set-stop-' + (counter+1);
+                textArea.className = 'form-control';
+                colMd.append(label);
+                colMd.appendChild(textArea);
+                col.append(colMd);
+                stopDiv.append(col);
+                document.getElementById('stop-row').append(stopDiv);
+                textArea.innerHTML = '';
+            } else {
+                console.log('hej');
+                const counter = document.querySelectorAll("#stop-row .stop-div").length;
+                const stopDiv = document.createElement('div');
+                const col = document.createElement('div')
+                const colMd = document.createElement('div');
+                col.className = 'col';
+                colMd.className = 'col-md';
+                stopDiv.className = 'row mt-2 stop-div';
+                stopDiv.id = 'stop-' + (counter + 1);
+                const textArea = document.createElement('textarea');
+                const label = document.createElement('label');
+                label.innerHTML = 'Stop ' + (counter + 1);
+                textArea.id = 'set-stop-' + (counter+1);
+                textArea.className = 'form-control';
+                colMd.append(label);
+                colMd.appendChild(textArea);
+                col.append(colMd);
+                stopDiv.append(col);
+                document.getElementById('stop-row').append(stopDiv);
+                textArea.innerHTML = text;
+            }
         },
 
         createDrive: () => {
