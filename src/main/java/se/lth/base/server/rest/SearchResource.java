@@ -65,6 +65,9 @@ public class SearchResource {
         // Get all drives matching start and end point of search
         List<Drive> filteredDrives = filterDrivesMatchingTrip(tripStart, tripStop, departureTime);
 
+        // Remove drives with too many drive users
+        removeDrivesWithTooManyDriveUsers(filteredDrives);
+
         // Turn into DriveWraps
         List<DriveWrap> driveWraps = new ArrayList<>();
         for (Drive d : filteredDrives) {
@@ -251,6 +254,18 @@ public class SearchResource {
 
         }
         return drives;
+    }
+
+    private void removeDrivesWithTooManyDriveUsers(List<Drive> drives) {
+        Iterator<Drive> iterator = drives.iterator();
+        while (iterator.hasNext()) {
+            Drive drive = iterator.next();
+            int numberOfSeats = drive.getCarNumberOfSeats();
+            int usersInDrive = driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) - 1; // Remove driver
+            if (numberOfSeats == usersInDrive) {
+                iterator.remove();
+            }
+        }
     }
 
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
