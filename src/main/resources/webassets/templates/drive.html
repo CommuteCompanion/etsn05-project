@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-2">
-        <h5 class="mb-0 font-weight-bold" id="driver-first-name">Jon</h5>
-        <p class="text-muted"><span id="driver-gender">Male</span>, <span id="driver-age">23</span></p>
+        <h5 class="mb-0 font-weight-bold" id="driver-first-name"></h5>
+        <p class="text-muted"><span id="driver-gender"></span>, <span id="driver-age"></span></p>
         <div class="row mt-3">
             <div class="col-2">
                 <p class="mb-0 text-muted"><i class="fas fa-car fa-sm"></i></p>
@@ -9,14 +9,14 @@
                 <p class="text-muted"><i class="fas fa-chart-bar fa-sm"></i></p>
             </div>
             <div class="col-9">
-                <p class="text-muted mb-0"><span id="driver-driven"></span>55 driven</p>
-                <p class="text-muted mb-0"><span id="driver-rating">4.3</span> rating</p>
-                <p class="text-muted"><span id="driver-reviews">18</span> reviews</p>
+                <p class="text-muted mb-0"><span id="driver-driven"></span> driven</p>
+                <p class="text-muted mb-0"><span id="driver-rating"></span> rating</p>
+                <p class="text-muted"><span id="driver-reviews"></span> reviews</p>
             </div>
         </div>
     </div>
     <div class="col-6">
-        <h5 class="mb-0 text-danger font-weight-bold" id="drive-name">Gothenburg to Lund</h5>
+        <h5 class="mb-0 text-danger font-weight-bold" id="drive-name"></h5>
         <div class="row">
             <div class="col-3">
                 <p class="text-muted font-weight-bold">
@@ -30,25 +30,25 @@
                 </p>
             </div>
             <div class="col-9">
-                <p class="text-muted font-weight-bold" id="drive-departure-time">Wednesday January 23, 16:00</p>
-                <p class="text-muted mb-0 font-weight-bold" id="drive-pickup">Gothenburg (~16:00)</p>
-                <p class="text-muted font-weight-bold" id="drive-dropff">Halmstad (~17.30)</p>
+                <p class="text-muted font-weight-bold" id="drive-departure-time"></p>
+                <p class="text-muted mb-0 font-weight-bold">
+                    <span id="drive-pickup"></span>
+                    (~<span id="drive-pickup-time"></span>)
+                </p>
+                <p class="text-muted font-weight-bold" id="drive-dropoff"></p>
             </div>
         </div>
-        <p class="text-muted font-italic" id="drive-comment">"I'll be starting in Örgryte, having quick stop in Halmstad
-            at the town square and finish in central Lund. Please no large luggage..."</p>
+        <p class="text-muted font-italic" id="drive-comment"></p>
     </div>
     <div class="col-4">
         <div class="border border-r-5 pl-2 pr-2">
-            <h5 class="mb-0 font-weight-bold"><span id="car-brand"></span> <span id="car-model">A3 Sportsback</span>
+            <h5 class="mb-0 font-weight-bold"><span id="car-brand"></span> <span id="car-model"></span>
             </h5>
             <p class="mb-0 text-muted">
-                <span id="car-year">2016</span> |
-                <span id="car-license-plate">DBG400</span>
-                <a target="_blank" id="car-license-plate-link" href="https://biluppgifter.se/fordon/DBG400">(car
-                    details)</a>
+                <span id="car-color"></span> |
+                <span id="car-license-plate"></span>
+                <a target="_blank" id="car-license-plate-link" href="">(car details)</a>
             </p>
-            <p class="text-muted" id="car-color">Light Grey</p>
             <div class="row">
                 <div class="col-1">
                     <p id="opt-luggage-icon" class="mb-0"><i class="fas fa-suitcase"></i></p>
@@ -57,10 +57,10 @@
                     <p id="opt-pets-icon" class="mb-0"><i class="fas fa-paw"></i></p>
                 </div>
                 <div class="col-11">
-                    <p id="opt-luggage-text" class="mb-0 text-muted">Medium luggage ok</p>
-                    <p id="opt-winter-tires-text" class="mb-0 text-muted">Has winter tires</p>
-                    <p id="opt-bicycle-text" class="mb-0 text-muted">No bikes</p>
-                    <p id="opt-pets-text" class="mb-0 text-muted">Pets ok</p>
+                    <p id="opt-luggage-text" class="mb-0 text-muted"></p>
+                    <p id="opt-winter-tires-text" class="mb-0 text-muted"></p>
+                    <p id="opt-bicycle-text" class="mb-0 text-muted"></p>
+                    <p id="opt-pets-text" class="mb-0 text-muted"></p>
                 </div>
             </div>
         </div>
@@ -74,9 +74,8 @@
                     <tr>
                         <td class="align-middle">
                             <span class="text-white">
-                                <span class="font-weight-bold">Booked:</span>
-                                <span id="drive-passengers">Hedda (<i class="fas fa-star fa-sm"></i></i> 4.3),
-                                    Alicia (<i class="fas fa-star fa-sm"></i></i> 3.7)</span>
+                                <span class="font-weight-bold">Booked: </span>
+                                <span id="drive-passengers"></span>
                             </span>
                         </td>
                     </tr>
@@ -87,7 +86,9 @@
                     <table class="h-100px w-100">
                         <tr>
                             <td class="align-middle">
-                                <span id="drive-seats-left" class="font-weight-bold text-white">3 seats left</span>
+                                <span class="font-weight-bold text-white">
+                                    <span id="drive-seats-left"></span> seats left
+                                </span>
                             </td>
                         </tr>
                     </table>
@@ -101,12 +102,6 @@
         <div class="row">
             <div class="col-md-3 mt-3">
                 <button id="report-drive" class="btn btn-danger btn-block">Report trip</button>
-                <hr class="driver-only finished-only d-none">
-                <button id="rate-drive" class="finished-only btn btn-secondary btn-block d-none">Rate your trip</button>
-                <button id="complete-drive" class="driver-only btn btn-secondary btn-block d-none">Complete</button>
-                <hr class="driver-only d-none">
-                <button id="edit-drive" class="driver-only btn btn-warning btn-block d-none">Edit</button>
-                <button id="delete-drive" class="driver-only btn btn-danger btn-block d-none">Delete</button>
             </div>
             <div class="col-md-5 mt-3">
                 <h5 class="text-muted">Travel safely with amazing people</h5>

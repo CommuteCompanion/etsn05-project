@@ -114,9 +114,6 @@ window.base.rest = (() => {
         getUsers: () => baseFetch('/rest/user/all')
             .then(response => response.json())
             .then(users => users.map(user => new User(user))),
-        getRoles: () => baseFetch('/rest/user/roles')
-            .then(response => response.json())
-            .then(roles => roles.map(r => new Role(r))),
         addUser: credentials => baseFetch('/rest/user', createJsonPost(credentials))
             .then(response => response.json())
             .then(u => objOrError(u, User)),
@@ -124,11 +121,13 @@ window.base.rest = (() => {
             .then(response => response.json())
             .then(u => objOrError(u, User)),
         deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'}),
-
         warnUser: (id) => baseFetch('/rest/user/warn/' + id, {
             method: 'PUT',
             headers: jsonHeader
         }),
+        getDriveWrap: id => baseFetch('/rest/drive/' + id)
+            .then(response => response.json())
+            .then(driveWrap => new DriveWrap(driveWrap))
     };
 })();
 
