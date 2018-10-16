@@ -113,7 +113,7 @@ public class UserResourceTest extends BaseResourceTest {
 
     @Test
     public void testCreateUser() {
-        Credentials newCredentials = new Credentials("pelle", "passphrase123", Role.USER, TEST);
+        Credentials newCredentials = new Credentials("pelle@lu.se", "passphrase123", Role.USER, TEST);
         User newUser = target("user")
                 .request()
                 .post(Entity.json(newCredentials), User.class);
@@ -139,7 +139,7 @@ public class UserResourceTest extends BaseResourceTest {
     @Test(expected = ForbiddenException.class)
     public void deleteUserAsUser() {
         login(ADMIN_CREDENTIALS);
-        Credentials newCredentials = new Credentials("pelle", "passphrase123", Role.USER, TEST);
+        Credentials newCredentials = new Credentials("pelle@lu.se", "passphrase123", Role.USER, TEST);
         User newUser = target("user")
                 .request()
                 .post(Entity.json(newCredentials), User.class);

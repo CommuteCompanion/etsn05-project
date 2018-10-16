@@ -2,6 +2,7 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
+import se.lth.base.server.mail.MailHandler;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -11,6 +12,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+
+import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +28,7 @@ public class UserResource {
     private final User user;
     private final Session session;
     private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+    private final MailHandler mailHandler = new MailHandler();
 
     public UserResource(@Context ContainerRequestContext context) {
         this.context = context;
@@ -88,8 +92,15 @@ public class UserResource {
         }
 
         credentials.sanitizeAndValidate();
-
-        return userDao.addUser(credentials);
+        User user = userDao.addUser(credentials);
+        try {
+        	System.out.println("hej2");
+            mailHandler.welcomeUser(user);
+        } catch (IOException e) {
+        	System.out.println("hej1");
+            e.printStackTrace();
+        }
+        return user;
     }
 
     @Path("all")
