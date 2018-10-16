@@ -214,7 +214,6 @@ window.base.searchController = (() => {
                 .then(response => response.text())
                 .then(tabHtml => {
                     document.getElementById('main-tab').innerHTML = tabHtml;
-                    location.hash = location.hash.slice(0, 2) + 'drive';
                     window.base.driveController().loadQuery(model.searchQuery);
                 })
         },

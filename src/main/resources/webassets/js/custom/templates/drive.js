@@ -143,6 +143,7 @@ window.base.driveController = (() => {
         submitRequest: () => window.base.rest.requestSeat(model.driveUser)
             .catch(e => view.showFailure(e.message))
             .then(() => view.showSuccess()),
+        reportDrive: () => {},
         getUser: () => window.base.rest.getUser().then(u => {
             model.user = u;
             return model.driveUser.userId = u.userId;
@@ -168,12 +169,12 @@ window.base.driveController = (() => {
             }));
         },
         loadQuery: searchQuery => {
-            if (typeof searchQuery === 'undefined') {
+            if (typeof searchQuery === 'undefined' && !Object.keys(model.driveUser).length) {
                 window.base.changeLocation('#/search');
             }
 
             document.getElementById('drive-request').onclick = controller.submitRequest;
-            document.getElementById('drive-report').onclick = controller.submitRequest;
+            document.getElementById('report-drive').onclick = controller.reportDrive;
 
             model.driveUser = {
                 driveId: searchQuery.driveId,
@@ -190,10 +191,8 @@ window.base.driveController = (() => {
                 .then(() => controller.getDriverAndPassengers())
                 .then((() => view.renderDrive()))
         },
-        load: () => {
-
-        },
-        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.driveController().load())
+        load: () => controller.loadQuery(),
+        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.driveController.load())
     };
 
     return controller;
