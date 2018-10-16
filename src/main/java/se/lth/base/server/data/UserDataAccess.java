@@ -100,9 +100,6 @@ public class UserDataAccess extends DataAccess<User> {
         return execute("DELETE FROM user WHERE user_id = ?", userId) > 0;
     }
 
-    public boolean warnUser(int userId) {
-        return execute("UPDATE user SET warning = (SELECT warning FROM user WHERE user_id = ?) + 1 WHERE user_id = ?", userId, userId) > 0;
-    }
     /**
      * @return all users in the system.
      */
@@ -110,6 +107,19 @@ public class UserDataAccess extends DataAccess<User> {
         return query("SELECT user_id, role, email, first_name, last_name, phone_number, gender, " +
                 "date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, user_role " +
                 "WHERE user.role_id = user_role.role_id");
+    }
+
+    /**
+     * Updates the drivers rating after a drive.
+     *
+     * @param userId the userId of the driver.
+     * @param rating the rating that the driver recieves.
+     */
+    public boolean updateUserRating(int userId, int rating) {
+        return execute("UPDATE user SET rating_total_score = " +
+                "(SELECT rating_total_score FROM user WHERE user_id = ?) + ?, " +
+                "number_of_ratings = (SELECT number_of_ratings FROM user WHERE user_id = ?) + 1 " +
+                "WHERE user_id = ?", userId, rating, userId, userId) > 0;
     }
 
     /**
@@ -137,6 +147,10 @@ public class UserDataAccess extends DataAccess<User> {
      */
     public boolean removeSession(UUID sessionId) {
         return execute("DELETE FROM session WHERE session_uuid = ?", sessionId) > 0;
+    }
+
+    public boolean warnUser(int userId) {
+        return execute("UPDATE user SET warning = (SELECT warning FROM user WHERE user_id = ?) + 1 WHERE user_id = ?", userId) > 0;
     }
 
     /**

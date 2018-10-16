@@ -117,6 +117,12 @@ public class UserDataAccessTest extends BaseDataAccessTest {
     }
 
     @Test
+    public void updateUserRating() {
+        userDao.updateUserRating(TEST.getId(), 3);
+        assertEquals(3, userDao.getUser(TEST.getId()).getRatingTotalScore());
+    }
+
+    @Test
     public void getUser() {
         User user = userDao.getUser(1);
         assertEquals(1, user.getId());

@@ -28,7 +28,7 @@ public class SearchResource {
     private final User user;
 
     // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
-    private final int SEARCH_MINUTES_MARGIN = 10;
+    private final int SEARCH_MINUTES_MARGIN = 60;
 
     public SearchResource(@Context ContainerRequestContext context) {
         this.user = (User) context.getProperty(User.class.getSimpleName());
@@ -61,7 +61,6 @@ public class SearchResource {
         if (departure != -1) {
             departureTime = new Timestamp(departure);
         }
-
 
         // Get all drives matching start and end point of search
         List<Drive> filteredDrives = filterDrivesMatchingTrip(tripStart, tripStop, departureTime);
@@ -191,9 +190,9 @@ public class SearchResource {
         long busyTimeEnd = -1;
 
         for (DriveMilestone dm : driveMilestones) {
-            if (dm.getMilestone().equals(start)) {
+            if (dm.getMilestone().toLowerCase().trim().equals(start.toLowerCase().trim())) {
                 busyTimeStart = dm.getDepartureTime();
-            } else if (dm.getMilestone().equals(stop)) {
+            } else if (dm.getMilestone().toLowerCase().trim().equals(stop.toLowerCase().trim())) {
                 busyTimeEnd = dm.getDepartureTime();
             }
         }
@@ -215,9 +214,9 @@ public class SearchResource {
             DriveUser driveUser = driveUserDao.getDriveUser(d.getDriveId(), user.getId());
 
             for (DriveMilestone dm : tempDriveMilestones) {
-                if (dm.getMilestone().equals(driveUser.getStart())) {
+                if (dm.getMilestone().toLowerCase().trim().equals(driveUser.getStart().toLowerCase().trim())) {
                     tempBusyTimeStart = dm.getDepartureTime();
-                } else if (dm.getMilestone().equals(driveUser.getStop())) {
+                } else if (dm.getMilestone().toLowerCase().trim().equals(driveUser.getStop().toLowerCase().trim())) {
                     tempBusyTimeEnd = dm.getDepartureTime();
                 }
             }
@@ -277,7 +276,14 @@ public class SearchResource {
             driveMilestones.add(0, driveStart);
             driveMilestones.add(driveStop);
 
-            // Make sure that tripStart and tripStop exists in driveMilestones and that they are not the same and that tripStart is before tripStop
+            if (tripStart == null) {
+                tripStart = driveMilestones.get(0).getMilestone();
+            }
+
+            if (tripStop == null) {
+                tripStop = driveMilestones.get(driveMilestones.size() - 1).getMilestone();
+            }
+
             if (!(doesTripStartExist(tripStart, driveMilestones) && doesTripStopExist(tripStop, driveMilestones) &&
                     !isTripStartSameAsTripStop(tripStart, tripStop) && isTripStartBeforeTripStop(tripStart, tripStop, driveMilestones))) {
                 iterator.remove();
@@ -311,7 +317,6 @@ public class SearchResource {
             if (departureTime != null) {
                 if (!checkDepartureTimeMatch(departureTime, tripStart, driveMilestones)) {
                     iterator.remove();
-                    continue;
                 }
             }
         }
@@ -320,27 +325,27 @@ public class SearchResource {
 
     private boolean doesTripStartExist(String tripStart, List<DriveMilestone> driveMilestones) {
         for (DriveMilestone driveMilestone : driveMilestones) {
-            if (driveMilestone.getMilestone().equals(tripStart)) return true;
+            if (driveMilestone.getMilestone().toLowerCase().trim().equals(tripStart.toLowerCase().trim())) return true;
         }
         return false;
     }
 
     private boolean doesTripStopExist(String tripStop, List<DriveMilestone> driveMilestones) {
         for (DriveMilestone driveMilestone : driveMilestones) {
-            if (driveMilestone.getMilestone().equals(tripStop)) return true;
+            if (driveMilestone.getMilestone().toLowerCase().trim().equals(tripStop.toLowerCase().trim())) return true;
         }
         return false;
     }
 
     private boolean isTripStartSameAsTripStop(String tripStart, String tripStop) {
-        return tripStart.equals(tripStop);
+        return tripStart.toLowerCase().trim().equals(tripStop.toLowerCase().trim());
     }
 
     private boolean isTripStartBeforeTripStop(String tripStart, String tripStop, List<DriveMilestone> driveMilestones) {
         for (DriveMilestone driveMilestone : driveMilestones) {
-            if (driveMilestone.getMilestone().equals(tripStart)) {
+            if (driveMilestone.getMilestone().toLowerCase().trim().equals(tripStart.toLowerCase().trim())) {
                 return true;
-            } else if (driveMilestone.getMilestone().equals(tripStop)) {
+            } else if (driveMilestone.getMilestone().toLowerCase().trim().equals(tripStop.toLowerCase().trim())) {
                 return false;
             }
         }
@@ -354,11 +359,10 @@ public class SearchResource {
             driveUserIntervals.add(new DriveUserInterval(driveUser.getStart(), driveUser.getStop(), milestones));
         }
 
-        for (int i = 0; i < milestones.size() - 1; i++) {
+        for (int start = 0; start < milestones.size() - 1; start++) {
             // Seats taken in this interval
             int seatsTaken = 0;
-            int start = i;
-            int stop = i + 1;
+            int stop = start + 1;
             for (DriveUserInterval driveUserInterval : driveUserIntervals) {
                 int startIndex = driveUserInterval.getStartIndex();
                 int endIndex = driveUserInterval.getStopIndex();
@@ -374,10 +378,10 @@ public class SearchResource {
         return false;
     }
 
-    private boolean checkDepartureTimeMatch(Timestamp departureTime, String startMiletone, List<DriveMilestone> driveMilestones) {
+    private boolean checkDepartureTimeMatch(Timestamp departureTime, String startMilestone, List<DriveMilestone> driveMilestones) {
         // Find the departure time of the milestone
         for (DriveMilestone driveMilestone : driveMilestones) {
-            if (driveMilestone.getMilestone().equals(startMiletone)) {
+            if (driveMilestone.getMilestone().toLowerCase().trim().equals(startMilestone.toLowerCase().trim())) {
                 Timestamp milestoneDepartureTime = new Timestamp(driveMilestone.getDepartureTime());
 
                 Timestamp timeMargin = new Timestamp(milestoneDepartureTime.getTime() - SEARCH_MINUTES_MARGIN * 60 * 1000);
@@ -401,7 +405,7 @@ public class SearchResource {
 
         private int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
             for (int i = 0; i < milestones.size(); i++) {
-                if (milestones.get(i).getMilestone().equals(name)) {
+                if (milestones.get(i).getMilestone().toLowerCase().trim().equals(name.toLowerCase().trim())) {
                     return i;
                 }
             }
