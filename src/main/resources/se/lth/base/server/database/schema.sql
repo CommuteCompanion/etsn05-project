@@ -74,14 +74,6 @@ CREATE TABLE drive_report(report_id INT AUTO_INCREMENT,
                           FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE,
                           FOREIGN KEY(reported_by_user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
-CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT,
-                           user_id INT NOT NULL,
-                           start VARCHAR(255),
-                           stop VARCHAR(255),
-                           departure_time TIMESTAMP,
-                           PRIMARY KEY(search_filter_id),
-                           FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
-
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
 INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, phone_number, gender, date_of_birth)
     VALUES (1, 'admin@commutecompanion.se', 8486015201299423224, '54c89afb-d106-8cf7-ff28-9362aff5a6bc', 'Admin', 'Admin', '0701234', 1, CURRENT_TIMESTAMP() - 00000010000),
