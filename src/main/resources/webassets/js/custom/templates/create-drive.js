@@ -11,11 +11,9 @@ window.base.createDriveController = (() => {
     const view = {
         render: () => window.base.rest.getUser().then(u => {
             model.user = u;
-            console.log(u);
         }).then(u => {
             window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
-                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     if(document.getElementById('passenger-header') != null){
@@ -26,11 +24,7 @@ window.base.createDriveController = (() => {
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
                     for (var i = 0; i < d.length; i++) {
-                        console.log(d[i].drive.driveId);
-                        console.log(model.theId.id);
                         if (d[i].drive.driveId == model.theId.id) {
-                            console.log('Model.wrap läggs till');
-                            console.log(d[i]);
                             model.driveWrap = d[i];
                         }
                     }
