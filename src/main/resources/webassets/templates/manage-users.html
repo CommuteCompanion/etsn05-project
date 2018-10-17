@@ -1,15 +1,17 @@
 <h1>Manage users</h1>
-<div class="row manage-users-search-row">
-    <div class="col-md-5">
-        <input type="text" class="form-control" id="search-name" placeholder="Name">
+<form id ="search-form">
+    <div class="row manage-users-search-row">
+        <div class="col-md-8">
+            <input type="text" class="form-control" id="search-email" placeholder="Email">
+        </div>
+        <div class="col-md-2">
+            <button id="search-user-button" type="submit" class="btn-block btn btn-primary">Search</button>
+        </div>
+        <div class="col-md-2">
+            <button id="search-user-rest-button" type="reset" class="btn-block btn btn-secondary">Reset</button>
+        </div>
     </div>
-    <div class="col-md-5">
-        <input type="text" class="form-control" id="search-email" placeholder="Email">
-    </div>
-    <div class="col-md-2">
-        <button id="submit-user" type="submit" class="w-100 btn btn-primary">Search</button>
-    </div>
-</div>
+</form>
 
 <template id="manage-users-template">
     <div class="card manage-users-user">

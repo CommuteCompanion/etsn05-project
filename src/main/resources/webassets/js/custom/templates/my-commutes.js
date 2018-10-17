@@ -30,6 +30,8 @@ window.base.myCommutesController = (() => {
             let commutesHtml = '';
             let drivesFound = true;
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            let firstDrive = true;
+            let firstTrip = true;
 
             for (let i = 0; i < driveWraps.length; i++) {
                 // Basic data
@@ -71,6 +73,15 @@ window.base.myCommutesController = (() => {
                             actionButtons += `<button class="btn btn-danger btn-sm btn-block edit-btn" id="edit-drive-${driveId}">Edit</button>`;
                         }
                     }
+                }
+
+                // Set correct headline for drives
+                if (currentUser.isDriver && firstDrive === true) {
+                    firstDrive = false;
+                    commutesHtml += '<div class="row"><div class="col-12"><h5 class="text-muted font-weight-bold">My Drives</h5></div></div>';
+                } else if (firstTrip === true) {
+                    firstTrip = false;
+                    commutesHtml += '<div class="row"><div class="col-12"><h5 class="text-muted font-weight-bold">My Trips</h5></div></div>';
                 }
 
                 // Set correct pickup and drop off points
@@ -154,12 +165,14 @@ window.base.myCommutesController = (() => {
                         viewLink.click();
                     };
 
-                    // For clicking on an edit button
-                    editButton.onclick = e => {
-                        e.preventDefault();
-                        const driveId = editButton.id.split('-')[2];
-                        controller.editDrive(driveId);
-                    };
+                    if (typeof editButton !== 'undefined') {
+                        // For clicking on an edit button
+                        editButton.onclick = e => {
+                            e.preventDefault();
+                            const driveId = editButton.id.split('-')[2];
+                            controller.editDrive(driveId);
+                        };
+                    }
 
                     // For submit user ratings
                     rateForm.addEventListener('submit', e => {

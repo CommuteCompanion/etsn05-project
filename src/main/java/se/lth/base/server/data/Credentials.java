@@ -39,10 +39,10 @@ public class Credentials {
     /**
      * Creates a new Credentials object
      *
-     * @param email user email
+     * @param email    user email
      * @param password user password
-     * @param role user role
-     * @param user user info
+     * @param role     user role
+     * @param user     user info
      */
     public Credentials(String email, String password, Role role, User user) {
         this.email = email;
@@ -88,7 +88,10 @@ public class Credentials {
      * @return true/false
      */
     public boolean hasPassword() {
-        return password != null;
+        if (password == null || password.equals("")) {
+            return false;
+        }
+        return true;
     }
 
     private String phoneNumberSanitizer(String phoneNumber) {

@@ -171,25 +171,24 @@ public class DriveResource {
         driveUserDao.deleteDriveUser(driveId, userId);
     }
 
-    @Path("{driveId}/rate/{rating}")
+    @Path("{driveId}/rate")
     @PUT
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void rateUsers(@PathParam("driveId") int driveId, @PathParam("rating") int rating) {
-    	if (!driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
-
-            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(driveId);
-
-            for (DriveUser dU : driveUsers) {
-                if (dU.isDriver()) {
-                    userDao.updateUserRating(user.getId(), rating);
-                }
-            }
-            driveUserDao.hasRated(user.getId(), driveId);
-            return;
+    public void rateUsers(@PathParam("driveId") int driveId, DriveRatingWrap rating) {
+    	if (driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
+    		throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
     	}
-      
-    	throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
+    		if(driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+    			for (DriveRating dr : rating.getRatings()) {
+    				userDao.updateUserRating(dr);
+    			}
+    		} else {
+    			userDao.updateUserRating(rating.getRatings().get(0));
+    			
+    		}
+    		driveUserDao.hasRated(user.getId(), driveId);
+    	
     }
 
     @Path("{driveId}/report")

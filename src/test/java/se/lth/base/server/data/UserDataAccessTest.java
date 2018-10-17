@@ -118,8 +118,12 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test
     public void updateUserRating() {
-        userDao.updateUserRating(TEST.getId(), 3);
-        assertEquals(3, userDao.getUser(TEST.getId()).getRatingTotalScore());
+    	DriveRating rating = new DriveRating(TEST.getId(), 1);
+        userDao.updateUserRating(rating);
+        assertEquals(1, userDao.getUser(TEST.getId()).getRatingTotalScore());
+        rating = new DriveRating(TEST.getId(), 5);
+        userDao.updateUserRating(rating);
+        assertEquals(6, userDao.getUser(TEST.getId()).getRatingTotalScore());
     }
 
     @Test
@@ -135,22 +139,22 @@ public class UserDataAccessTest extends BaseDataAccessTest {
 
     @Test(expected = DataAccessException.class)
     public void updateMissingUser() {
-        userDao.updateUser(10, new Credentials("admin@lu.se", "password", Role.ADMIN, User.NONE));
+        userDao.updateUser(10, new Credentials("admin@commutecompanion.se", "password", Role.ADMIN, User.NONE));
     }
 
     @Test
     public void updateUser() {
-        User user = userDao.updateUser(2, new Credentials("test2@lu.se", "newpass", Role.USER, User.NONE));
+        User user = userDao.updateUser(2, new Credentials("commutecompaniontest@gmail.com", "newpass", Role.USER, User.NONE));
         assertEquals(2, user.getId());
-        assertEquals("test2@lu.se", user.getEmail());
+        assertEquals("commutecompaniontest@gmail.com", user.getEmail());
         assertEquals(Role.USER, user.getRole());
     }
 
     @Test
     public void updateWithoutPassword() {
-        Session session1 = userDao.authenticate(new Credentials("test@lu.se", "password", Role.USER, User.NONE));
-        userDao.updateUser(2, new Credentials("test2@lu.se", null, Role.USER, User.NONE));
-        Session session2 = userDao.authenticate(new Credentials("test2@lu.se", "password", Role.USER, User.NONE));
+        Session session1 = userDao.authenticate(new Credentials("commutecompaniontest@gmail.com", "password", Role.USER, User.NONE));
+        userDao.updateUser(2, new Credentials("commutecompaniontest@gmail.com", null, Role.USER, User.NONE));
+        Session session2 = userDao.authenticate(new Credentials("commutecompaniontest@gmail.com", "password", Role.USER, User.NONE));
         System.out.println(session1);
         System.out.println(session2);
     }
