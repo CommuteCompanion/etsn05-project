@@ -292,7 +292,8 @@ public class CustomEmail {
 
         // Intro
         String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
-        intro += "<p>Your booking request with " + driverU.getFirstName() + " from <i>";
+        intro += "<p>Your booking request with " + driverU.getFirstName() + "with phone number <i>";
+        intro += driverU.getPhoneNumber() + " and email </i>" + driverU.getEmail() + " from <i>";
         intro += acceptedPassenger.getStart() + "</i> to <i>" + acceptedPassenger.getStop();
         intro += "</i> on " + formattedDepartureDate + " has been accepted.</p>";
         content.put(INTRO, intro);
