@@ -193,9 +193,9 @@ window.base.rest = (() => {
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
 
-        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, createJsonPut(drive))
+        putDrive: (id, driveWrap) => baseFetch('/rest/drive/' + id, createJsonPut(driveWrap))
             .then(response => response.json())
-            .then(d => objOrError(d, Drive)),
+            .then(d => objOrError(d, DriveWrap)),
 
         getDrivesForUser: id => baseFetch('/rest/drive/user/' + id)
             .then(response => response.json())

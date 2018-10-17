@@ -24,7 +24,7 @@ window.base.createDriveController = (() => {
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
                     for (var i = 0; i < d.length; i++) {
-                        if (d[i].drive.driveId === model.theId.id) {
+                        if (d[i].drive.driveId == model.theId.id) {
                             model.driveWrap = d[i];
                         }
                     }
@@ -142,7 +142,7 @@ window.base.createDriveController = (() => {
                         removeBtn.onclick = (function (callback) {
                             model.driveWrap.users[i].accepted = true;
                             removeBtn.className = 'btn btn-danger w-100';
-                            controller.updateDrive(model.driveWrap.drive);
+                            controller.updateDrive(model.driveWrap);
                             view.render(model.theId.id);
                         });
                     })(i);
@@ -282,7 +282,7 @@ window.base.createDriveController = (() => {
             const driver = true;
             const accepted = true;
             const rated = true;
-            const driveUser = {driveId, userId, stop, accepted, rated};
+            const driveUser = {driveId, userId, start, stop, accepted, rated};
             const users = [driveUser];
 
             const reports = [];
@@ -291,20 +291,36 @@ window.base.createDriveController = (() => {
 
             if (model.theId.id === undefined){
                 window.base.rest.addDrive(driveWrap).then(d => {
-                    model.driveWrap = d;
-                    model.theId.id = model.driveWrap.drive.driveId;
+                    if (d.error) {
+                        alert(d.error);
+                    } else {
+                        model.driveWrap = d;
+                        model.theId.id = model.driveWrap.drive.driveId;
+                    }
                 }).then(() => {
-                    view.render(model.theId.id);
-                    alert('Drive has been created');
+                    view.render();
+                    const element = document.getElementById('alert-row');
+                    const title = 'Success!';
+                    const msg = 'Your drive has been created.';
+                    const type = 'primary';           
+                    controller.renderAlertBox(element, title, msg, type);
                 });
             } else {
-                controller.updateDrive(driveWrap.drive);
+                controller.updateDrive(driveWrap);
             }
+        },
+
+        renderAlertBox: (element, title, message, type) => {
+            element.innerHTML = `<div class="alert alert-${type}" role="alert">\n                    <h5 class="alert-heading">${title}</h5>\n                    <p>${message}</p>\n                </div>`;
         },
 
         updateDrive: (drive) => {
             window.base.rest.putDrive(model.theId.id, drive);
-            alert('Drive has been updated');
+            const element = document.getElementById('alert-row');
+            const title = 'Success!';
+            const msg = 'Your drive has been updated.';
+            const type = 'primary';           
+            controller.renderAlertBox(element, title, msg, type);
         },
 
         deleteDrive: () => window.base.rest.deleteDrive(model.driveWrap.drive.driveId)
@@ -316,13 +332,26 @@ window.base.createDriveController = (() => {
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
             document.getElementById('remove-stop-btn').onclick = controller.removeStop;
-            view.render(id);
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1;
+            var yyyy = today.getFullYear();
+            if(dd<10){
+                dd='0'+dd
+            } 
+            if(mm<10){
+                mm='0'+mm
+            } 
+            today = yyyy+'-'+mm+'-'+dd;
+            document.getElementById("set-date").setAttribute("min", today);
+
+            view.render();
         },
 
         loadWithUserId: (id) => {
             controller.load(id);
         },
     };
-
     return controller;
 });
