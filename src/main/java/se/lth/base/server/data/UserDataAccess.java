@@ -52,7 +52,7 @@ public class UserDataAccess extends DataAccess<User> {
         String phoneNumber = user.getPhoneNumber();
         int gender = user.getGender();
         long dateOfBirth = user.getDateOfBirth();
-        boolean drivingLicense = user.getDrivingLicence();
+        boolean drivingLicense = user.getDrivingLicense();
         int userId = insert("INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, " +
                         "phone_number, gender, date_of_birth, driving_license) VALUES " +
                         "((SELECT role_id FROM user_role WHERE user_role.role=?),?,?,?,?,?,?,?,?,?)",
@@ -71,7 +71,7 @@ public class UserDataAccess extends DataAccess<User> {
         String phoneNumber = user.getPhoneNumber();
         long dateOfBirth = user.getDateOfBirth();
         int gender = user.getGender();
-        boolean drivingLicence = user.getDrivingLicence();
+        boolean drivingLicense = user.getDrivingLicense();
         if (credentials.hasPassword()) {
             long salt = Credentials.generateSalt();
             UUID passwordHash = credentials.generatePasswordHash(salt);
@@ -79,13 +79,13 @@ public class UserDataAccess extends DataAccess<User> {
                             "gender = ?, driving_license = ?, date_of_birth = ?, phone_number = ?," +
                             "role_id = (SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    email, passwordHash, salt, firstName, lastName, gender, drivingLicence, new Date(dateOfBirth), phoneNumber, role.name(), userId);
+                    email, passwordHash, salt, firstName, lastName, gender, drivingLicense, new Date(dateOfBirth), phoneNumber, role.name(), userId);
         } else {
             execute("UPDATE user SET email = ?, first_name = ?, last_name = ?, " +
                             "gender = ?, driving_license = ?, date_of_birth = ?, phone_number = ?, role_id = (" +
                             "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    email, firstName, lastName, gender, drivingLicence, new Date(dateOfBirth), phoneNumber, credentials.getRole().name(), userId);
+                    email, firstName, lastName, gender, drivingLicense, new Date(dateOfBirth), phoneNumber, credentials.getRole().name(), userId);
         }
         return getUser(userId);
     }	

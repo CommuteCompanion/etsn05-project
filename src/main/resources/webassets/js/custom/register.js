@@ -167,7 +167,7 @@ window.base.registerController = (() => {
                     },
                     isValid: false
                 },
-                drivingLicence: {
+                drivingLicense: {
                     getField: () => document.getElementById('register-driving-license'),
                     getValue: () => document.getElementById('register-driving-license').checked,
                     validate: () => document.getElementById('register-driving-license').checkValidity(),
@@ -184,7 +184,7 @@ window.base.registerController = (() => {
         },
         submitUser: submitEvent => {
             submitEvent.preventDefault();
-            let {email, password, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence, gender} = controller.getForm();
+            let {email, password, firstName, lastName, phoneNumber, dateOfBirth, drivingLicense, gender} = controller.getForm();
 
             email = email.getValue();
             password = password.getValue();
@@ -192,10 +192,10 @@ window.base.registerController = (() => {
             lastName = lastName.getValue();
             phoneNumber = phoneNumber.getValue();
             dateOfBirth = dateOfBirth.getValue();
-            drivingLicence = drivingLicence.getValue();
+            drivingLicense = drivingLicense.getValue();
             gender = gender.getValue();
 
-            const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence, gender};
+            const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicense, gender};
 
             const role = "USER";
             const credentials = {email, password, role, user};

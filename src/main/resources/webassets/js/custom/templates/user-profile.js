@@ -29,10 +29,10 @@ window.base.userProfileController = (() => {
             } else if (model.user.gender === 0) {
                 document.getElementById('set-male').checked = true;
             }
-            if (model.user.drivingLicence === true) {
-                document.getElementById('set-licence-true').checked = true;
-            } else if (model.user.drivingLicence === false) {
-                document.getElementById('set-licence-false').checked = true;
+            if (model.user.drivingLicense === true) {
+                document.getElementById('set-license-true').checked = true;
+            } else if (model.user.drivingLicense === false) {
+                document.getElementById('set-license-false').checked = true;
             }
         }),
         clearChanges: () => {
@@ -60,7 +60,7 @@ window.base.userProfileController = (() => {
             submitEvent.preventDefault();
 
             let gender;
-            let drivingLicence;
+            let drivingLicense;
             const email = document.getElementById('set-email').value;
             const firstName = document.getElementById('set-firstname').value;
             const lastName = document.getElementById('set-lastname').value;
@@ -72,15 +72,15 @@ window.base.userProfileController = (() => {
             } else if (document.getElementById('set-female').checked) {
                 gender = 1;
             }
-            if (document.getElementById('set-licence-true').checked) {
-                drivingLicence = true;
-            } else if (document.getElementById('set-licence-false').checked) {
-                drivingLicence = false;
+            if (document.getElementById('set-license-true').checked) {
+                drivingLicense = true;
+            } else if (document.getElementById('set-license-false').checked) {
+                drivingLicense = false;
             }
             model.user.firstName = firstName;
             model.user.lastName = lastName;
             model.user.gender = gender;
-            model.user.drivingLicence = drivingLicence;
+            model.user.drivingLicense = drivingLicense;
             model.user.phoneNumber = phoneNumber;
             model.user.dateOfBirth = birthDate;
 
