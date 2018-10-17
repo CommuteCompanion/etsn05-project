@@ -54,8 +54,8 @@ window.base.userProfileController = (() => {
             const email = document.getElementById('set-email').value;
             const firstName = document.getElementById('set-firstname').value;
             const lastName = document.getElementById('set-lastname').value;
-            //const phoneNumber = document.getElementById('set-phone-number').value;
-            //const birthDate = document.getElementById('set-date-of-birth').value;
+            const phoneNumber = document.getElementById('set-phone-number').value;
+            const birthDate = document.getElementById('set-date-of-birth').value;
             if(document.getElementById('set-male').checked) {
                 gender = 0;
             } else if (document.getElementById('set-female').checked) {
