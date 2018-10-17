@@ -100,7 +100,6 @@ window.base.manageUsersController = (() => {
                     model.searchedUsers.push(user);
                 }
             });
-            console.log(model.searchedUsers);
             view.render();
         },
         reset: function() {
