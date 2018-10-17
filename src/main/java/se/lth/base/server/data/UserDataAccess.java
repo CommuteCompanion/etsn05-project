@@ -112,7 +112,6 @@ public class UserDataAccess extends DataAccess<User> {
     /**
      * Updates the drivers rating after a drive.
      *
-     * @param userId the userId of the driver.
      * @param rating the rating that the driver recieves.
      */
     public boolean updateUserRating(DriveRating rating) {
