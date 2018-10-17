@@ -5,7 +5,7 @@ import java.sql.Date;
 
 public class User implements Principal {
 
-    public static User NONE = new User(0, Role.NONE, "none@lu.se", "-", "-", "0", 0, Date.valueOf("2018-01-01").getTime(), false, 0, 0, 0);
+    public static User NONE = new User(0, Role.NONE, "none@commutecompanion.se", "-", "-", "0", 0, Date.valueOf("2018-01-01").getTime(), false, 0, 0, 0);
 
     private final int userId;
     private final Role role;
