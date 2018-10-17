@@ -11,9 +11,11 @@ window.base.createDriveController = (() => {
     const view = {
         render: () => window.base.rest.getUser().then(u => {
             model.user = u;
+            console.log(u);
         }).then(u => {
             window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
+                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     if(document.getElementById('passenger-header') != null){
@@ -24,7 +26,11 @@ window.base.createDriveController = (() => {
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
                     for (var i = 0; i < d.length; i++) {
-                        if (d[i].drive.driveId === model.theId.id) {
+                        console.log(d[i].drive.driveId);
+                        console.log(model.theId.id);
+                        if (d[i].drive.driveId == model.theId.id) {
+                            console.log('Model.wrap läggs till');
+                            console.log(d[i]);
                             model.driveWrap = d[i];
                         }
                     }
@@ -270,7 +276,7 @@ window.base.createDriveController = (() => {
 
             const milestones = [];
             let driveMilestone;
-            
+
             for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
                 const milestoneId = i;
                 const milestone = document.getElementById('set-stop-' + i).value;
@@ -291,7 +297,6 @@ window.base.createDriveController = (() => {
 
             if (model.theId.id === undefined){
                 window.base.rest.addDrive(driveWrap).then(d => {
-                    console.log(d);
                     if (d.error) {
                         alert(d.error);
                     } else {
@@ -316,18 +321,34 @@ window.base.createDriveController = (() => {
         .then(() => window.location.replace('/')),
 
         load: (id) => {
+            console.log(id);
             model.theId.id = id;
+            console.log(model.theId.id);
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
             document.getElementById('remove-stop-btn').onclick = controller.removeStop;
+
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth()+1;
+            var yyyy = today.getFullYear();
+            if(dd<10){
+                dd='0'+dd
+            } 
+            if(mm<10){
+                mm='0'+mm
+            } 
+            today = yyyy+'-'+mm+'-'+dd;
+            document.getElementById("set-date").setAttribute("min", today);
+
             view.render();
         },
 
         loadWithUserId: (id) => {
+            console.log(id);
             controller.load(id);
         },
     };
-
     return controller;
 });
