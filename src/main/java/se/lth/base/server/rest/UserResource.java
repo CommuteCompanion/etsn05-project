@@ -94,10 +94,8 @@ public class UserResource {
         credentials.sanitizeAndValidate();
         User user = userDao.addUser(credentials);
         try {
-        	System.out.println("hej2");
             mailHandler.welcomeUser(user);
         } catch (IOException e) {
-        	System.out.println("hej1");
             e.printStackTrace();
         }
         return user;
