@@ -21,9 +21,9 @@ window.base.userProfileController = (() => {
             document.getElementById('set-firstname').value = model.user.firstName;
             document.getElementById('set-lastname').value = model.user.lastName;
             document.getElementById('set-phone-number').value = model.user.phoneNumber;
-            var birthDate = new Date(model.user.dateOfBirth);
-            document.getElementById('set-date-of-birth').value 
-                = birthDate.getUTCFullYear() + '-' + view.pad(birthDate.getUTCMonth() + 1 ) + '-' + view.pad(birthDate.getUTCDay());
+            let birthDate = new Date(model.user.dateOfBirth);
+            document.getElementById('set-date-of-birth').value = birthDate.getFullYear() + '-' +
+                view.pad(birthDate.getMonth() + 1) + '-' + birthDate.getDate();
             if (model.user.gender === 1) {
                 document.getElementById('set-female').checked = true;
             } else if (model.user.gender === 0) {
@@ -65,7 +65,8 @@ window.base.userProfileController = (() => {
             const firstName = document.getElementById('set-firstname').value;
             const lastName = document.getElementById('set-lastname').value;
             const phoneNumber = document.getElementById('set-phone-number').value;
-            const birthDate = document.getElementById('set-date-of-birth').value;
+            const birthDate = Date.parse(document.getElementById('set-date-of-birth').value);
+
             if(document.getElementById('set-male').checked) {
                 gender = 0;
             } else if (document.getElementById('set-female').checked) {
@@ -101,7 +102,7 @@ window.base.userProfileController = (() => {
                         view.render();
                         alert(user.message);
                     } else {
-                        document.getElementById('email').innerText = email;
+                        document.getElementById('navbar-first-name').textContent = firstName;
                         view.render();
                     }
                 });
