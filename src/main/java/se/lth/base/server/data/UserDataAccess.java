@@ -115,11 +115,11 @@ public class UserDataAccess extends DataAccess<User> {
      * @param userId the userId of the driver.
      * @param rating the rating that the driver recieves.
      */
-    public boolean updateUserRating(int userId, int rating) {
+    public boolean updateUserRating(DriveRating rating) {
         return execute("UPDATE user SET rating_total_score = " +
                 "(SELECT rating_total_score FROM user WHERE user_id = ?) + ?, " +
                 "number_of_ratings = (SELECT number_of_ratings FROM user WHERE user_id = ?) + 1 " +
-                "WHERE user_id = ?", userId, rating, userId, userId) > 0;
+                "WHERE user_id = ?", rating.getRatedUserId(), rating.getRating(), rating.getRatedUserId(), rating.getRatedUserId()) > 0;
     }
 
     /**

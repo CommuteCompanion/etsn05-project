@@ -250,16 +250,19 @@ public class DriveResourceTest extends BaseResourceTest {
 				.path(driveId + "/user")
 				.request()
 				.post(Entity.json(driveUser), DriveUser.class);
+		DriveRating rating = new DriveRating(TEST.getId(), 4);
+		List<DriveRating> ratings = new ArrayList<DriveRating>();
+		ratings.add(rating);
+		DriveRatingWrap ratingWrap = new DriveRatingWrap(TEST.getId(), driveId, ratings);
 		target("drive")
-				.path(driveId + "/rate/" + 4)
+				.path(driveId + "/rate")
 				.request()
-				.put(Entity.json(4));
+				.put(Entity.json(ratingWrap));
 		driveWrap = target("drive")
 	              .path(Integer.toString(driveId))
 	              .request()
 	              .get(DriveWrap.class);
 		assertTrue(driveWrap.getUsers().get(1).hasRated());
-		
     }
     
 }
