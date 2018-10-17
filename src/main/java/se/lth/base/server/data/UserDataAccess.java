@@ -26,7 +26,7 @@ import java.util.UUID;
  * </li>
  * </ul>
  *
- * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ * @author Group 1 ETSN05 2018
  * @see DataAccess
  */
 public class UserDataAccess extends DataAccess<User> {
@@ -39,7 +39,6 @@ public class UserDataAccess extends DataAccess<User> {
      * Add a new user to the system.
      *
      * @param credentials of the new user, containing name, role, and password.
-     * @throws DataAccessException if duplicated emails or wrong format.
      */
     public User addUser(Credentials credentials) {
         User user = credentials.getUser();
@@ -62,6 +61,13 @@ public class UserDataAccess extends DataAccess<User> {
                 dateOfBirth, drivingLicense, 0, 0, 0);
     }
 
+    /**
+     * Update's a user
+     *
+     * @param userId user id to update
+     * @param credentials user credentials
+     * @return user
+     */
     public User updateUser(int userId, Credentials credentials) {
         User user = credentials.getUser();
         Role role = credentials.getRole();
@@ -88,8 +94,14 @@ public class UserDataAccess extends DataAccess<User> {
                     email, firstName, lastName, gender, drivingLicense, new Date(dateOfBirth), phoneNumber, credentials.getRole().name(), userId);
         }
         return getUser(userId);
-    }	
+    }
 
+    /**
+     * Get's a specific user
+     *
+     * @param userId user id
+     * @return user
+     */
     public User getUser(int userId) {
         return queryFirst("SELECT user_id, role, email, first_name, last_name, phone_number, gender, " +
                 "date_of_birth, driving_license, rating_total_score, number_of_ratings, warning FROM user, user_role " +
@@ -101,7 +113,9 @@ public class UserDataAccess extends DataAccess<User> {
     }
 
     /**
-     * @return all users in the system.
+     * Get's all users
+     *
+     * @return all users in the system
      */
     public List<User> getUsers() {
         return query("SELECT user_id, role, email, first_name, last_name, phone_number, gender, " +
@@ -110,21 +124,21 @@ public class UserDataAccess extends DataAccess<User> {
     }
 
     /**
-     * Updates the drivers rating after a drive.
+     * Updates the drivers rating after a drive
      *
-     * @param rating the rating that the driver recieves.
+     * @param rating the rating that the driver receives.
      */
-    public boolean updateUserRating(DriveRating rating) {
-        return execute("UPDATE user SET rating_total_score = " +
+    public void updateUserRating(DriveRating rating) {
+        execute("UPDATE user SET rating_total_score = " +
                 "(SELECT rating_total_score FROM user WHERE user_id = ?) + ?, " +
                 "number_of_ratings = (SELECT number_of_ratings FROM user WHERE user_id = ?) + 1 " +
-                "WHERE user_id = ?", rating.getRatedUserId(), rating.getRating(), rating.getRatedUserId(), rating.getRatedUserId()) > 0;
+                "WHERE user_id = ?", rating.getRatedUserId(), rating.getRating(), rating.getRatedUserId(), rating.getRatedUserId());
     }
 
     /**
-     * Fetch session and the corresponding user.
+     * Fetch session and the corresponding user
      *
-     * @param sessionId globally unqiue identifier, stored in the client.
+     * @param sessionId globally unique identifier, stored in the client.
      * @return session object wrapping the user.
      * @throws DataAccessException if the session is not found.
      */
@@ -139,7 +153,7 @@ public class UserDataAccess extends DataAccess<User> {
     }
 
     /**
-     * Logout a user. This method is idempotent, meaning it is safe to repeat indefinitely.
+     * Logout a user. This method is idempotent, meaning it is safe to repeat indefinitely
      *
      * @param sessionId session to remove
      * @return true if the session was found, false otherwise.
@@ -148,12 +162,12 @@ public class UserDataAccess extends DataAccess<User> {
         return execute("DELETE FROM session WHERE session_uuid = ?", sessionId) > 0;
     }
 
-    public boolean warnUser(int userId) {
-        return execute("UPDATE user SET warning = (SELECT warning FROM user WHERE user_id = ?) + 1 WHERE user_id = ?", userId, userId) > 0;
+    public void warnUser(int userId) {
+        execute("UPDATE user SET warning = (SELECT warning FROM user WHERE user_id = ?) + 1 WHERE user_id = ?", userId, userId);
     }
 
     /**
-     * Login a user.
+     * Login a user
      *
      * @param credentials email and plain text password.
      * @return New user session, consisting of a @{@link UUID} and @{@link User}.

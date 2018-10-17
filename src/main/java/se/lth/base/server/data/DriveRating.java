@@ -20,14 +20,12 @@ public class DriveRating {
     }
 
     /** @return the user id of the rated user. */
-    public int getRatedUserId() {
-        return ratedUserId;
+    int getRatedUserId() {
+      return ratedUserId;
     }
 
     /** @return the rating*/
     public int getRating() {
-        return rating;
+      return rating;
     }
-
-
 }

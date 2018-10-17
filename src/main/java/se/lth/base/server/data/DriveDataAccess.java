@@ -93,6 +93,8 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
 
     /**
+     * Get's all drives
+     *
      * @return a list of all drives in the system.
      */
     public List<Drive> getDrives() {
@@ -100,6 +102,8 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
 
     /**
+     * Get's all drives with at least one report
+     *
      * @return a list of all reported drives in the system.
      */
     public List<Drive> getReportedDrives() {
@@ -128,8 +132,10 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
 
     /**
+     * Get's all drives for a specific user
+     *
      * @param userId the unique Id of a user.
-     * @returns a list of all the drives for a user.
+     * @return a list of all the drives for a user.
      */
     public List<Drive> getDrivesForUser(int userId) {
         return query("SELECT * FROM drive INNER JOIN drive_user ON drive.drive_id = drive_user.drive_id WHERE user_id = ? ", userId);
@@ -139,10 +145,9 @@ public class DriveDataAccess extends DataAccess<Drive> {
      * Deletes a drive
      *
      * @param driveId the unique Id of a drive.
-     * @return true if the drive was deleted, otherwise false.
      */
-    public boolean deleteDrive(int driveId) {
-        return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
+    public void deleteDrive(int driveId) {
+        execute("DELETE FROM drive WHERE drive_id = ?", driveId);
     }
 }
 

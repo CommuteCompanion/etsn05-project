@@ -15,9 +15,9 @@ import java.util.List;
  * @author Group 1 ETSN05 2018
  */
 public class DriveUserDataAccess extends DataAccess<DriveUser> {
-    public static final boolean IS_ACCEPTED = true;
-    public static final boolean HAS_RATED = true;
-    public static final boolean IS_DRIVER = true;
+    private static final boolean IS_ACCEPTED = true;
+    private static final boolean HAS_RATED = true;
+    private static final boolean IS_DRIVER = true;
 
     private static final class DriveMapper implements Mapper<DriveUser> {
         @Override
@@ -43,15 +43,13 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
         return new DriveUser(driveId, userId, start, stop, driver, accepted, rated);
     }
 
-    public DriveUser updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
+    public void updateDriveUser(int driveId, int userId, String start, String stop, boolean driver, boolean accepted, boolean rated) {
         execute("UPDATE drive_user SET start = ?, stop = ?, is_driver = ?, accepted = ?, rated = ? WHERE drive_id = ? AND user_id = ?",
                 start, stop, driver, accepted, rated, driveId, userId);
-
-        return getDriveUser(driveId, userId);
     }
 
-    public boolean hasRated(int userId, int driveId) {
-        return execute("UPDATE drive_user SET rated = ? WHERE user_id = ? AND drive_id = ?", HAS_RATED, userId, driveId) > 0;
+    public void hasRated(int userId, int driveId) {
+        execute("UPDATE drive_user SET rated = ? WHERE user_id = ? AND drive_id = ?", HAS_RATED, userId, driveId);
     }
 
     public DriveUser getDriveUser(int driveId, int userId) {
@@ -63,12 +61,12 @@ public class DriveUserDataAccess extends DataAccess<DriveUser> {
         return query("SELECT drive_id, user_id, start, stop, is_driver, accepted, rated FROM drive_user WHERE drive_id = ?", driveId);
     }
 
-    public boolean deleteDriveUser(int driveId, int userId) {
-        return execute("DELETE FROM drive_user WHERE drive_id = ? AND user_id = ?", driveId, userId) > 0;
+    public void deleteDriveUser(int driveId, int userId) {
+        execute("DELETE FROM drive_user WHERE drive_id = ? AND user_id = ?", driveId, userId);
     }
 
-    public boolean acceptDriveUser(int driveId, int userId) {
-        return execute("UPDATE drive_user SET accepted = ? WHERE drive_id = ? AND user_id = ?", IS_ACCEPTED, driveId, userId) > 0;
+    public void acceptDriveUser(int driveId, int userId) {
+        execute("UPDATE drive_user SET accepted = ? WHERE drive_id = ? AND user_id = ?", IS_ACCEPTED, driveId, userId);
     }
 
     public int getNumberOfUsersInDrive(int driveId) {

@@ -68,10 +68,12 @@ public class Drive {
     public String getStart() {
         return start;
     }
+
     /** Returns the stop location. */
     public String getStop() {
         return stop;
     }
+
     /** Returns the departure time. */
     public long getDepartureTime() {
         return departureTime;
@@ -86,40 +88,49 @@ public class Drive {
     public String getComment() {
         return comment;
     }
+
     /** Returns the brand of the car. */
-    public String getCarBrand() {
+    String getCarBrand() {
         return carBrand;
     }
+
     /** Returns the model of the car. */
-    public String getCarModel() {
+    String getCarModel() {
         return carModel;
     }
+
     /** Returns the color of the car. */
     public String getCarColor() {
         return carColor;
     }
+
     /** Returns the license plate of the car. */
     public String getCarLicensePlate() {
         return carLicensePlate;
     }
+
     /** Returns the number of seats in the car. */
     public int getCarNumberOfSeats() {
         return carNumberOfSeats;
     }
+
     /** Returns the size of the luggage in the car. */
-    public int getOptLuggageSize() {
+    int getOptLuggageSize() {
         return optLuggageSize;
     }
+
     /** Returns true if the car has winter tires, otherwise false. */
-    public boolean getOptWinterTires() {
+    boolean getOptWinterTires() {
         return optWinterTires;
     }
+
     /** Returns true if it is possible to bring a bicycle, otherwise false. */
-    public boolean getOptBicycle() {
+    boolean getOptBicycle() {
         return optBicycle;
     }
+
     /** Returns true if pets are allowed in the car, otherwise false. */
-    public boolean getOptPets() {
+    boolean getOptPets() {
         return optPets;
     }
 }
