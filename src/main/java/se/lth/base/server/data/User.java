@@ -70,7 +70,7 @@ public class User implements Principal {
 		return lastName;
 	}
 
-	public void setLastName(String lastName) {
+	void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -78,7 +78,7 @@ public class User implements Principal {
 		return phoneNumber;
 	}
 
-    public void setPhoneNumber(String phoneNumber) {
+	void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -86,21 +86,19 @@ public class User implements Principal {
 		return gender;
 	}
 
-	public long getDateOfBirth() {
+	long getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public Boolean getDrivingLicense() {
+	boolean getDrivingLicense() {
 		return drivingLicense;
 	}
 
-	public int getRatingTotalScore() {
+	int getRatingTotalScore() {
 		return ratingTotalScore;
 	}
 
-	public int getNumberOfRatings() {
-		return numberOfRatings;
-	}
+	public int getNumberOfRatings() { return numberOfRatings; }
 
 	public int getWarning() {
 		return warning;

@@ -18,7 +18,7 @@ public class DriveMilestone {
      * @param milestoneId   the Id of the Milestone.
      * @param driveId       the Id of the Drive.
      * @param milestone     the name of the Milestone.
-     * @param departureTime the time of the depature from the MileStone.
+     * @param departureTime the time of the departure from the MileStone.
      */
     public DriveMilestone(int milestoneId, int driveId, String milestone, long departureTime) {
         this.milestoneId = milestoneId;
@@ -32,7 +32,7 @@ public class DriveMilestone {
         return milestoneId;
     }
 
-    /** @retur the id of the Drive. */
+    /** @return the id of the Drive. */
     public int getDriveId() {
         return driveId;
     }

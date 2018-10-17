@@ -9,13 +9,11 @@ public class DriveRating {
 		this.rating = rating;
 	}
 
-	public int getRatedUserId() {
+	int getRatedUserId() {
 		return ratedUserId;
 	}
 
 	public int getRating() {
 		return rating;
 	}
-	
-	
 }

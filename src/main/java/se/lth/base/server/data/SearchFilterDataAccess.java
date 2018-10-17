@@ -19,7 +19,7 @@ public class SearchFilterDataAccess extends DataAccess<SearchFilter> {
         return new SearchFilter(searchFilterId, searchFilter.getUserId(), searchFilter.getStart(), searchFilter.getStop(), searchFilter.getDepartureTime());
     }
 
-    public List<SearchFilter> getSearchFiltersForUser(int userId) {
+    List<SearchFilter> getSearchFiltersForUser(int userId) {
         return query("SELECT * FROM search_filter WHERE user_id = ?", userId);
     }
 
@@ -27,7 +27,7 @@ public class SearchFilterDataAccess extends DataAccess<SearchFilter> {
         return query("SELECT * FROM search_filter");
     }
 
-    public boolean deleteSearchFilter(int searchFilterId) {
+    boolean deleteSearchFilter(int searchFilterId) {
         return execute("DELETE FROM search_filter WHERE search_filter_id = ?", searchFilterId) > 0;
     }
 

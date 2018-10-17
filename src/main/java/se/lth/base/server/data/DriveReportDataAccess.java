@@ -34,10 +34,9 @@ public class DriveReportDataAccess extends DataAccess<DriveReport> {
         return query("SELECT report_id, drive_id, reported_by_user_id, report_message FROM drive_report WHERE drive_id = ?", driveId);
     }
     
-    public DriveReport updateDriveReport(DriveReport report) {
+    public void updateDriveReport(DriveReport report) {
     	execute("UPDATE drive_report SET reported_by_user_id = ?, report_message = ? WHERE report_id = ?",
     			report.getReportedByUserId(), report.getReportMessage(), report.getReportId());
-    	return getDriveReport(report.getReportId());
     }
 
     private static final class DriveMapper implements Mapper<DriveReport> {

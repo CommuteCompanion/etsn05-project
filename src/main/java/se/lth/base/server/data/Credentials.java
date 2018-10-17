@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * Used for authentication and user operations requiring passwords.
  *
- * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ * @author Group 1 ETSN05 2018
  */
 public class Credentials {
     private static final int SIZE = 256;
@@ -88,41 +88,7 @@ public class Credentials {
      * @return true/false
      */
     public boolean hasPassword() {
-        if (password == null || password.equals("")) {
-            return false;
-        }
-        return true;
-    }
-
-    private String phoneNumberSanitizer(String phoneNumber) {
-        // Strip illegal characters
-        phoneNumber = phoneNumber.trim().replaceAll("[^+0-9]", "");
-
-        // Check for number format
-        if (phoneNumber.substring(0, 2).equals("00")) {
-            phoneNumber = "+" + phoneNumber.substring(2);
-        } else if (phoneNumber.substring(0, 1).equals("0")) {
-            phoneNumber = "+46" + phoneNumber.substring(1);
-        }
-
-        return phoneNumber;
-    }
-
-    private String nameSanitizer(String name) {
-        // Strip illegal chars and make lowercase
-        name = name.trim().replaceAll("[^\\s-A-zÅÄÖåäö]", "").toLowerCase();
-        StringBuilder sb = new StringBuilder(name);
-        Pattern p = Pattern.compile("[\\s+-]");
-        Matcher m = p.matcher(name);
-
-        // Capitalize first character in every word in first name
-        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-        while (m.find()) {
-            int charPos = m.start() + 1;
-            sb.setCharAt(charPos, Character.toUpperCase(sb.charAt(charPos)));
-        }
-
-        return sb.toString();
+        return password != null && !password.equals("");
     }
 
     /**
@@ -242,5 +208,36 @@ public class Credentials {
         } catch (InvalidKeySpecException ex) {
             throw new IllegalStateException("Invalid SecretKeyFactory", ex);
         }
+    }
+
+    private String phoneNumberSanitizer(String phoneNumber) {
+        // Strip illegal characters
+        phoneNumber = phoneNumber.trim().replaceAll("[^+0-9]", "");
+
+        // Check for number format
+        if (phoneNumber.substring(0, 2).equals("00")) {
+            phoneNumber = "+" + phoneNumber.substring(2);
+        } else if (phoneNumber.substring(0, 1).equals("0")) {
+            phoneNumber = "+46" + phoneNumber.substring(1);
+        }
+
+        return phoneNumber;
+    }
+
+    private String nameSanitizer(String name) {
+        // Strip illegal chars and make lowercase
+        name = name.trim().replaceAll("[^\\s-A-zÅÄÖåäö]", "").toLowerCase();
+        StringBuilder sb = new StringBuilder(name);
+        Pattern p = Pattern.compile("[\\s+-]");
+        Matcher m = p.matcher(name);
+
+        // Capitalize first character in every word in first name
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+        while (m.find()) {
+            int charPos = m.start() + 1;
+            sb.setCharAt(charPos, Character.toUpperCase(sb.charAt(charPos)));
+        }
+
+        return sb.toString();
     }
 }
