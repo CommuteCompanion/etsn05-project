@@ -312,7 +312,6 @@ window.base.createDriveController = (() => {
                     controller.renderAlertBox(element, title, msg, type);
                 });
             } else {
-                console.log(driveWrap);
                 controller.updateDrive(driveWrap);
             }
         },
@@ -334,9 +333,7 @@ window.base.createDriveController = (() => {
         .then(() => window.location.replace('/')),
 
         load: (id) => {
-            console.log(id);
             model.theId.id = id;
-            console.log(model.theId.id);
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
@@ -359,7 +356,6 @@ window.base.createDriveController = (() => {
         },
 
         loadWithUserId: (id) => {
-            console.log(id);
             controller.load(id);
         },
     };
