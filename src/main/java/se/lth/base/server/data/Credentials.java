@@ -157,7 +157,7 @@ public class Credentials {
             throw new WebApplicationException("Date of birth not specified", Response.Status.BAD_REQUEST);
         }
 
-        if (user.getDrivingLicence() == null) {
+        if (user.getDrivingLicense() == null) {
             throw new WebApplicationException("Driving license not specified", Response.Status.BAD_REQUEST);
         }
 

@@ -61,7 +61,7 @@ window.base.createDriveController = (() => {
             document.getElementById('set-brand').value = model.driveWrap.drive.carBrand;
             document.getElementById('set-model').value = model.driveWrap.drive.carModel;
             document.getElementById('set-color').value = model.driveWrap.drive.carColor;
-            document.getElementById('set-licence').value = model.driveWrap.drive.carLicensePlate;
+            document.getElementById('set-license').value = model.driveWrap.drive.carLicensePlate;
             document.getElementById('set-seats').value = model.driveWrap.drive.carNumberOfSeats;
             if (model.driveWrap.drive.optWinterTires === true) {
                 document.getElementById('set-tires').checked = true;
@@ -238,7 +238,7 @@ window.base.createDriveController = (() => {
             }
             const departureTime = departureDate.getTime();
             const carColor = document.getElementById('set-color').value;
-            const carLicensePlate = document.getElementById('set-licence').value;
+            const carLicensePlate = document.getElementById('set-license').value;
             const carNumberOfSeats = document.getElementById('set-seats').value;
             const tmpLuggage = document.getElementById('set-luggage');
             const optLuggageSize = tmpLuggage.options[tmpLuggage.selectedIndex].value;
