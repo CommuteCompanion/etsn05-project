@@ -2,7 +2,8 @@ window.base = window.base || {};
 
 window.base.manageUsersController = (() => {
     var model = {
-        users: []
+        users: [], // All users
+        searchedUsers: [] // The users selected by search.
     };
 
     var view = {
@@ -45,8 +46,17 @@ window.base.manageUsersController = (() => {
             document.getElementById('delete-account' + user.userId).onclick = () =>
                 controller.deleteAccount(user)
         },
+        clearRender: function() {
+            model.users.forEach( user => {
+                var item = document.getElementById('manage-user-card' + user.userId);
+                if (item !== null) {
+                    item.parentElement.removeChild(item);
+                }
+            });
+        },
         render: function() {
-            model.users.forEach(user => view.renderCard(user));
+            view.clearRender();
+            model.searchedUsers.forEach(user => view.renderCard(user));
         },
     };
 
@@ -58,10 +68,19 @@ window.base.manageUsersController = (() => {
                     = user.warning + ' warnings';
                 });
         },
+        remove: function(array, element) {
+            return array.filter(e => e !== element);
+        },
         deleteAccount: function(user) {
+            
             window.base.rest.deleteUser(user.userId).then(function () {
+                // Remove user from lists so next search is correct.
+                model.users = controller.remove(model.users, user);
+                model.searchedUsers = controller.remove(model.searchedUsers, user);
+                // Remove element (This can't be done in render since it won't find 
+                // the user due to it being removed in the list.)
                 var item = document.getElementById('manage-user-card' + user.userId);
-                item.parentElement.removeChild(item);
+                item.parentElement.removeChild(item);   
             }); 
             
         },
@@ -73,9 +92,28 @@ window.base.manageUsersController = (() => {
                         window.base.userProfileController().loadWithUserId(user.userId);  
                     });
         },
+        search: function() {
+            searchString = document.getElementById('search-email').value;
+            model.searchedUsers = []; // Reset searched users.
+            model.users.forEach(user => {
+                if (user.email.toLowerCase().indexOf(searchString.toLowerCase()) >= 0) {
+                    model.searchedUsers.push(user);
+                }
+            });
+            view.render();
+        },
+        reset: function() {
+            model.searchedUsers = model.users;
+            document.getElementById('search-email').value = '';
+            view.render();
+        },
         load: function() {
+            document.getElementById('search-user-button').onclick = () => controller.search();
+            document.getElementById('search-user-rest-button').onclick = () => controller.reset();
+
             base.rest.getUsers().then(function(users) {
                 model.users = users;
+                model.searchedUsers = users;
                 return users;
             }).then(function() {
                 view.render();

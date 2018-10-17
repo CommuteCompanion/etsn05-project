@@ -5,10 +5,10 @@ import org.junit.Test;
 import se.lth.base.server.BaseResourceTest;
 import se.lth.base.server.data.*;
 
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericType;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -112,8 +112,7 @@ public class DriveResourceTest extends BaseResourceTest {
         for(DriveUser du : driveWrap.getUsers()) {
         	assertFalse(du.getUserId() == ADMIN.getId());
         }
-    }
-    
+    }    
 	@Test
 	public void createAndUpdateDrive() {
 		login(TEST_CREDENTIALS);
@@ -177,12 +176,12 @@ public class DriveResourceTest extends BaseResourceTest {
 				.request()
 				.delete(Void.class);
 		target("drive")
-                .path(Integer.toString(driveId))
-                .request()
-                .get(DriveWrap.class);
-	}
-	
-	@Test
+        .path(Integer.toString(driveId))
+        .request()
+        .get(DriveWrap.class);
+    }
+
+    @Test
     public void reportDriveAndgetAllReports() {
     	login(ADMIN_CREDENTIALS);
 		//Look for reported drives, expect 0
@@ -203,7 +202,7 @@ public class DriveResourceTest extends BaseResourceTest {
 				.get(DRIVEWRAP_LIST);
 		assertEquals("Driving like a mad man", reportWraps.get(0).getReports().get(0).getReportMessage());
     }
-    
+
     @Test
     public void numberOfDrivesForUser() {
     	login(TEST_CREDENTIALS);
@@ -235,13 +234,13 @@ public class DriveResourceTest extends BaseResourceTest {
 				.request()
 				.put(Entity.json(driveUser));
 		driveWrap = target("drive")
-              .path(Integer.toString(driveId))
-              .request()
-              .get(DriveWrap.class);
+        .path(Integer.toString(driveId))
+        .request()
+        .get(DriveWrap.class);
 		assertTrue(driveWrap.getUsers().get(0).isAccepted());
 		assertTrue(driveWrap.getUsers().get(1).isAccepted());
     }
-    
+
     @Test
     public void rateUser() {
 		login(ADMIN_CREDENTIALS);
@@ -255,11 +254,10 @@ public class DriveResourceTest extends BaseResourceTest {
 				.request()
 				.put(Entity.json(4));
 		driveWrap = target("drive")
-	              .path(Integer.toString(driveId))
-	              .request()
-	              .get(DriveWrap.class);
+        .path(Integer.toString(driveId))
+        .request()
+        .get(DriveWrap.class);
 		assertTrue(driveWrap.getUsers().get(1).hasRated());
-		
     }
     
 }
