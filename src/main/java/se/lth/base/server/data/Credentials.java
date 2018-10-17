@@ -88,7 +88,10 @@ public class Credentials {
      * @return true/false
      */
     public boolean hasPassword() {
-        return password != null;
+        if (password == null || password.equals("")) {
+            return false;
+        }
+        return true;
     }
 
     private String phoneNumberSanitizer(String phoneNumber) {

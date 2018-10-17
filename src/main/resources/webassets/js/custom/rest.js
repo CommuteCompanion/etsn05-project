@@ -179,7 +179,7 @@ window.base.rest = (() => {
             .then(response => response.json())
             .then(u => objOrError(u, User)),
 
-        putUser: (id, credentials) => baseFetch('/rest/user/' + id, createJsonPost(credentials))
+        putUser: (id, credentials) => baseFetch('/rest/user/' + id, createJsonPut(credentials))
             .then(response => response.json())
             .then(u => objOrError(u, User)),
 

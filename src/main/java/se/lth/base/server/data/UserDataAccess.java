@@ -68,23 +68,24 @@ public class UserDataAccess extends DataAccess<User> {
         String email = credentials.getEmail();
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
+        String phoneNumber = user.getPhoneNumber();
+        long dateOfBirth = user.getDateOfBirth();
         int gender = user.getGender();
         boolean drivingLicence = user.getDrivingLicence();
-
         if (credentials.hasPassword()) {
             long salt = Credentials.generateSalt();
             UUID passwordHash = credentials.generatePasswordHash(salt);
             execute("UPDATE user SET email = ?, password_hash = ?, salt = ?, first_name = ?, last_name = ?, " +
-                            "gender = ?, driving_license = ?, " +
+                            "gender = ?, driving_license = ?, date_of_birth = ?, phone_number = ?," +
                             "role_id = (SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    email, passwordHash, salt, firstName, lastName, gender, drivingLicence, role.name(), userId);
+                    email, passwordHash, salt, firstName, lastName, gender, drivingLicence, new Date(dateOfBirth), phoneNumber, role.name(), userId);
         } else {
             execute("UPDATE user SET email = ?, first_name = ?, last_name = ?, " +
-                            "gender = ?, driving_license = ?, role_id = (" +
+                            "gender = ?, driving_license = ?, date_of_birth = ?, phone_number = ?, role_id = (" +
                             "    SELECT user_role.role_id FROM user_role WHERE user_role.role = ?) " +
                             "WHERE user_id = ?",
-                    email, firstName, lastName, gender, drivingLicence, credentials.getRole().name(), userId);
+                    email, firstName, lastName, gender, drivingLicence, new Date(dateOfBirth), phoneNumber, credentials.getRole().name(), userId);
         }
         return getUser(userId);
     }	
@@ -180,11 +181,18 @@ public class UserDataAccess extends DataAccess<User> {
     private static class UserMapper implements Mapper<User> {
         @Override
         public User map(ResultSet resultSet) throws SQLException {
-            return new User(resultSet.getInt("user_id"), Role.valueOf(resultSet.getString("role")),
-            		resultSet.getString("email"), resultSet.getString("first_name"), resultSet.getString("last_name"),
-                    resultSet.getString("phone_number"), resultSet.getInt("gender"),
-                    resultSet.getObject("date_of_birth", Date.class).getTime(), resultSet.getBoolean("driving_license"),
-                    resultSet.getInt("rating_total_score"), resultSet.getInt("number_of_ratings"), resultSet.getInt("warning"));
+            return new User(resultSet.getInt("user_id"),
+                    Role.valueOf(resultSet.getString("role")),
+                    resultSet.getString("email"),
+                    resultSet.getString("first_name"),
+                    resultSet.getString("last_name"),
+                    resultSet.getString("phone_number"),
+                    resultSet.getInt("gender"),
+                    resultSet.getObject("date_of_birth", Date.class).getTime(),
+                    resultSet.getBoolean("driving_license"),
+                    resultSet.getInt("rating_total_score"),
+                    resultSet.getInt("number_of_ratings"),
+                    resultSet.getInt("warning"));
         }
     }
 }
