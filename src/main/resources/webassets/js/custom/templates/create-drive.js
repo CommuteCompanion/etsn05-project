@@ -218,25 +218,23 @@ window.base.createDriveController = (() => {
             const start = document.getElementById('set-from').value;
             const stop = document.getElementById('set-to').value;
             const date = document.getElementById('set-date').value;
+            
             const arrivalValue = document.getElementById('set-time-arrival').value;
-            let arrivalDate;
-            if (model.theId.id === undefined) {
-                arrivalDate = new Date(date + "T" + arrivalValue + ":00+0200");
-            } else {
-                arrivalDate = new Date(date + "T" + arrivalValue + "+0200");
-            }
+            const arrivalString = date + "T" + arrivalValue + ":+02:00";
+            const arrivalSplit = arrivalString.split(/[^0-9]/);
+            const arrivalDate = new Date (arrivalSplit[0],arrivalSplit[1]-1,arrivalSplit[2],arrivalSplit[3],arrivalSplit[4],arrivalSplit[5] );
             const arrivalTime = arrivalDate.getTime();
+            
             const comment = document.getElementById('set-comment').value;
             const carBrand = document.getElementById('set-brand').value;
             const carModel = document.getElementById('set-model').value;
+            
             const departureValue = document.getElementById('set-time-leave').value;
-            let departureDate;
-            if (model.theId.id === undefined) {
-                departureDate = new Date(date + "T" + departureValue + ":00+0200");
-            } else {
-                departureDate = new Date(date + "T" + departureValue + "+0200");
-            }
+            const departureString = date + "T" + departureValue + ":+02:00";
+            const departureSplit = departureString.split(/[^0-9]/);
+            const departureDate = new Date (departureSplit[0],departureSplit[1]-1,departureSplit[2],departureSplit[3],departureSplit[4],departureSplit[5] );
             const departureTime = departureDate.getTime();
+            
             const carColor = document.getElementById('set-color').value;
             const carLicensePlate = document.getElementById('set-licence').value;
             const carNumberOfSeats = document.getElementById('set-seats').value;
