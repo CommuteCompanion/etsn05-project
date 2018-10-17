@@ -14,12 +14,13 @@ import java.util.List;
  *
  */
 public class DriveReportDataAccess extends DataAccess<DriveReport> {
-    public DriveReport getDriveReport(int reportId) {
-        return queryFirst("SELECT report_id, drive_id, reported_by_user_id, report_message FROM drive_report WHERE report_id = ?", reportId);
-    }
 
     public DriveReportDataAccess(String driverUrl) {
         super(driverUrl, new DriveMapper());
+    }
+    
+    public DriveReport getDriveReport(int reportId) {
+    	return queryFirst("SELECT report_id, drive_id, reported_by_user_id, report_message FROM drive_report WHERE report_id = ?", reportId);
     }
     
     public DriveReport addDriveReport(int driveId, int reportedByUserId, String reportMessage) {
@@ -31,6 +32,12 @@ public class DriveReportDataAccess extends DataAccess<DriveReport> {
     
     public List<DriveReport> getDriveReportsForDrive(int driveId) {
         return query("SELECT report_id, drive_id, reported_by_user_id, report_message FROM drive_report WHERE drive_id = ?", driveId);
+    }
+    
+    public DriveReport updateDriveReport(DriveReport report) {
+    	execute("UPDATE drive_report SET reported_by_user_id = ?, report_message = ? WHERE report_id = ?",
+    			report.getReportedByUserId(), report.getReportMessage(), report.getReportId());
+    	return getDriveReport(report.getReportId());
     }
 
     private static final class DriveMapper implements Mapper<DriveReport> {

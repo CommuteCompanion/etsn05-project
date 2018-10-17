@@ -53,6 +53,21 @@
                 </div>
             </div>
             <div class="row my-2">
+                <label for="set-phone-number" class="col-md-4">Phone number</label>
+                <div class="col-md-8">
+                    <input pattern="^(\+|0)\d{6,}$" type="tel" class="form-control" id="set-phone-number"
+                       data-content="Must start with + or 0 and be at least 7 digits" data-toggle="popover" data-trigger="focus">
+                </div>
+            </div>
+            <div class="row my-2">
+                <label for="set-date-of-birth" class="col-md-4">Date of birth</label>
+                <div class="col-md-8">
+                    <input pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}$" type="tel" class="form-control border-right-0" id="set-date-of-birth" placeholder="Date of birth" 
+                       data-content="You must be at least 18 years old to use commute companion." data-toggle="popover" data-trigger="focus">
+                    <small id="edit-date-of-birth-help" class="form-text text-muted">YYYY-MM-DD</small>
+                </div>
+            </div>
+            <div class="row my-2">
                 <label for="set-password" class="col-md-4">New password</label>
                 <div class="col-md-8">
                     <input type="password" class="form-control" id="set-password" 
