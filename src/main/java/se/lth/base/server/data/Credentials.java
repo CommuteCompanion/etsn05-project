@@ -123,10 +123,6 @@ public class Credentials {
             throw new WebApplicationException("Date of birth not specified", Response.Status.BAD_REQUEST);
         }
 
-        if (user.getDrivingLicense() == null) {
-            throw new WebApplicationException("Driving license not specified", Response.Status.BAD_REQUEST);
-        }
-
         if (email == null) {
             throw new WebApplicationException("No email specified", Response.Status.BAD_REQUEST);
         }
