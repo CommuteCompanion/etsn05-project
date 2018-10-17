@@ -270,7 +270,7 @@ window.base.createDriveController = (() => {
 
             const milestones = [];
             let driveMilestone;
-
+            
             for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
                 const milestoneId = i;
                 const milestone = document.getElementById('set-stop-' + i).value;
@@ -291,10 +291,15 @@ window.base.createDriveController = (() => {
 
             if (model.theId.id === undefined){
                 window.base.rest.addDrive(driveWrap).then(d => {
-                    model.driveWrap = d;
-                    model.theId.id = model.driveWrap.drive.driveId;
+                    console.log(d);
+                    if (d.error) {
+                        alert(d.error);
+                    } else {
+                        model.driveWrap = d;
+                        model.theId.id = model.driveWrap.drive.driveId;
+                    }
                 }).then(() => {
-                    view.render(model.theId.id);
+                    view.render();
                     alert('Drive has been created');
                 });
             } else {
@@ -316,7 +321,7 @@ window.base.createDriveController = (() => {
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
             document.getElementById('remove-stop-btn').onclick = controller.removeStop;
-            view.render(id);
+            view.render();
         },
 
         loadWithUserId: (id) => {
