@@ -56,8 +56,8 @@ window.base.myCommutesController = (() => {
                 let driver;
 
                 // HTML partials
-                let ratingBox = `<form class="rate-form" id="form-drive-${driveId}">`;
-                let actionButtons = '<button class="mb-3 btn btn-danger btn-sm btn-block view-btn">View</button>';
+                let ratingBox = `<form class="rate-form" id="form-drive-${driveId}"><div id="alert-drive-${driveId}"></div>`;
+                let actionButtons = '<button class="mb-3 btn btn-info btn-sm btn-block view-btn">View</button>';
 
                 // Get current drive user and set correct buttons
                 for (let j = 0; j < users.length; j++) {
@@ -87,29 +87,29 @@ window.base.myCommutesController = (() => {
 
                 // HTML partial -> rate box title
                 if (Date.now() > drive.arrivalTime) {
-                    ratingBox = '<h5 class="text-muted font-weight-bold">Please rate trip</h5>';
-                } else {
-                    ratingBox = '<h5 class="text-muted font-weight-bold">Drive not completed</h5>';
-                }
+                    ratingBox += '<h5 class="text-muted font-weight-bold">Please rate trip</h5>';
 
-                ratingBox += `<div id="alert-drive-${driveId}"></div>`;
-
-                // HTML partial -> rating forms
-                if (currentUser.isDriver) {
-                    for (let i = 1; i <= users.length; i++) {
-                        const firstName = users[i].info.firstName;
-                        ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-${i}" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select" id="user-rating-${driveId}-${i}">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
+                    // HTML partial -> rating forms
+                    if (currentUser.isDriver) {
+                        for (let i = 1; i <= users.length; i++) {
+                            const firstName = users[i - 1].info.firstName;
+                            ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-${i}" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-${i}">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
+                        }
+                    } else {
+                        const firstName = driver.info.firstName;
+                        ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-1" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-1">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
                     }
+
+                    ratingBox += `<button type="submit" class="btn btn-secondary btn-block btn-sm">Rate</button>`;
                 } else {
-                    const firstName = driver.info.firstName;
-                    ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-1" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select" id="user-rating-${driveId}-1">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
+                    ratingBox += '<h5 class="text-muted font-weight-bold">Drive not completed</h5>';
                 }
 
                 // HTML partial -> end rating form
-                ratingBox += '<button type="submit" class="btn btn-secondary btn-block">Rate</button></form>'
+                ratingBox += '</form>';
 
                 // HTML partial -> drive row
-                commutesHtml += `\n        <div class="row mb-3 border bg-white shadow-sm">\n            <div class="col-5 border-right">\n                <a class="view-link" id="view-drive-${driveId}" href="">\n                    <h5 class="mt-3 mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                </a>\n                <div class="row">\n                    <div class="col-3">\n                            <p class="text-muted mb-0">Leaving:</p>\n                            <p class="text-muted mb-0">Pickup:</p>\n                            <p class="text-muted">Dropoff:</p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted">${departureTime}</p>\n                        <p class="text-muted mb-0"><span>${tripStart}</span> (~<span>${tripStartTime}</span>)</p>\n                        <p class="text-muted">${tripStop}</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-4">${ratingBox}</div>\n            <div class="col-3">${actionButtons}</div>\n        </div>`
+                commutesHtml += `\n        <div class="row mb-3 border bg-white shadow-sm pt-3 pb-3">\n            <div class="col-7 border-right">\n                <a class="view-link" id="view-drive-${driveId}" href="">\n                    <h5 class="mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                </a>\n                <div class="row">\n                    <div class="col-3">\n                            <p class="text-muted mb-0">Leaving:</p>\n                            <p class="text-muted mb-0">Pickup:</p>\n                            <p class="text-muted">Dropoff:</p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted mb-0">${departureTime}</p>\n                        <p class="text-muted mb-0"><span>${tripStart}</span> (~<span>${tripStartTime}</span>)</p>\n                        <p class="text-muted">${tripStop}</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-3 border-right">${ratingBox}</div>\n            <div class="col-2">${actionButtons}</div>\n        </div>`
             }
 
             // HTML partial -> not drives found
@@ -137,12 +137,12 @@ window.base.myCommutesController = (() => {
                     // For clicking on a headline link
                     viewLink.onclick = e => {
                         e.preventDefault();
-                        const milestones = viewLink.parentElement.parentElement.nextElementSibling.children[0].children[0].children[1].children;
+                        const milestones = viewLink.nextElementSibling.children[1].children;
                         const selection = {
                             driveId: viewLink.id.split('-')[2],
-                            tripStart: milestones[0].children[0].textContent,
-                            tripStartTime: milestones[0].children[1].textContent,
-                            tripStop: milestones[1].textContent
+                            tripStart: milestones[1].children[0].textContent,
+                            tripStartTime: milestones[1].children[1].textContent,
+                            tripStop: milestones[2].textContent
                         };
 
                         controller.viewDrive(selection);
@@ -283,7 +283,7 @@ window.base.myCommutesController = (() => {
                 .then(controller.sortDrives)
                 .then(controller.assignUsersToDrives)
                 .then(() => view.renderPage(model.driveWraps))
-                //.catch(view.renderError);
+            //.catch(view.renderError);
         },
     };
 
