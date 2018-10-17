@@ -43,9 +43,6 @@ window.base.userProfileController = (() => {
     };
 
     const controller = {
-        renderAlertBoxDeleteAccount: (element, title, message, type) => {
-            ;
-        },
         deleteUser: () => {
             element = document.getElementById('user-profile-alert-box');
             element.innerHTML = `<div class="alert alert-danger" role="alert">\n
@@ -56,7 +53,7 @@ window.base.userProfileController = (() => {
             document.getElementById('delete-account-confirm').onclick = () => {
                  window.base.rest.deleteUser(model.user.userId)
                 .then(window.base.rest.logout())
-                .then(() => window.location.replace('/')) 
+                .then(() => window.location.replace('/'));
             };
         },
         submitUser: submitEvent => {
