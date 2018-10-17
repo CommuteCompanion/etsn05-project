@@ -15,7 +15,7 @@ window.base.rest = (() => {
         this.phoneNumber = json.phoneNumber;
         this.gender = json.gender;
         this.dateOfBirth = json.dateOfBirth;
-        this.drivingLicence = json.drivingLicence;
+        this.drivingLicense = json.drivingLicense;
         this.ratingTotalScore = json.ratingTotalScore;
         this.numberOfRatings = json.numberOfRatings;
         this.warning = json.warning;

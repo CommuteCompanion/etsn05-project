@@ -15,13 +15,13 @@ public class User implements Principal {
     private String phoneNumber;
     private final int gender;
     private final long dateOfBirth;
-    private final Boolean drivingLicence;
+    private final Boolean drivingLicense;
     private final int ratingTotalScore;
     private final int numberOfRatings;
     private final int warning;
 
     public User(int userId, Role role, String email, String firstName, String lastName, String phoneNumber,
-			int gender, long dateOfBirth, Boolean drivingLicence, int ratingTotalScore,
+			int gender, long dateOfBirth, Boolean drivingLicense, int ratingTotalScore,
 			int numberOfRatings, int warning) {
 		this.userId = userId;
 		this.role = role;
@@ -31,7 +31,7 @@ public class User implements Principal {
 		this.phoneNumber = phoneNumber;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
-		this.drivingLicence = drivingLicence;
+		this.drivingLicense = drivingLicense;
 		this.ratingTotalScore = ratingTotalScore;
 		this.numberOfRatings = numberOfRatings;
 		this.warning = warning;
@@ -90,8 +90,8 @@ public class User implements Principal {
 		return dateOfBirth;
 	}
 
-	public Boolean getDrivingLicence() {
-		return drivingLicence;
+	public Boolean getDrivingLicense() {
+		return drivingLicense;
 	}
 
 	public int getRatingTotalScore() {
