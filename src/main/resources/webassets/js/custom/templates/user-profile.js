@@ -17,7 +17,6 @@ window.base.userProfileController = (() => {
             model.user = u;
             return u;
         }).then(() => {
-            console.log(model.user);
             document.getElementById('set-email').value = model.user.email;
             document.getElementById('set-firstname').value = model.user.firstName;
             document.getElementById('set-lastname').value = model.user.lastName;
