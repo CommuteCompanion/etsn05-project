@@ -52,13 +52,24 @@ public class MailHandler {
     }
 
     /**
-     * Send an email to the driver for the last passenger added
+     * Send an email to the driver for the last passenger requested to join a drive
      *
      * @param driveWrap DriveWrap DTO object
      */
-	public void notifyDriverNewPassengerOnTrip(DriveWrap driveWrap) throws IOException {
+    public void notifyDriverNewPassengerRequested(DriveWrap driveWrap) throws IOException {
 	    sendMail(new CustomEmail(driveWrap,EmailType.NEW_PASSENGER_ON_TRIP).getEmail());
     }
+
+    /**
+     * Send an email, containing phone number and email, to the driver that the last passenger has been accepted
+     *
+     * @param driveWrap DriveWrap DTO object
+     */
+    public void notifyDriverNewPassengerAccepted(DriveWrap driveWrap) throws IOException {
+        sendMail(new CustomEmail(driveWrap, EmailType.NEW_PASSENGER_ON_TRIP_DATA).getEmail());
+    }
+
+
 
     /**
      * Send an email to a specified user
