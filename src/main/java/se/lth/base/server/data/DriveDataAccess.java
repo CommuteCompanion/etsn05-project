@@ -1,8 +1,6 @@
 package se.lth.base.server.data;
 
 import se.lth.base.server.database.DataAccess;
-import se.lth.base.server.database.DataAccessException;
-import se.lth.base.server.database.ErrorType;
 import se.lth.base.server.database.Mapper;
 
 import java.sql.ResultSet;
@@ -17,7 +15,18 @@ import java.util.List;
  *g
  */
 public class DriveDataAccess extends DataAccess<Drive> {
-	
+
+    public DriveDataAccess(String driverUrl) {
+        super(driverUrl, new DriveMapper());
+    }
+
+    /**
+     * Add a new drive to the system.
+     *
+     * @param drive containing information about start location, stop location, departure time, etc.
+     * @return a new Drive object including a unique driveId.
+     */
+
     public Drive addDrive(Drive drive) {
         String start = drive.getStart();
         String stop = drive.getStop();
@@ -43,10 +52,12 @@ public class DriveDataAccess extends DataAccess<Drive> {
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets);
     }
 
-    public DriveDataAccess(String driverUrl) {
-        super(driverUrl, new DriveMapper());
-    }
-    
+    /**
+     * Updates a drive with new information
+     *
+     * @param drive containing information about a drive e.g. driveId, start, stop, etc.
+     * @return an updated drive.
+     */
     public Drive updateDrive(Drive drive) {
 	    int driveId = drive.getDriveId();
         String start = drive.getStart();
@@ -71,15 +82,27 @@ public class DriveDataAccess extends DataAccess<Drive> {
     	return getDrive(driveId);
     }
 
+    /**
+     * Gets a drive from the system
+     *
+     * @param driveId the unique Id of a drive
+     * @return the drive with driveId
+     */
     public Drive getDrive(int driveId) {
         return queryFirst("SELECT drive_id, start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive WHERE drive_id = ?",
                 driveId);
     }
 
+    /**
+     * @return a list of all drives in the system.
+     */
     public List<Drive> getDrives() {
         return query("SELECT drive_id, start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets FROM drive");
     }
 
+    /**
+     * @return a list of all reported drives in the system.
+     */
     public List<Drive> getReportedDrives() {
         return query("SELECT * FROM drive INNER JOIN drive_report ON drive.drive_id = drive_report.drive_id");
     }
@@ -105,10 +128,20 @@ public class DriveDataAccess extends DataAccess<Drive> {
         }
     }
 
+    /**
+     * @param userId the unique Id of a user.
+     * @returns a list of all the drives for a user.
+     */
     public List<Drive> getDrivesForUser(int userId) {
         return query("SELECT * FROM drive INNER JOIN drive_user ON drive.drive_id = drive_user.drive_id WHERE user_id = ? ", userId);
     }
 
+    /**
+     * Deletes a drive
+     *
+     * @param driveId the unique Id of a drive.
+     * @return true if the drive was deleted, otherwise false.
+     */
     public boolean deleteDrive(int driveId) {
         return execute("DELETE FROM drive WHERE drive_id = ?", driveId) > 0;
     }
