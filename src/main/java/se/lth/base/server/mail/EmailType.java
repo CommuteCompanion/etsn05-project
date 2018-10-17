@@ -3,6 +3,7 @@ package se.lth.base.server.mail;
 public enum EmailType {
     WELCOME,
     NEW_PASSENGER_ON_TRIP,
+    NEW_PASSENGER_ON_TRIP_DATA,
     BOOKING_CONFIRMED,
     RATING,
     FILTER_MATCH,
