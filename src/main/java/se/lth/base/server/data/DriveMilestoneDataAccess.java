@@ -23,8 +23,8 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
     /**
      * Adds a new milestone to the system.
      *
-     * @param driveId       the Id of the drive.
-     * @param milestone     the name of the milestone.
+     * @param driveId the Id of the drive.
+     * @param milestone the name of the milestone.
      * @param departureTime the time of departure from the milestone.
      * @return new DriveMileStone with a milestoneId
      */
@@ -71,7 +71,7 @@ public class DriveMilestoneDataAccess extends DataAccess<DriveMilestone> {
     public boolean deleteMilestone(int milestoneId) {
         return execute("DELETE FROM drive_milestone WHERE milestone_id = ?", milestoneId) > 0;
     }
-    
+
     private static final class MilestoneMapper implements Mapper<DriveMilestone> {
         @Override
         public DriveMilestone map(ResultSet resultSet) throws SQLException {
