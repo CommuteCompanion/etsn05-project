@@ -4,8 +4,8 @@
  */
 describe('mainController', function() {
     const none = new base.User({email: '-', role: 'NONE'});
-    const test = new base.User({email: 'test@lu.se', firstName: 'Test', role: 'USER'});
-    const admin = new base.User({email: 'admin@lu.se', role: 'ADMIN'});
+    const test = new base.User({email: 'commutecompaniontest@gmail.com', firstName: 'Test', role: 'USER'});
+    const admin = new base.User({email: 'admin@commutecompanion.se', role: 'ADMIN'});
 
     const r1 = jasmine.createSpyObj('r1', ['load']);
     const r2 = jasmine.createSpyObj('r2', ['load']);
