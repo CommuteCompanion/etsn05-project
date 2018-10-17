@@ -7,13 +7,24 @@ window.base.userProfileController = (() => {
     };
 
     const view = {
+        pad (number) {
+            if (number < 10) {
+              return '0' + number;
+            }
+            return number;
+          },
         render: () => window.base.rest.getUser(model.userId).then(u => {
             model.user = u;
             return u;
         }).then(() => {
+            console.log(model.user);
             document.getElementById('set-email').value = model.user.email;
             document.getElementById('set-firstname').value = model.user.firstName;
             document.getElementById('set-lastname').value = model.user.lastName;
+            document.getElementById('set-phone-number').value = model.user.phoneNumber;
+            var birthDate = new Date(model.user.dateOfBirth);
+            document.getElementById('set-date-of-birth').value 
+                = birthDate.getUTCFullYear() + '-' + view.pad(birthDate.getUTCMonth() + 1 ) + '-' + view.pad(birthDate.getUTCDay());
             if (model.user.gender === 1) {
                 document.getElementById('set-female').checked = true;
             } else if (model.user.gender === 0) {
@@ -44,6 +55,8 @@ window.base.userProfileController = (() => {
             const email = document.getElementById('set-email').value;
             const firstName = document.getElementById('set-firstname').value;
             const lastName = document.getElementById('set-lastname').value;
+            //const phoneNumber = document.getElementById('set-phone-number').value;
+            //const birthDate = document.getElementById('set-date-of-birth').value;
             if(document.getElementById('set-male').checked) {
                 gender = 0;
             } else if (document.getElementById('set-female').checked) {
@@ -58,6 +71,8 @@ window.base.userProfileController = (() => {
             model.user.lastName = lastName;
             model.user.gender = gender;
             model.user.drivingLicence = drivingLicence;
+            model.user.phoneNumber = phoneNumber;
+            model.user.dateOfBirth = birthDate;
 
             const password = document.getElementById('set-password').value;
             const repeatPassword = document.getElementById('set-password-confirm').value;
