@@ -113,7 +113,7 @@ public class UserResourceTest extends BaseResourceTest {
 
     @Test
     public void testCreateUser() {
-        Credentials newCredentials = new Credentials("pelle@lu.se", "passphrase123", Role.USER, TEST);
+        Credentials newCredentials = new Credentials("pelle@commutecompanion.se", "passphrase123", Role.USER, TEST);
         User newUser = target("user")
                 .request()
                 .post(Entity.json(newCredentials), User.class);
@@ -139,7 +139,7 @@ public class UserResourceTest extends BaseResourceTest {
     @Test(expected = ForbiddenException.class)
     public void deleteUserAsUser() {
         login(ADMIN_CREDENTIALS);
-        Credentials newCredentials = new Credentials("pelle@lu.se", "passphrase123", Role.USER, TEST);
+        Credentials newCredentials = new Credentials("pelle@commutecompanion.se", "passphrase123", Role.USER, TEST);
         User newUser = target("user")
                 .request()
                 .post(Entity.json(newCredentials), User.class);
@@ -225,7 +225,7 @@ public class UserResourceTest extends BaseResourceTest {
 
     @Test(expected = NotFoundException.class)
     public void updateMissing() {
-        Credentials TEST_CREDENTIALS_2 = new Credentials("test@lu.se", "password123", Role.USER, TEST);
+        Credentials TEST_CREDENTIALS_2 = new Credentials("commutecompaniontest@gmail.com", "password123", Role.USER, TEST);
         login(ADMIN_CREDENTIALS);
         target("user")
                 .path(Integer.toString(-1))
@@ -246,7 +246,7 @@ public class UserResourceTest extends BaseResourceTest {
     @Test
     public void updateUser() {
         login(ADMIN_CREDENTIALS);
-        Credentials newTest = new Credentials("test2@lu.se", null, Role.ADMIN, TEST);
+        Credentials newTest = new Credentials("test2@commutecompanion.se", null, Role.ADMIN, TEST);
         User user = target("user")
                 .path(Integer.toString(TEST.getId()))
                 .request()
