@@ -2,6 +2,7 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
+import se.lth.base.server.database.DataAccessException;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -63,9 +64,37 @@ public class DriveResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     @RolesAllowed(Role.Names.USER)
-    public Drive putDrive(@PathParam("driveId") int driveId, Drive drive) {
-        if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver())
-            return driveDao.updateDrive(drive);
+    public DriveWrap putDrive(@PathParam("driveId") int driveId, DriveWrap driveWrap) {
+        if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+        	Drive drive = driveDao.updateDrive(driveWrap.getDrive());
+        	for(DriveMilestone m : driveWrap.getMilestones()) {
+				try {
+					driveMilestoneDao.getMilestone(m.getMilestoneId());
+					driveMilestoneDao.updateMilestone(m.getMilestoneId(), m.getMilestone(), m.getDepartureTime());
+				} catch (DataAccessException e) {
+					driveMilestoneDao.addMilestone(driveId, m.getMilestone(), m.getDepartureTime());
+				}
+        	}
+        	for(DriveUser u : driveWrap.getUsers()) {
+				try {
+					driveUserDao.getDriveUser(driveId, u.getUserId());
+					driveUserDao.updateDriveUser(driveId, u.getUserId(), u.getStart(), u.getStop(), u.isDriver(), u.isAccepted(), u.hasRated());
+				} catch (DataAccessException e) {
+					driveUserDao.addDriveUser(driveId, u.getUserId(), u.getStart(), u.getStop(), u.isDriver(), u.isAccepted(), u.hasRated());
+				}
+        	}
+        	for(DriveReport r : driveWrap.getReports()) {
+        		try {
+        			driveReportDao.getDriveReport(r.getReportId());
+        			driveReportDao.updateDriveReport(r);
+        		} catch (DataAccessException e) {
+        			driveReportDao.addDriveReport(driveId, r.getReportedByUserId(), r.getReportMessage());
+        		}
+        	}
+        	
+        	
+        	return new DriveWrap(drive, driveWrap.getMilestones(), driveWrap.getUsers(), driveWrap.getReports());
+        }
 
         throw new WebApplicationException("Only driver allowed to update drive", Status.UNAUTHORIZED);
     }

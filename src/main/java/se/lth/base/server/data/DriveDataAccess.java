@@ -67,7 +67,6 @@ public class DriveDataAccess extends DataAccess<Drive> {
         execute("UPDATE drive SET start = ?, stop = ?, departure_time = ?, arrival_time = ?, comment = ?, car_brand = ?, car_model = ?, car_color = ?, car_license_plate = ?, car_number_of_seats = ?, opt_luggage_size = ?, opt_winter_tires = ?, opt_bicycle = ?, opt_pets = ? WHERE drive_id = ?",
                 start, stop, new Timestamp(departureTime), new Timestamp(arrivalTime), comment, carBrand, carModel, carColor, carLicensePlate,
                 carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets, driveId);
-
     	return getDrive(driveId);
     }
 

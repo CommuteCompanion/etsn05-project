@@ -1,7 +1,5 @@
 package se.lth.base.server.data;
 
-import java.sql.Timestamp;
-
 /**
  * Data class for a drive milestone
  *
