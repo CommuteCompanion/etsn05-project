@@ -135,11 +135,15 @@ public class DriveResourceTest extends BaseResourceTest {
 		
 		int driveId = actual.getDrive().getDriveId();
 		drive = new Drive(driveId, "A", "B", departureTime, arrivalTime, "Comment", "Audi", "Q8", "White Walker White", "ABC123", 4, 1, false, false, false);
-		Drive updatedDrive = target("drive")
+		ArrayList<DriveMilestone> milestones= new ArrayList<DriveMilestone>();
+		milestones.add(new DriveMilestone(0, driveId, "C", arrivalTime));
+		DriveWrap driveWrap = new DriveWrap(drive, milestones, new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		DriveWrap updatedDrive = target("drive")
 				.path(Integer.toString(driveId))
 				.request()
-				.put(Entity.json(drive), Drive.class);
-		assertEquals(updatedDrive.getCarColor(), "White Walker White");
+				.put(Entity.json(driveWrap), DriveWrap.class);
+		assertEquals("White Walker White", updatedDrive.getDrive().getCarColor());
+		assertEquals("C", updatedDrive.getMilestones().get(0).getMilestone());
 	}
 	
 	@Test(expected = WebApplicationException.class)
