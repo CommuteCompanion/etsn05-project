@@ -14,6 +14,7 @@ window.base.createDriveController = (() => {
         }).then(u => {
             window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
+                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     if(document.getElementById('passenger-header') != null){
@@ -93,7 +94,7 @@ window.base.createDriveController = (() => {
             //Get passengers for drive
             const nbrPassengers = model.driveWrap.users.length;
             for(var i = 1; i < nbrPassengers; i++) {
-                if (model.driveWrap.users[i].accepted === true) {
+                if (model.driveWrap.users[i].accepted === true && model.theId.id != undefined) {
                     const userId = model.driveWrap.users[i].userId;
                     const nameCol = document.createElement('div');
                     const nameText = document.createElement('p');
@@ -121,7 +122,7 @@ window.base.createDriveController = (() => {
                     removeCol.append(removeBtn);
                     document.getElementById('passenger-row').append(nameCol);
                     document.getElementById('passenger-row').append(removeCol);
-                } else {
+                } else if (model.driveWrap.users[i].accepted === false && model.theId.id != undefined){
                     const userId = model.driveWrap.users[i].userId;
                     const nameCol = document.createElement('div');
                     const nameText = document.createElement('p');
@@ -218,15 +219,30 @@ window.base.createDriveController = (() => {
             const start = document.getElementById('set-from').value;
             const stop = document.getElementById('set-to').value;
             const date = document.getElementById('set-date').value;
+            console.log(date);
             const arrivalValue = document.getElementById('set-time-arrival').value;
-            const arrivalDate = new Date(date + "T" + arrivalValue + ":00+0200");
+            let arrivalDate;
+            if (model.theId.id === undefined) {
+                arrivalDate = new Date(date + "T" + arrivalValue + ":00+0200");
+            } else {
+                arrivalDate = new Date(date + "T" + arrivalValue + "+0200");
+            }
             const arrivalTime = arrivalDate.getTime();
+            console.log(arrivalValue);
             const comment = document.getElementById('set-comment').value;
             const carBrand = document.getElementById('set-brand').value;
             const carModel = document.getElementById('set-model').value;
             const departureValue = document.getElementById('set-time-leave').value;
-            const departureDate = new Date(date + "T" + departureValue + ":00+0200");
+            let departureDate;
+            if (model.theId.id === undefined) {
+                departureDate = new Date(date + "T" + departureValue + ":00+0200");
+            } else {
+                departureDate = new Date(date + "T" + departureValue + "+0200");
+            }
             const departureTime = departureDate.getTime();
+            console.log(departureValue);
+            console.log(date + "T" + departureValue + ":00+0200");
+            console.log(departureTime);
             const carColor = document.getElementById('set-color').value;
             const carLicensePlate = document.getElementById('set-licence').value;
             const carNumberOfSeats = document.getElementById('set-seats').value;
@@ -249,18 +265,24 @@ window.base.createDriveController = (() => {
                 optPets = false;
             };
 
-            const driveId = 0;
+            let driveId;
+            if (model.theId.id === undefined){
+                driveId = 0;
+            } else {
+                driveId = model.theId.id;
+            }
 
             const drive = {driveId, start, stop, departureTime, arrivalTime, comment, carBrand, carModel, carColor, carLicensePlate, carNumberOfSeats, optLuggageSize, optWinterTires, optBicycle, optPets};
 
             const milestones = [];
             let driveMilestone;
-
+            
             for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
                 const milestoneId = i;
                 const milestone = document.getElementById('set-stop-' + i).value;
                 driveMilestone = {milestoneId, driveId, milestone, departureTime};
                 milestones.push(driveMilestone);
+                console.log(milestones);
             }
 
             const userId = model.user.userId;
@@ -287,12 +309,14 @@ window.base.createDriveController = (() => {
                     alert('Drive has been created');
                 });
             } else {
-                controller.updateDrive(drive);
+                controller.updateDrive(driveWrap.drive);
             }
         },
 
         updateDrive: (drive) => {
-            window.base.rest.putDrive(model.theId.id, drive)
+            console.log(drive);
+            window.base.rest.putDrive(model.theId.id, drive);
+            alert('Drive has been updated');
         },
 
         deleteDrive: () => window.base.rest.deleteDrive(model.driveWrap.drive.driveId)

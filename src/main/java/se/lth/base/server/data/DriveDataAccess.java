@@ -48,6 +48,7 @@ public class DriveDataAccess extends DataAccess<Drive> {
     }
     
     public Drive updateDrive(Drive drive) {
+    	System.out.println(drive.getStop());
 	    int driveId = drive.getDriveId();
         String start = drive.getStart();
         String stop = drive.getStop();
