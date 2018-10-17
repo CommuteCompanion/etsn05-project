@@ -148,7 +148,7 @@ window.base.createDriveController = (() => {
                         removeBtn.onclick = (function (callback) {
                             model.driveWrap.users[i].accepted = true;
                             removeBtn.className = 'btn btn-danger w-100';
-                            controller.updateDrive(model.driveWrap.drive);
+                            controller.updateDrive(model.driveWrap);
                             view.render(model.theId.id);
                         });
                     })(i);
@@ -288,7 +288,7 @@ window.base.createDriveController = (() => {
             const driver = true;
             const accepted = true;
             const rated = true;
-            const driveUser = {driveId, userId, stop, accepted, rated};
+            const driveUser = {driveId, userId, start, stop, accepted, rated};
             const users = [driveUser];
 
             const reports = [];
@@ -305,16 +305,29 @@ window.base.createDriveController = (() => {
                     }
                 }).then(() => {
                     view.render();
-                    alert('Drive has been created');
+                    const element = document.getElementById('alert-row');
+                    const title = 'Success!';
+                    const msg = 'Your drive has been created.';
+                    const type = 'primary';           
+                    controller.renderAlertBox(element, title, msg, type);
                 });
             } else {
-                controller.updateDrive(driveWrap.drive);
+                console.log(driveWrap);
+                controller.updateDrive(driveWrap);
             }
+        },
+
+        renderAlertBox: (element, title, message, type) => {
+            element.innerHTML = `<div class="alert alert-${type}" role="alert">\n                    <h5 class="alert-heading">${title}</h5>\n                    <p>${message}</p>\n                </div>`;
         },
 
         updateDrive: (drive) => {
             window.base.rest.putDrive(model.theId.id, drive);
-            alert('Drive has been updated');
+            const element = document.getElementById('alert-row');
+            const title = 'Success!';
+            const msg = 'Your drive has been updated.';
+            const type = 'primary';           
+            controller.renderAlertBox(element, title, msg, type);
         },
 
         deleteDrive: () => window.base.rest.deleteDrive(model.driveWrap.drive.driveId)
