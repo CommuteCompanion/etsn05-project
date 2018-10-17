@@ -14,7 +14,6 @@ window.base.createDriveController = (() => {
         }).then(u => {
             window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
-                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     if(document.getElementById('passenger-header') != null){
@@ -219,7 +218,6 @@ window.base.createDriveController = (() => {
             const start = document.getElementById('set-from').value;
             const stop = document.getElementById('set-to').value;
             const date = document.getElementById('set-date').value;
-            console.log(date);
             const arrivalValue = document.getElementById('set-time-arrival').value;
             let arrivalDate;
             if (model.theId.id === undefined) {
@@ -228,7 +226,6 @@ window.base.createDriveController = (() => {
                 arrivalDate = new Date(date + "T" + arrivalValue + "+0200");
             }
             const arrivalTime = arrivalDate.getTime();
-            console.log(arrivalValue);
             const comment = document.getElementById('set-comment').value;
             const carBrand = document.getElementById('set-brand').value;
             const carModel = document.getElementById('set-model').value;
@@ -240,9 +237,6 @@ window.base.createDriveController = (() => {
                 departureDate = new Date(date + "T" + departureValue + "+0200");
             }
             const departureTime = departureDate.getTime();
-            console.log(departureValue);
-            console.log(date + "T" + departureValue + ":00+0200");
-            console.log(departureTime);
             const carColor = document.getElementById('set-color').value;
             const carLicensePlate = document.getElementById('set-licence').value;
             const carNumberOfSeats = document.getElementById('set-seats').value;
@@ -276,13 +270,12 @@ window.base.createDriveController = (() => {
 
             const milestones = [];
             let driveMilestone;
-            
+
             for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
                 const milestoneId = i;
                 const milestone = document.getElementById('set-stop-' + i).value;
                 driveMilestone = {milestoneId, driveId, milestone, departureTime};
                 milestones.push(driveMilestone);
-                console.log(milestones);
             }
 
             const userId = model.user.userId;
@@ -298,12 +291,8 @@ window.base.createDriveController = (() => {
 
             if (model.theId.id === undefined){
                 window.base.rest.addDrive(driveWrap).then(d => {
-                    if (d.error) {
-                        alert(d.error);
-                    } else {
-                        model.driveWrap = d;
-                        model.theId.id = model.driveWrap.drive.driveId;
-                    }
+                    model.driveWrap = d;
+                    model.theId.id = model.driveWrap.drive.driveId;
                 }).then(() => {
                     view.render(model.theId.id);
                     alert('Drive has been created');
@@ -314,7 +303,6 @@ window.base.createDriveController = (() => {
         },
 
         updateDrive: (drive) => {
-            console.log(drive);
             window.base.rest.putDrive(model.theId.id, drive);
             alert('Drive has been updated');
         },
