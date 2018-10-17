@@ -111,6 +111,14 @@ window.base.rest = (() => {
             headers: jsonHeader
         };
     };
+    
+    const createJsonPut = body => {
+        return {
+            method: 'PUT',
+            body: JSON.stringify(body),
+            headers: jsonHeader
+        };
+    };
 
     return {
         getReportedDrives: () => baseFetch('/rest/drive/all-reports')
@@ -174,9 +182,9 @@ window.base.rest = (() => {
             .then(response => response.json())
             .then(d => objOrError(d, DriveWrap)),
 
-        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, createJsonPost(drive))
+        putDrive: (id, drive) => baseFetch('/rest/drive/' + id, createJsonPut(drive))
             .then(response => response.json())
-            .then(d => objOrError(d, DriveWrap)),
+            .then(d => objOrError(d, Drive)),
 
         getDrivesForUser: id => baseFetch('/rest/drive/user/' + id)
             .then(response => response.json())
