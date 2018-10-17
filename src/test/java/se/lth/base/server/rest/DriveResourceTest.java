@@ -171,14 +171,23 @@ public class DriveResourceTest extends BaseResourceTest {
 				.request()
 				.post(Entity.json(newDriveWrap), DriveWrap.class);
 		int driveId = newDriveWrap.getDrive().getDriveId();
+        logout();
+        login(ADMIN_CREDENTIALS);
+        DriveUser driveUser = new DriveUser(driveId, ADMIN.getId(), "A", "B", false, false, false);
+        driveUser = target("drive")
+                .path(driveId + "/user")
+                .request()
+                .post(Entity.json(driveUser), DriveUser.class);
+        logout();
+        login(TEST_CREDENTIALS);
 		target("drive")
 				.path(Integer.toString(driveId))
 				.request()
 				.delete(Void.class);
 		target("drive")
-        .path(Integer.toString(driveId))
-        .request()
-        .get(DriveWrap.class);
+                .path(Integer.toString(driveId))
+                .request()
+                .get(DriveWrap.class);
     }
 
     @Test
