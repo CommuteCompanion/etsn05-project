@@ -319,8 +319,6 @@ window.base.createDriveController = (() => {
         },
 
         loadDrivePage: () => {
-            console.log(model.searchQuery);
-            console.log('Drive Page');
             fetch('templates/drive.html')
                 .then(response => response.text())
                 .then(tabHtml => {
