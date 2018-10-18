@@ -46,7 +46,11 @@ public class DriveResource {
 
         // Add all milestones
         for (DriveMilestone m : milestones) {
+          if (milestones.size() < 4) {
             driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime());
+          } else {
+              throw new WebApplicationException("You are only allowed to add 4 milestones to your drive", Status.BAD_REQUEST);
+          }
         }
 
         // Add driver to list of users
