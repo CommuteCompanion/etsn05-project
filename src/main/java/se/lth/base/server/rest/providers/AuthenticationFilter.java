@@ -14,14 +14,13 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.ext.Provider;
-import java.io.IOException;
 import java.util.UUID;
 
 /**
  * Adds the Session to the current request. This is done by extracting the token in the users cookie and
  * checking the database for the cookie.
  *
- * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ * @author Group 1 ETSN05 2018
  */
 @Provider
 @Priority(Priorities.AUTHENTICATION)
