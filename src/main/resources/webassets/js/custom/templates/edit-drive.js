@@ -165,49 +165,79 @@ window.base.editDriveController = (() => {
             if (typeof(text) == 'object'){
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
-                const col = document.createElement('div')
-                const colMd = document.createElement('div');
-                col.className = 'col';
-                colMd.className = 'col-md';
-                stopDiv.className = 'row mt-2 stop-div';
+                const colName = document.createElement('div');
+                const colTime = document.createElement('div');
+                const colMdName = document.createElement('div');
+                const colMdTime = document.createElement('div');
+                const inputTime = document.createElement('input');
+                const inputName = document.createElement('input');
+                const labelName = document.createElement('label');
+                const labelTime = document.createElement('label');
+                colName.className = 'col';
+                colMdName.className = 'col-md';
+                colTime.className = 'col';
+                colMdTime.className = 'col-md';
+                stopDiv.className = 'row mt-4 stop-div';
                 stopDiv.id = 'stop-' + (counter + 1);
-                const input = document.createElement('input');
-                const label = document.createElement('label');
-                label.innerHTML = 'Stop ' + (counter + 1);
-                input.type = 'text';
-                input.placeholder = 'Enter the city where you will stop...';
-                input.id = 'set-stop-' + (counter+1);
-                input.className = 'form-control';
-                input.pattern = "[a-zA-Z-æøåÆØÅ]{1,20}";
-                colMd.append(label);
-                colMd.appendChild(input);
-                col.append(colMd);
-                stopDiv.append(col);
+                labelName.innerHTML = 'Name of stop ' + (counter + 1);
+                labelName.for = 'set-stop-name-' + (counter+1);
+                labelTime.innerHTML = 'Departure time for stop ' + (counter + 1);
+                labelTime.for = 'set-stop-time-' + (counter+1);
+                inputName.type = 'text';
+                inputName.placeholder = 'Enter the city where you will stop...';
+                inputName.id = 'set-stop-name-' + (counter+1);
+                inputName.className = 'form-control';
+                inputTime.type = 'time';
+                inputTime.id = 'set-stop-time-' + (counter+1);
+                inputTime.className = 'form-control';
+                colMdTime.append(labelTime);
+                colMdName.append(labelName);
+                colMdTime.appendChild(inputTime)
+                colMdName.appendChild(inputName);
+                colTime.append(colMdTime);
+                colName.append(colMdName);
+                stopDiv.append(colName);
+                stopDiv.append(colTime);
                 document.getElementById('stop-row').append(stopDiv);
-                input.value = '';
+                inputName.value = '';
             } else {
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
-                const col = document.createElement('div')
-                const colMd = document.createElement('div');
-                col.className = 'col';
-                colMd.className = 'col-md';
-                stopDiv.className = 'row mt-2 stop-div';
+                const colName = document.createElement('div');
+                const colTime = document.createElement('div');
+                const colMdName = document.createElement('div');
+                const colMdTime = document.createElement('div');
+                const inputTime = document.createElement('input');
+                const inputName = document.createElement('input');
+                const labelName = document.createElement('label');
+                const labelTime = document.createElement('label');
+                colName.className = 'col';
+                colMdName.className = 'col-md';
+                colTime.className = 'col';
+                colMdTime.className = 'col-md';
+                stopDiv.className = 'row mt-4 stop-div';
                 stopDiv.id = 'stop-' + (counter + 1);
-                const input = document.createElement('input');
-                const label = document.createElement('label');
-                label.innerHTML = 'Stop ' + (counter + 1);
-                input.type = 'text';
-                input.placeholder = 'Enter the city where you will stop...';
-                input.id = 'set-stop-' + (counter+1);
-                input.pattern = "[a-zA-Z-æøåÆØÅ]{1,20}";
-                input.className = 'form-control';
-                colMd.append(label);
-                colMd.appendChild(input);
-                col.append(colMd);
-                stopDiv.append(col);
+                labelName.innerHTML = 'Name of stop ' + (counter + 1);
+                labelName.for = 'set-stop-name-' + (counter+1);
+                labelTime.innerHTML = 'Departure time for stop ' + (counter + 1);
+                labelTime.for = 'set-stop-time-' + (counter+1);
+                inputName.type = 'text';
+                inputName.placeholder = 'Enter the city where you will stop...';
+                inputName.id = 'set-stop-name-' + (counter+1);
+                inputName.className = 'form-control';
+                inputTime.type = 'time';
+                inputTime.id = 'set-stop-time-' + (counter+1);
+                inputTime.className = 'form-control';
+                colMdTime.append(labelTime);
+                colMdName.append(labelName);
+                colMdTime.appendChild(inputTime)
+                colMdName.appendChild(inputName);
+                colTime.append(colMdTime);
+                colName.append(colMdName);
+                stopDiv.append(colName);
+                stopDiv.append(colTime);
                 document.getElementById('stop-row').append(stopDiv);
-                input.value = text;
+                inputName.value = text;
             }
         },
 
@@ -218,23 +248,23 @@ window.base.editDriveController = (() => {
             const start = document.getElementById('set-from').value;
             const stop = document.getElementById('set-to').value;
             const date = document.getElementById('set-date').value;
-            
+
             const arrivalValue = document.getElementById('set-time-arrival').value;
             const arrivalString = date + "T" + arrivalValue + ":+02:00";
             const arrivalSplit = arrivalString.split(/[^0-9]/);
             const arrivalDate = new Date (arrivalSplit[0],arrivalSplit[1]-1,arrivalSplit[2],arrivalSplit[3],arrivalSplit[4],arrivalSplit[5] );
             const arrivalTime = arrivalDate.getTime();
-            
+
             const comment = document.getElementById('set-comment').value;
             const carBrand = document.getElementById('set-brand').value;
             const carModel = document.getElementById('set-model').value;
-            
+
             const departureValue = document.getElementById('set-time-leave').value;
             const departureString = date + "T" + departureValue + ":+02:00";
             const departureSplit = departureString.split(/[^0-9]/);
             const departureDate = new Date (departureSplit[0],departureSplit[1]-1,departureSplit[2],departureSplit[3],departureSplit[4],departureSplit[5] );
             const departureTime = departureDate.getTime();
-            
+
             const carColor = document.getElementById('set-color').value;
             const carLicensePlate = document.getElementById('set-license').value;
             const carNumberOfSeats = document.getElementById('set-seats').value;
@@ -271,8 +301,10 @@ window.base.editDriveController = (() => {
 
             for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
                 const milestoneId = i;
-                const milestone = document.getElementById('set-stop-' + i).value;
-                driveMilestone = {milestoneId, driveId, milestone, departureTime};
+                const milestone = document.getElementById('set-stop-name-' + i).value;
+                const msDdepartureTime = document.getElementById('set-stop-time-' + i).value;
+                console.log(msDdepartureTime);
+                driveMilestone = {milestoneId, driveId, milestone, msDepartureTime};
                 milestones.push(driveMilestone);
             }
 
