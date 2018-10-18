@@ -41,14 +41,13 @@ public class DriveResource {
         // Add drive
         drive = driveDao.addDrive(drive);
 
-        List<DriveMilestone> returningMilestones = new ArrayList<>();
-
         // Add all milestones
-        for (DriveMilestone m : milestones)
-            returningMilestones.add(driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime()));
+        for (DriveMilestone m : milestones) {
+            driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime());
+        }
 
         // Add driver to list of users
-        List<DriveUser> users = new ArrayList<DriveUser>();
+        List<DriveUser> users = new ArrayList<>();
         users.add(driveUserDao.addDriveUser(drive.getDriveId(), user.getId(), drive.getStart(), drive.getStop(), IS_DRIVER, IS_ACCEPTED, !IS_RATED));
 
         // No reports yet
@@ -249,7 +248,7 @@ public class DriveResource {
      * @param stop    at what milestone the user will stop at
      * @return a list of drives associated with this user, conflicting with the entered drive
      */
-    private List<Drive> checkBookingOverlap(@PathParam("driveId") int driveId, @PathParam("start") String start, @PathParam("stop") String stop) {
+    private List<Drive> checkBookingOverlap(int driveId, String start, String stop) {
         Drive drive = driveDao.getDrive(driveId);
         List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(driveId);
         // Add drive start and stop as milestones to list

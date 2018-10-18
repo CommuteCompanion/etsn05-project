@@ -2,12 +2,9 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
-import se.lth.base.server.mail.MailHandler;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -22,19 +19,6 @@ public class SearchResource {
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
     private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-    private final MailHandler mailHandler = new MailHandler();
-    private final User user;
-
-    // A trip with departure time within interval 13.00-14.00 will match drive milestone with departure time 14.00
-    private final int SEARCH_MINUTES_MARGIN = 60;
-
-    public SearchResource(@Context ContainerRequestContext context) {
-        this.user = (User) context.getProperty(User.class.getSimpleName());
-    }
-
-    public SearchResource(User user) {
-        this.user = user;
-    }
 
     /**
      * This method lets a user search for drives by specifying search parameters such as trip start, stop and departure time
@@ -267,12 +251,14 @@ public class SearchResource {
     }
 
     private boolean checkDepartureTimeMatch(Timestamp departureTime, String startMilestone, List<DriveMilestone> driveMilestones) {
+        int searchMinutesMargin = 60;
+
         // Find the departure time of the milestone
         for (DriveMilestone driveMilestone : driveMilestones) {
             if (driveMilestone.getMilestone().toLowerCase().trim().equals(startMilestone.toLowerCase().trim())) {
                 Timestamp milestoneDepartureTime = new Timestamp(driveMilestone.getDepartureTime());
 
-                Timestamp timeMargin = new Timestamp(milestoneDepartureTime.getTime() - SEARCH_MINUTES_MARGIN * 60 * 1000);
+                Timestamp timeMargin = new Timestamp(milestoneDepartureTime.getTime() - searchMinutesMargin * 60 * 1000);
                 if ((timeMargin.before(departureTime) || timeMargin.equals(departureTime)) &&
                         (departureTime.before(milestoneDepartureTime) || departureTime.equals(milestoneDepartureTime))) {
                     return true;
@@ -286,12 +272,12 @@ public class SearchResource {
         private int startIndex;
         private int stopIndex;
 
-        public DriveUserInterval(String start, String stop, List<DriveMilestone> milestones) {
+        DriveUserInterval(String start, String stop, List<DriveMilestone> milestones) {
             startIndex = getIndexOfMilestone(start, milestones);
             stopIndex = getIndexOfMilestone(stop, milestones);
         }
 
-        private int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
+        int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
             for (int i = 0; i < milestones.size(); i++) {
                 if (milestones.get(i).getMilestone().toLowerCase().trim().equals(name.toLowerCase().trim())) {
                     return i;
@@ -300,11 +286,11 @@ public class SearchResource {
             return -1;
         }
 
-        public int getStartIndex() {
+        int getStartIndex() {
             return startIndex;
         }
 
-        public int getStopIndex() {
+        int getStopIndex() {
             return stopIndex;
         }
     }

@@ -21,9 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 @Path("user")
 public class UserResource {
-
     public static final String USER_TOKEN = "USER_TOKEN";
-
     private final ContainerRequestContext context;
     private final User user;
     private final Session session;
@@ -51,20 +49,6 @@ public class UserResource {
         Session newSession = userDao.authenticate(credentials);
         int maxAge = rememberMe ? (int) TimeUnit.DAYS.toSeconds(7) : NewCookie.DEFAULT_MAX_AGE;
         return Response.noContent().cookie(newCookie(newSession.getSessionId().toString(), maxAge, null)).build();
-    }
-
-    private NewCookie newCookie(String value, int maxAge, Date expiry) {
-        return new NewCookie(USER_TOKEN,
-                value,                                          // value
-                "/rest",                                        // path
-                context.getUriInfo().getBaseUri().getHost(),    // host
-                NewCookie.DEFAULT_VERSION,                      // version
-                "",                                             // comment
-                maxAge,                                         // max-age
-                expiry,                                         // expiry
-                false,                                          // secure
-                true);                                          // http-onle
-
     }
 
     @Path("logout")
@@ -161,5 +145,10 @@ public class UserResource {
         } else {
             throw new WebApplicationException("You are not permitted to delete this user", Response.Status.FORBIDDEN);
         }
+    }
+
+    private NewCookie newCookie(String value, int maxAge, Date expiry) {
+        return new NewCookie(USER_TOKEN, value,"/rest", context.getUriInfo().getBaseUri().getHost(),
+                NewCookie.DEFAULT_VERSION, "", maxAge, expiry, false, true);
     }
 }

@@ -18,7 +18,7 @@ import java.util.logging.Level;
  * This converts all Exceptions to HTTP responses for the REST API. It has special handling for WebApplicationException
  * and DataAccessException.
  *
- * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ * @author Group 1 ETSN05 2018
  */
 @Provider
 public class JsonExceptionMapper implements ExceptionMapper<Exception> {
