@@ -281,11 +281,11 @@ window.base.myCommutesController = (() => {
         },
 
         editDrive: driveId => {
-            fetch('templates/create-drive.html')
+            fetch('templates/edit-drive.html')
                 .then(response => response.text())
                 .then(tabHtml => {
                     document.getElementById('main-tab').innerHTML = tabHtml;
-                    window.base.createDriveController().loadWithUserId(driveId);
+                    window.base.editDriveController().loadWithUserId(driveId);
                 })
         },
 

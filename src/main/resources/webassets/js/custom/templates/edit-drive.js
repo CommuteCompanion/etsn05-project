@@ -14,6 +14,7 @@ window.base.editDriveController = (() => {
         }).then(u => {
             window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
+                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     if(document.getElementById('passenger-header') != null){
@@ -86,8 +87,9 @@ window.base.editDriveController = (() => {
                 document.getElementById('set-luggage').options[2].selected = true;
             }
             const stopMilestones = model.driveWrap.milestones;
+            console.log(stopMilestones);
             for(var i = 0; i < stopMilestones.length; i++){
-                controller.addStop(stopMilestones[i].milestone);
+                controller.addStop(stopMilestones[i].milestone, stopMilestones[i].departureTime);
             }
 
             //Get passengers for drive
@@ -161,7 +163,7 @@ window.base.editDriveController = (() => {
             }
         },
 
-        addStop: (text) => {
+        addStop: (text, deparTime) => {
             if (typeof(text) == 'object'){
                 const counter = document.querySelectorAll("#stop-row .stop-div").length;
                 const stopDiv = document.createElement('div');
@@ -187,8 +189,9 @@ window.base.editDriveController = (() => {
                 inputName.placeholder = 'Enter the city where you will stop...';
                 inputName.id = 'set-stop-name-' + (counter+1);
                 inputName.className = 'form-control';
-                inputTime.type = 'time';
+                inputTime.type = 'text';
                 inputTime.id = 'set-stop-time-' + (counter+1);
+                inputTime.placeholder = 'HH:MM';
                 inputTime.className = 'form-control';
                 colMdTime.append(labelTime);
                 colMdName.append(labelName);
@@ -225,8 +228,9 @@ window.base.editDriveController = (() => {
                 inputName.placeholder = 'Enter the city where you will stop...';
                 inputName.id = 'set-stop-name-' + (counter+1);
                 inputName.className = 'form-control';
-                inputTime.type = 'time';
+                inputTime.type = 'text';
                 inputTime.id = 'set-stop-time-' + (counter+1);
+                inputTime.placeholder = 'HH:MM';
                 inputTime.className = 'form-control';
                 colMdTime.append(labelTime);
                 colMdName.append(labelName);
@@ -237,7 +241,9 @@ window.base.editDriveController = (() => {
                 stopDiv.append(colName);
                 stopDiv.append(colTime);
                 document.getElementById('stop-row').append(stopDiv);
+                const depTime = new Date(deparTime);
                 inputName.value = text;
+                inputTime.value = depTime.toString().split(' ')[4];
             }
         },
 
@@ -302,9 +308,13 @@ window.base.editDriveController = (() => {
             for (var i = 1; i <= document.querySelectorAll("#stop-row .stop-div").length; i++) {
                 const milestoneId = i;
                 const milestone = document.getElementById('set-stop-name-' + i).value;
-                const msDdepartureTime = document.getElementById('set-stop-time-' + i).value;
-                console.log(msDdepartureTime);
-                driveMilestone = {milestoneId, driveId, milestone, msDepartureTime};
+                const stopValue = document.getElementById('set-stop-time-' + i).value;
+                const stopString = date + "T" + stopValue + ":+02:00";
+                const stopSplit = stopString.split(/[^0-9]/);
+                const stopDate = new Date (stopSplit[0],stopSplit[1]-1,stopSplit[2],stopSplit[3],stopSplit[4],stopSplit[5] );
+                const departureTime = stopDate.getTime();
+                console.log(departureTime);
+                driveMilestone = {milestoneId, driveId, milestone, departureTime};
                 milestones.push(driveMilestone);
             }
 
