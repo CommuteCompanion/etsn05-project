@@ -28,6 +28,8 @@ window.base.userProfileController = (() => {
                 document.getElementById('set-female').checked = true;
             } else if (model.user.gender === 0) {
                 document.getElementById('set-male').checked = true;
+            } else if(model.user.gender === 2) {
+                document.getElementById('set-other').checked = true;
             }
             if (model.user.drivingLicense === true) {
                 document.getElementById('set-license-true').checked = true;
@@ -48,7 +50,7 @@ window.base.userProfileController = (() => {
             element.innerHTML = `<div class="alert alert-danger" role="alert">\n
                                     <h5 class="alert-heading">WARNING</h5>\n
                                     <p>You are trying to delete your account. Once completed this actions can not be reversed!</p>\n
-                                    <button id="delete-account-confirm" type="button" class="w-100 btn btn-danger">Delete my account anyways</button>                
+                                    <button id="delete-account-confirm" type="button" class="w-100 btn btn-danger">Delete my account anyway</button>                
                                 </div>`
             document.getElementById('delete-account-confirm').onclick = () => {
                  window.base.rest.deleteUser(model.user.userId)
@@ -71,6 +73,8 @@ window.base.userProfileController = (() => {
                 gender = 0;
             } else if (document.getElementById('set-female').checked) {
                 gender = 1;
+            } else if(document.getElementById('set-other').checked) {
+                gender = 2;
             }
             if (document.getElementById('set-license-true').checked) {
                 drivingLicense = true;
