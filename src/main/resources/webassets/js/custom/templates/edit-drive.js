@@ -15,7 +15,6 @@ window.base.editDriveController = (() => {
         }).then(u => {
             window.base.rest.getDrivesForUser(model.user.userId).then(d => {
                 model.driveWraps = d;
-                console.log(d);
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     if(document.getElementById('passenger-header') != null){
@@ -88,7 +87,6 @@ window.base.editDriveController = (() => {
                 document.getElementById('set-luggage').options[2].selected = true;
             }
             const stopMilestones = model.driveWrap.milestones;
-            console.log(stopMilestones);
             for(var i = 0; i < stopMilestones.length; i++){
                 controller.addStop(stopMilestones[i].milestone, stopMilestones[i].departureTime);
             }
@@ -314,7 +312,6 @@ window.base.editDriveController = (() => {
                 const stopSplit = stopString.split(/[^0-9]/);
                 const stopDate = new Date (stopSplit[0],stopSplit[1]-1,stopSplit[2],stopSplit[3],stopSplit[4],stopSplit[5] );
                 const departureTime = stopDate.getTime();
-                console.log(departureTime);
                 driveMilestone = {milestoneId, driveId, milestone, departureTime};
                 milestones.push(driveMilestone);
             }
