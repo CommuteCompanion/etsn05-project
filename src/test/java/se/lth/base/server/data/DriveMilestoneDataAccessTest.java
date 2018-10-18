@@ -19,8 +19,8 @@ public class DriveMilestoneDataAccessTest extends BaseResourceTest {
 
     @Before
     public void createDrive() {
-        long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 13, 0, 0, 0).getTime();
+        long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         drive = new Drive(-1, "A", "C", departureTime, arrivalTime, "c", "x", "y", "z", "x1", 1, 1, false, false, false);
         drive = driveDao.addDrive(drive);
     }
@@ -33,7 +33,7 @@ public class DriveMilestoneDataAccessTest extends BaseResourceTest {
         Assert.assertEquals(0, driveMilestones.size());
 
         // Add a milestone to the drive
-        long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 30, 0, 0).getTime();
+        long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         driveMilestoneDao.addMilestone(drive.getDriveId(), "B", departureTime);
 
         // Check for non empty list and verify DriveMilestone attributes
@@ -45,7 +45,7 @@ public class DriveMilestoneDataAccessTest extends BaseResourceTest {
         Assert.assertEquals(departureTime, driveMilestone.getDepartureTime());
 
         // Update DriveMilestone and validate attributes
-        long newDepartureTime = new Timestamp(2018 - 1900, 10, 20, 12, 45, 0, 0).getTime();
+        long newDepartureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         driveMilestoneDao.updateMilestone(driveMilestone.getMilestoneId(), "B1", newDepartureTime);
         driveMilestones = driveMilestoneDao.getMilestonesForDrive(drive.getDriveId());
         Assert.assertEquals(1, driveMilestones.size());
@@ -67,7 +67,7 @@ public class DriveMilestoneDataAccessTest extends BaseResourceTest {
     // Tests getMilestone(int)
     public void getMilestone() {
         // Add a milestone to the drive
-        long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 30, 0, 0).getTime();
+        long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         DriveMilestone driveMilestone1 = driveMilestoneDao.addMilestone(drive.getDriveId(), "B", departureTime);
 
         DriveMilestone driveMilestone2 = driveMilestoneDao.getMilestone(driveMilestone1.getMilestoneId());

@@ -25,7 +25,7 @@ public class DriveResourceTest extends BaseResourceTest {
 	};
     
     private DriveWrap driveWrap;
-    int driveId;
+    private int driveId;
     
     @Before
     public void setup() {
@@ -33,7 +33,7 @@ public class DriveResourceTest extends BaseResourceTest {
     	long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         long arrivalTime = Timestamp.valueOf("2018-01-01 21:00:00").getTime();
         Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "Brand", "Model", "Color", "License Plate", 4, 1, false, false, false);
-        driveWrap = new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+        driveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		driveWrap = target("drive")
 				.request()
 				.post(Entity.json(driveWrap), DriveWrap.class);
@@ -57,7 +57,7 @@ public class DriveResourceTest extends BaseResourceTest {
                 .path("all")
                 .request()
                 .get(DRIVE_LIST);
-        assertTrue(drives.size() == 1);
+		assertEquals(1, drives.size());
     }
 
     @Test
@@ -95,7 +95,7 @@ public class DriveResourceTest extends BaseResourceTest {
     public void removeUserFromDrive() {
 		login(ADMIN_CREDENTIALS);
 		DriveUser driveUser = new DriveUser(driveId, ADMIN.getId(), "A", "B", false, false, false);
-		driveUser = target("drive")
+		target("drive")
 				.path(driveId + "/user")
 				.request()
 				.post(Entity.json(driveUser), DriveUser.class);
@@ -110,7 +110,7 @@ public class DriveResourceTest extends BaseResourceTest {
                 .request()
                 .get(DriveWrap.class);
         for(DriveUser du : driveWrap.getUsers()) {
-        	assertFalse(du.getUserId() == ADMIN.getId());
+			assertNotEquals(du.getUserId(), ADMIN.getId());
         }
     }    
 	@Test
@@ -119,7 +119,7 @@ public class DriveResourceTest extends BaseResourceTest {
 		long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         long arrivalTime = Timestamp.valueOf("2018-01-01 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
-		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")
 				.request()
 				.post(Entity.json(newDriveWrap), DriveWrap.class);
@@ -134,9 +134,9 @@ public class DriveResourceTest extends BaseResourceTest {
 		
 		int driveId = actual.getDrive().getDriveId();
 		drive = new Drive(driveId, "A", "B", departureTime, arrivalTime, "Comment", "Audi", "Q8", "White Walker White", "ABC123", 4, 1, false, false, false);
-		ArrayList<DriveMilestone> milestones= new ArrayList<DriveMilestone>();
+		ArrayList<DriveMilestone> milestones= new ArrayList<>();
 		milestones.add(new DriveMilestone(0, driveId, "C", arrivalTime));
-		DriveWrap driveWrap = new DriveWrap(drive, milestones, new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		DriveWrap driveWrap = new DriveWrap(drive, milestones, new ArrayList<>(), new ArrayList<>());
 		DriveWrap updatedDrive = target("drive")
 				.path(Integer.toString(driveId))
 				.request()
@@ -166,7 +166,7 @@ public class DriveResourceTest extends BaseResourceTest {
 		long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         long arrivalTime = Timestamp.valueOf("2018-01-01 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
-		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<DriveMilestone>(), new ArrayList<DriveUser>(), new ArrayList<DriveReport>());
+		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")
 				.request()
 				.post(Entity.json(newDriveWrap), DriveWrap.class);
@@ -174,7 +174,7 @@ public class DriveResourceTest extends BaseResourceTest {
         logout();
         login(ADMIN_CREDENTIALS);
         DriveUser driveUser = new DriveUser(driveId, ADMIN.getId(), "A", "B", false, false, false);
-        driveUser = target("drive")
+        target("drive")
                 .path(driveId + "/user")
                 .request()
                 .post(Entity.json(driveUser), DriveUser.class);
@@ -254,12 +254,12 @@ public class DriveResourceTest extends BaseResourceTest {
     public void rateUser() {
 		login(ADMIN_CREDENTIALS);
 		DriveUser driveUser = new DriveUser(driveId, ADMIN.getId(), "A", "B", false, false, false);
-		driveUser = target("drive")
+		target("drive")
 				.path(driveId + "/user")
 				.request()
 				.post(Entity.json(driveUser), DriveUser.class);
 		DriveRating rating = new DriveRating(TEST.getId(), 4);
-		List<DriveRating> ratings = new ArrayList<DriveRating>();
+		List<DriveRating> ratings = new ArrayList<>();
 		ratings.add(rating);
 		DriveRatingWrap ratingWrap = new DriveRatingWrap(TEST.getId(), driveId, ratings);
 		target("drive")

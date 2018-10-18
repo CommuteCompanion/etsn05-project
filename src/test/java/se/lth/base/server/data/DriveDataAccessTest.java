@@ -10,8 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Group 1 ETSN05 2018
@@ -58,9 +57,9 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
         assertEquals("m", drive2.getCarLicensePlate());
         assertEquals(3, drive2.getCarNumberOfSeats());
         assertEquals(2, drive2.getOptLuggageSize());
-        assertEquals(false, drive2.getOptWinterTires());
-        assertEquals(false, drive2.getOptBicycle());
-        assertEquals(false, drive2.getOptPets());
+        assertFalse(drive2.getOptWinterTires());
+        assertFalse(drive2.getOptBicycle());
+        assertFalse(drive2.getOptPets());
     }
 
     @Test
@@ -98,7 +97,7 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
     public void deleteDrive() {
         driveDao.deleteDrive(drive1Id);
         List<Drive> drives = driveDao.getDrives();
-        assertTrue(drives.size() == 1);
+        assertEquals(1, drives.size());
     }
 }
 

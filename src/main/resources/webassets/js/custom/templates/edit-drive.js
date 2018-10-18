@@ -5,7 +5,8 @@ window.base.editDriveController = (() => {
         driveWraps: {},
         driveWrap: {},
         user: {},
-        theId: {}
+        theId: {},
+        searchQuery: {}
     };
 
     const view = {
@@ -329,38 +330,45 @@ window.base.editDriveController = (() => {
 
             const driveWrap = {drive, milestones, users, reports};
 
+
             if (model.theId.id === undefined){
                 window.base.rest.addDrive(driveWrap).then(d => {
                     if (d.error) {
                         alert(d.error);
                     } else {
+                        model.searchQuery.driveId = d.drive.driveId;
+                        model.searchQuery.tripStart = d.drive.start;
+                        model.searchQuery.tripStop = d.drive.stop;
+                        model.searchQuery.tripStartTime = d.drive.departureTime;
                         model.driveWrap = d;
                         model.theId.id = model.driveWrap.drive.driveId;
                     }
                 }).then(() => {
-                    view.render();
-                    const element = document.getElementById('alert-row');
-                    const title = 'Success!';
-                    const msg = 'Your drive has been created.';
-                    const type = 'primary';           
-                    controller.renderAlertBox(element, title, msg, type);
+                    controller.loadDrivePage();
                 });
             } else {
                 controller.updateDrive(driveWrap);
             }
         },
 
-        renderAlertBox: (element, title, message, type) => {
-            element.innerHTML = `<div class="alert alert-${type}" role="alert">\n                    <h5 class="alert-heading">${title}</h5>\n                    <p>${message}</p>\n                </div>`;
+        loadDrivePage: () => {
+            fetch('templates/drive.html')
+                .then(response => response.text())
+                .then(tabHtml => {
+                document.getElementById('main-tab').innerHTML = tabHtml;
+                window.base.driveController().loadQuery(model.searchQuery);
+            });
         },
 
         updateDrive: (drive) => {
-            window.base.rest.putDrive(model.theId.id, drive);
-            const element = document.getElementById('alert-row');
-            const title = 'Success!';
-            const msg = 'Your drive has been updated.';
-            const type = 'primary';           
-            controller.renderAlertBox(element, title, msg, type);
+            window.base.rest.putDrive(model.theId.id, drive).then((d) => {
+                model.searchQuery.driveId = d.drive.driveId;
+                model.searchQuery.tripStart = d.drive.start;
+                model.searchQuery.tripStop = d.drive.stop;
+                model.searchQuery.tripStartTime = d.drive.departureTime;
+            }).then(() => {
+                controller.loadDrivePage(); 
+            });
         },
 
         deleteDrive: () => window.base.rest.deleteDrive(model.driveWrap.drive.driveId)
@@ -368,6 +376,7 @@ window.base.editDriveController = (() => {
 
         load: (id) => {
             model.theId.id = id;
+            document.getElementById('set-date')
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
