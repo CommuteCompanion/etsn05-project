@@ -12,6 +12,7 @@ This README provides a *how-to* for downloading, compiling, and running the appl
 
 #### Cloning the repository
 Open CMD or terminal in an appropriate folder.
+
 Enter the command:
 `git clone https://github.com/CommuteCompanion/etsn05-project.git`
 
@@ -33,21 +34,27 @@ Running `mvn package` will build the project and also run back-end tests to make
 Through an IDE you can just run `BaseServer.main()`.
 
 *OR:* 
+
 Maven will put an executable jar (with dependencies) in the folder "target". This can be used to run the server through CLI using `java -jar base-server-jar-with-dependencies` (also provides live logging in the console).
+
 One can also start the server by double-clicking the .jar (not recommended, the program will run quietly in the background).
 
 #### Testing
 `mvn test` will run back-end tests.
+
 IntelliJ or Eclipse supports a simple right-click on the test folder followed by clicking "Run all tests". Through these IDE's you can also run individual tests (both test-classes and methods).
 
 To run front-end tests, you must start the server and visit "localhost:8080/specs.html" (assuming you did not change url).
 
 #### Development
 A video explaining the setup and contribution procedure is available here: https://www.youtube.com/watch?v=uCdUykhIhFM (Swedish)
+
 A video explaining the general architecture and design of the system: https://www.youtube.com/watch?v=T3RKcLt2H_4 (Swedish)
 
 `master` is our release branch. This should be the versioned branch which we release for production.
+
 `develop` is our development branch. Ideally, it should be treated as if its ready for deployment to customer/production server at any time.
+
 All bugfixes and features are done in separated branches. When ready for review; a pull request is made from said branch into develop. 
 
 #### Troubleshooting
