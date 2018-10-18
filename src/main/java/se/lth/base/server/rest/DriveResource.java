@@ -133,8 +133,6 @@ public class DriveResource {
 
         DriveWrap driveWrap = new DriveWrap(drive, milestones, users, reports);
 
-        //only send emails if there are passengers added to the drive
-        //if(driveWrap.getUsers().size() > 1)
         if (!driveWrap.getUsers().isEmpty()) {
             try {
                 mailHandler.notifyPassengersDriverCancelledDrive(driveWrap);
@@ -195,6 +193,7 @@ public class DriveResource {
 
             try {
                 mailHandler.notifyPassengerBookingConfirmed(driveWrap, userDao.getUser(userId));
+                mailHandler.notifyDriverNewPassengerAccepted(driveWrap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -221,12 +220,7 @@ public class DriveResource {
 
         if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
             try {
-                if (driveUserDao.getDriveUser(driveId, userId).isAccepted()) {
-                    mailHandler.notifyPassengerDriverRemovedPassenger(driveWrap, userDao.getUser(userId));
-                } else {
-                    mailHandler.notifyPassengerDriverRemovedPassenger(driveWrap, userDao.getUser(userId));
-                }
-
+                mailHandler.notifyPassengerDriverRemovedPassenger(driveWrap, userDao.getUser(userId));
             } catch (IOException e) {
                 e.printStackTrace();
             }
