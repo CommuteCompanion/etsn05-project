@@ -49,7 +49,7 @@ window.base.userProfileController = (() => {
             element = document.getElementById('user-profile-alert-box');
             element.innerHTML = `<div class="alert alert-danger" role="alert">\n
                                     <h5 class="alert-heading">WARNING</h5>\n
-                                    <p>You are trying to delete your account. Once completed this actions can not be reversed!</p>\n
+                                    <p>You are trying to delete your account. Once completed this action may not be reversed!</p>\n
                                     <button id="delete-account-confirm" type="button" class="w-100 btn btn-danger">Delete my account anyway</button>                
                                 </div>`
             document.getElementById('delete-account-confirm').onclick = () => {
