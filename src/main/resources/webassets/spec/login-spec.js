@@ -66,9 +66,9 @@ describe('loginController', function() {
                 json: () => errorPromise});
             spyOn(base.rest, 'login').and.returnValue(loginPromise);
             spyOn(base.loginController.view, 'showFailure');
-            base.loginController.loginUser()
+            base.loginController.loginUser();
             Promise.all([loginPromise, errorPromise]).then(function() {
-                expect(base.loginController.view.showFailure).toHaveBeenCalledWith('mock error');
+                expect(base.loginController.view.showFailure).toHaveBeenCalledWith({ message: 'mock error'});
             }).finally(done);
         })
     });
