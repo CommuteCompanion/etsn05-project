@@ -1,6 +1,6 @@
 window.base = window.base || {};
 
-window.base.createDriveController = (() => {
+window.base.editDriveController = (() => {
     const model = {
         driveWraps: {},
         driveWrap: {},

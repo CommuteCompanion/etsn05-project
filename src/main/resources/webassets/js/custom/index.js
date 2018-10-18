@@ -8,9 +8,9 @@ window.base.mainController = (() => {
             partial: BASE_PATH + 'search.html',
             controller: window.base.searchController
         },
-        'create-drive': {
-            partial: BASE_PATH + 'create-drive.html',
-            controller: window.base.createDriveController
+        'edit-drive': {
+            partial: BASE_PATH + 'edit-drive.html',
+            controller: window.base.editDriveController
         },
         'drive': {
             partial: BASE_PATH + 'drive.html',
