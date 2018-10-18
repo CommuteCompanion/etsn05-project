@@ -29,17 +29,17 @@ public class DataAccess<T> {
         this.mapper = mapper;
     }
 
-    public String getDriverUrl() {
+    protected String getDriverUrl() {
         return driverUrl;
     }
 
-    public Connection getConnection() throws SQLException {
+    Connection getConnection() throws SQLException {
         return DriverManager.getConnection(driverUrl, "sa", "");
     }
 
-    public int execute(String sql, Object... objects) {
+    protected int execute(String sql, Object... objects) {
         try (Connection conn = getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql);) {
+             PreparedStatement statement = conn.prepareStatement(sql)) {
             for (int i = 0; i < objects.length; i++) {
                 statement.setObject(i + 1, objects[i]);
             }
@@ -49,7 +49,7 @@ public class DataAccess<T> {
         }
     }
 
-    public ResultSet openQuery(String sql, Object... objects) {
+    protected ResultSet openQuery(String sql, Object... objects) {
         try {
             PreparedStatement statement = getConnection().prepareStatement(sql);
 
@@ -63,14 +63,14 @@ public class DataAccess<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public <S> S insert(String sql, Object... objects) {
+    protected <S> S insert(String sql, Object... objects) {
         try (Connection conn = getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
+             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < objects.length; i++) {
                 statement.setObject(i + 1, objects[i]);
             }
             statement.execute();
-            try (ResultSet keys = statement.getGeneratedKeys();) {
+            try (ResultSet keys = statement.getGeneratedKeys()) {
                 keys.next();
                 return (S) keys.getObject(1);
             }
@@ -158,7 +158,7 @@ public class DataAccess<T> {
 
         default UncheckedCloseable nest(AutoCloseable c) {
             return () -> {
-                try (UncheckedCloseable c1 = this) {
+                try (UncheckedCloseable ignored = this) {
                     c.close();
                 }
             };

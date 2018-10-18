@@ -4,6 +4,7 @@ import org.junit.Test;
 import se.lth.base.server.Config;
 import se.lth.base.server.database.BaseDataAccessTest;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
@@ -44,21 +45,21 @@ public class DriveUserDataAccessTest extends BaseDataAccessTest {
 	public void numberOfAcceptedUsers() {
 		driveUserDao.addDriveUser(drive.getDriveId(), ADMIN.getId(), drive.getStart(), drive.getStop(), true, true, false);
 		driveUserDao.addDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), false, false, false);
-		assertTrue(driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) == 1);
+		assertEquals(1, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
 	}
 	
 	@Test
 	public void acceptDriveUser() {
 		driveUserDao.addDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), false, false, false);
-		assertTrue(driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) == 0);
+		assertEquals(0, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
 		driveUserDao.acceptDriveUser(drive.getDriveId(), TEST.getId());
-		assertTrue(driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) == 1);
+		assertEquals(1, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
 	}
 	
 	@Test
 	public void updateDriveUser() {
 		driveUserDao.addDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), true, true, false);
-		assertTrue(driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) == 1);
+		assertEquals(1, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
 		driveUserDao.updateDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), true, false, true);
 		assertTrue(!driveUserDao.getDriveUser(drive.getDriveId(), TEST.getId()).isAccepted());
 	}
@@ -66,6 +67,6 @@ public class DriveUserDataAccessTest extends BaseDataAccessTest {
 	@Test
 	public void noAcceptedUsers() {
 		driveUserDao.addDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), false, false, false);
-		assertTrue(driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) == 0);
+		assertEquals(0, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
 	}
 }

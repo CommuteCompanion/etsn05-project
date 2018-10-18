@@ -5,7 +5,7 @@ package se.lth.base.server;
  * In a "real" application this would be a more sophisticated solution, with support for reading/writing parameters
  * and error checking. The constructor approach is also not very nice when there are 10+ parameters.
  *
- * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ * @author Group 1 ETSN05 2018
  */
 public class Config {
 
@@ -28,12 +28,8 @@ public class Config {
         return INSTANCE;
     }
 
-    public int getPort() {
+    int getPort() {
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public String getDatabaseDriver() {

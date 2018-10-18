@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 
-
 public class BaseServer {
 
     public static void main(String[] args) {
@@ -63,7 +62,7 @@ public class BaseServer {
         }
     }
 
-    static Handler indexHandler() {
+    private static Handler indexHandler() {
         return new AbstractHandler() {
 
             @Override
@@ -93,14 +92,14 @@ public class BaseServer {
     }
 
 
-    static Handler jerseyHandler(ResourceConfig resourceConfig) {
+    private static Handler jerseyHandler(ResourceConfig resourceConfig) {
         ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(resourceConfig));
         ServletContextHandler jerseyContext = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         jerseyContext.addServlet(jerseyServlet, "/rest" + "/*");
         return jerseyContext;
     }
 
-    static Handler staticContentHandler() {
+    private static Handler staticContentHandler() {
         ResourceHandler resources = new ResourceHandler();
         resources.setResourceBase("/");
         resources.setBaseResource(Resource.newClassPathResource("/webassets"));

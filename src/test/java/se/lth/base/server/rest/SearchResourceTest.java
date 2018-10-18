@@ -23,20 +23,7 @@ public class SearchResourceTest extends BaseResourceTest {
     private final User SEARCH_TEST_2 = new User(idStart, Role.USER, "test2@commutecompanion.se", "ST2FirstName", "ST2LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
     private final Credentials SEARCH_TEST_CREDENTIALS_2 = new Credentials("test2@commutecompanion.se", "test", Role.USER, SEARCH_TEST_2);
 
-    private final User SEARCH_TEST_3 = new User(idStart, Role.USER, "test3@commutecompanion.se", "ST3FirstName", "ST3LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
-    private final Credentials SEARCH_TEST_CREDENTIALS_3 = new Credentials("test3@commutecompanion.se", "test", Role.USER, SEARCH_TEST_3);
-
-    private final User SEARCH_TEST_4 = new User(idStart, Role.USER, "test4@commutecompanion.se", "ST4FirstName", "ST4LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
-    private final Credentials SEARCH_TEST_CREDENTIALS_4 = new Credentials("test4@commutecompanion.se", "test", Role.USER, SEARCH_TEST_4);
-
-    private final User SEARCH_TEST_5 = new User(idStart, Role.USER, "test5@commutecompanion.se", "ST5FirstName", "ST5LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
-    private final Credentials SEARCH_TEST_CREDENTIALS_5 = new Credentials("test5@commutecompanion.se", "test", Role.USER, SEARCH_TEST_5);
-
-    private int user1Id;
     private int user2Id;
-    private int user3Id;
-    private int user4Id;
-    private int user5Id;
 
     private int drive1Id;
     private int drive2Id;
@@ -49,14 +36,7 @@ public class SearchResourceTest extends BaseResourceTest {
         // Users
         User user1 = userDao.addUser(SEARCH_TEST_CREDENTIALS_1);
         User user2 = userDao.addUser(SEARCH_TEST_CREDENTIALS_2);
-        User user3 = userDao.addUser(SEARCH_TEST_CREDENTIALS_3);
-        User user4 = userDao.addUser(SEARCH_TEST_CREDENTIALS_4);
-        User user5 = userDao.addUser(SEARCH_TEST_CREDENTIALS_5);
-        user1Id = user1.getId();
         user2Id = user2.getId();
-        user3Id = user3.getId();
-        user4Id = user4.getId();
-        user5Id = user5.getId();
 
         // Data access objects
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
@@ -123,6 +103,7 @@ public class SearchResourceTest extends BaseResourceTest {
 
         SearchFilter searchFilter = new SearchFilter(-1, -1, "C", "E", -1);
         // We actually receive a List<LinkedTreeMap<String, Object>>
+        @SuppressWarnings("unchecked")
         List<DriveWrap> response = target("search")
                 .path("drives")
                 .request()
@@ -130,45 +111,6 @@ public class SearchResourceTest extends BaseResourceTest {
 
         Assert.assertEquals(2, response.size());
     }
-
-
-    //@Test
-    // NO LONGER VALID (since advanced drive search is disabled in back-end)
-    /*
-        Drive is A -> E (with max 1 passenger)
-        Already one trip from A -> C
-        Trip from B -> C should not be possible
-        Trip from C -> E should be possible
-     */
-    /*
-    public void getDrivesWithEnoughSeats() {
-        DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
-        driveUserDao.addDriveUser(drive1Id, user2Id, "A", "C", false, true, false);
-
-        login(SEARCH_TEST_CREDENTIALS_2);
-        long timestamp1User = Timestamp.valueOf("2018-10-20 12:00:00").getTime();
-        SearchFilter searchFilter1 = new SearchFilter(-1, -1, "B", "C", timestamp1User);
-
-        // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<DriveWrap> response1 = target("search")
-                .path("drives")
-                .request()
-                .post(Entity.json(searchFilter1), List.class);
-
-        Assert.assertEquals(0, response1.size());
-
-        long timestamp2User = Timestamp.valueOf("2018-10-20 12:00:00").getTime();
-        SearchFilter searchFilter2 = new SearchFilter(-1, -1, "C", "E", timestamp2User);
-
-        // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<DriveWrap> response2 = target("search")
-                .path("drives")
-                .request()
-                .post(Entity.json(searchFilter2), List.class);
-
-        Assert.assertEquals(1, response2.size());
-    }
-    */
 
     /*
         Drive is A -> E (with max 1 passenger)
@@ -181,10 +123,11 @@ public class SearchResourceTest extends BaseResourceTest {
         driveUserDao.addDriveUser(drive1Id, user2Id, "A", "E", false, true, false);
 
         login(SEARCH_TEST_CREDENTIALS_2);
-        long timestamp1User = new Timestamp(2018 - 1900, 10, 20, 11, 45, 0, 0).getTime();
+        long timestamp1User = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         SearchFilter searchFilter1 = new SearchFilter(-1, -1, "A", "E", timestamp1User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
+        @SuppressWarnings("unchecked")
         List<DriveWrap> response1 = target("search")
                 .path("drives")
                 .request()
@@ -205,7 +148,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter1 = new SearchFilter(-1, user2Id, "B", "C", timestamp1User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<DriveWrap> response1 = target("search")
+        List response1 = target("search")
                 .path("drives")
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
@@ -216,7 +159,7 @@ public class SearchResourceTest extends BaseResourceTest {
         SearchFilter searchFilter2 = new SearchFilter(-1, user2Id, "B", "C", timestamp2User);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
-        List<DriveWrap> response2 = target("search")
+        List response2 = target("search")
                 .path("drives")
                 .request()
                 .post(Entity.json(searchFilter2), List.class);
@@ -225,31 +168,35 @@ public class SearchResourceTest extends BaseResourceTest {
     }
 
     @Test
-    /**
-     * When tripStart, tripStop and departureTime in SearchFilter is null and getDrives(SearchFilter) is called,
-     * all drives should be returned in most recently created order
+    /*
+      When tripStart, tripStop and departureTime in SearchFilter is null and getDrives(SearchFilter) is called,
+      all drives should be returned in most recently created order
      */
     public void getDrivesInMostRecentlyCreatedOrder() {
         login(SEARCH_TEST_CREDENTIALS_2);
 
         SearchFilter searchFilter1 = new SearchFilter(-1, user2Id, null, null, -1);
 
+        @SuppressWarnings("unchecked")
         List<LinkedTreeMap<String, Object>> response = target("search")
                 .path("drives")
                 .request()
                 .post(Entity.json(searchFilter1), List.class);
 
-        // Apparently the list contains LinkedTreeMap<String, Object>, each representing a DriveWrap object
+                // Apparently the list contains LinkedTreeMap<String, Object>, each representing a DriveWrap object
+        @SuppressWarnings("unchecked")
         LinkedTreeMap<String, Object> drive3 = (LinkedTreeMap<String, Object>) (response.get(0)).get("drive");
         Assert.assertEquals((double) drive3Id, drive3.get("driveId"));
+        @SuppressWarnings("unchecked")
         LinkedTreeMap<String, Object> drive2 = (LinkedTreeMap<String, Object>) (response.get(1)).get("drive");
         Assert.assertEquals((double) drive2Id, drive2.get("driveId"));
+        @SuppressWarnings("unchecked")
         LinkedTreeMap<String, Object> drive1 = (LinkedTreeMap<String, Object>) (response.get(2)).get("drive");
         Assert.assertEquals((double) drive1Id, drive1.get("driveId"));
     }
 
     @Test
-    /**
+    /*
      * 1.Search for first search test user
      * 2.Get all search test users (by specifying part of first name)
      * 3.Get all search test users (by specifying part of first name and part of email)
@@ -258,6 +205,7 @@ public class SearchResourceTest extends BaseResourceTest {
         login(ADMIN_CREDENTIALS);
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
+        @SuppressWarnings("unchecked")
         List<User> response1 = target("search")
                 .path("getUsers/ST1FirstName ST1LastName/test1@commutecompanion.se")
                 .request()
@@ -266,19 +214,21 @@ public class SearchResourceTest extends BaseResourceTest {
         Assert.assertEquals(1, response1.size());
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
+        @SuppressWarnings("unchecked")
         List<User> response2 = target("search")
                 .path("getUsers/First/")
                 .request()
                 .get(List.class);
 
-        Assert.assertEquals(5, response2.size());
+        Assert.assertEquals(2, response2.size());
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
+        @SuppressWarnings("unchecked")
         List<User> response3 = target("search")
                 .path("getUsers/First/commute")
                 .request()
                 .get(List.class);
 
-        Assert.assertEquals(5, response3.size());
+        Assert.assertEquals(2, response3.size());
     }
 }
