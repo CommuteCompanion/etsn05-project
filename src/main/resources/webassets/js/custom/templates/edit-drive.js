@@ -303,19 +303,10 @@ window.base.editDriveController = (() => {
                     }
                 }).then(() => {
                     controller.loadDrivePage();
-                    const element = document.getElementById('alert-row');
-                    const title = 'Success!';
-                    const msg = 'Your drive has been created.';
-                    const type = 'primary';           
-                    controller.renderAlertBox(element, title, msg, type);
                 });
             } else {
                 controller.updateDrive(driveWrap);
             }
-        },
-
-        renderAlertBox: (element, title, message, type) => {
-            element.innerHTML = `<div class="alert alert-${type}" role="alert">\n                    <h5 class="alert-heading">${title}</h5>\n                    <p>${message}</p>\n                </div>`;
         },
 
         loadDrivePage: () => {
