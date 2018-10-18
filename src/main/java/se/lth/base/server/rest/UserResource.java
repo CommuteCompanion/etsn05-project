@@ -2,6 +2,7 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
+import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.mail.MailHandler;
 
 import javax.annotation.security.PermitAll;
@@ -12,7 +13,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-
 import java.io.IOException;
 import java.sql.Date;
 import java.util.List;
@@ -48,9 +48,14 @@ public class UserResource {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response login(Credentials credentials, @QueryParam("remember") @DefaultValue("false") boolean rememberMe) {
-        Session newSession = userDao.authenticate(credentials);
-        int maxAge = rememberMe ? (int) TimeUnit.DAYS.toSeconds(7) : NewCookie.DEFAULT_MAX_AGE;
-        return Response.noContent().cookie(newCookie(newSession.getSessionId().toString(), maxAge, null)).build();
+
+        try {
+            Session newSession = userDao.authenticate(credentials);
+            int maxAge = rememberMe ? (int) TimeUnit.DAYS.toSeconds(7) : NewCookie.DEFAULT_MAX_AGE;
+            return Response.noContent().cookie(newCookie(newSession.getSessionId().toString(), maxAge, null)).build();
+        } catch (DataAccessException e) {
+            throw new WebApplicationException("Incorrect password or email, please try again!", Response.Status.PRECONDITION_FAILED);
+        }
     }
 
     private NewCookie newCookie(String value, int maxAge, Date expiry) {
