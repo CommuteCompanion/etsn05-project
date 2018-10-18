@@ -1,15 +1,9 @@
 window.base = window.base || {};
 
 /* TODO:
-Complete renderTab
- - complete design
- - get users for rating
- - set driveUser object on show drive
+ - rate users
  - implement cancel seat
- - implement edit drive transfer
- - sort drives when they come in
  */
-
 
 window.base.myCommutesController = (() => {
     const model = {
@@ -22,14 +16,10 @@ window.base.myCommutesController = (() => {
             element.innerHTML = `<div class="alert alert-${type}" role="alert">\n                    <h5 class="alert-heading">${title}</h5>\n                    <p>${message}</p>\n                </div>`;
         },
 
-        renderError: ({message}) => {
-            document.getElementById('commutes').innerHTML = `<div class="row">\n                        <div class="col-12">\n                            <h5 class="text-muted font-weight-bold">Ooops!</h5>\n                            <p class="text-muted">Something went wrong, error message: ${message}.</p>\n                        </div>\n                    </div>`;
-        },
-
         renderPage: driveWraps => {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             let commutesHtml = '';
             let drivesFound = true;
-            const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             let firstDrive = true;
             let firstTrip = true;
 
@@ -296,7 +286,8 @@ window.base.myCommutesController = (() => {
                 .then(controller.sortDrives)
                 .then(controller.assignUsersToDrives)
                 .then(() => view.renderPage(model.driveWraps))
-            //.catch(view.renderError);
+                // TODO: fix alert box
+                //.catch(view.renderError);
         },
     };
 

@@ -11,6 +11,7 @@ window.base.searchController = (() => {
         showFailure: msg => {
             document.getElementById('search-results').innerHTML = `<div class="row">\n                        <div class="col-12">\n                            <h5 class="text-muted font-weight-bold">Ooops!</h5>\n                            <p class="text-muted">Something went wrong, error message: ${msg}.</p>\n                        </div>\n                    </div>`;
         },
+
         renderSearchResults: () => {
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             const optActive = 'text-info';
@@ -110,8 +111,8 @@ window.base.searchController = (() => {
 
                 for (let i = carNumberOfSeats; i > 0; i--) {
                     passengerIcons += i <= driveNumberOfSeatsLeft ?
-                        '<i class="fas fa-user-check text-muted"/>' :
-                        '<i class="fas fa-user-check text-info"/>'
+                        '<i class="fas fa-user-check text-muted"></i>' :
+                        '<i class="fas fa-user-check text-info"></i>'
                 }
 
                 // language=HTML
@@ -176,6 +177,7 @@ window.base.searchController = (() => {
 
             field.value = input;
         },
+
         submitSearch: e => {
             e.preventDefault();
 
@@ -202,13 +204,18 @@ window.base.searchController = (() => {
                 .then(() => view.renderSearchResults())
                 .catch(e => view.showFailure(e));
         },
+
         getDriverInfo: (userId, driveIndex) => window.base.rest.getUser(userId)
             .then(driver => model.searchResults[driveIndex].driver = driver),
+
         getNumberOfDrives: (userId, driveIndex) => window.base.rest.getNumberOfDrivesForUser(userId)
             .then(i => model.searchResults[driveIndex].driver.numberOfDrives = i),
+
         performSearch: searchFilter => window.base.rest.searchDrives(searchFilter)
             .then(drives => {
-                if (drives.error) throw drives;
+                if (drives.error) {
+                    throw drives
+                }
 
                 // Assign results to model
                 model.searchResults = drives;
@@ -226,7 +233,9 @@ window.base.searchController = (() => {
                     }
                 }));
             }),
-        getUser: () => window.base.rest.getUser().then(user => model.user = user),
+        getUser: () => window.base.rest.getUser()
+            .then(user => model.user = user),
+
         goToDrive: () => {
             fetch('templates/drive.html')
                 .then(response => response.text())
@@ -235,6 +244,7 @@ window.base.searchController = (() => {
                     window.base.driveController().loadQuery(model.searchQuery);
                 })
         },
+
         load: () => {
             document.getElementById('drive-search').onsubmit = controller.submitSearch;
             const departureTime = document.getElementById('search-departure-time');
@@ -261,8 +271,7 @@ window.base.searchController = (() => {
                 }))
                 .then(() => view.renderSearchResults())
                 .catch(e => view.showFailure(e.message));
-        },
-        initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.searchController.load())
+        }
     };
 
     return controller;
