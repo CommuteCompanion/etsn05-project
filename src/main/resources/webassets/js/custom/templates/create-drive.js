@@ -279,8 +279,8 @@ window.base.createDriveController = (() => {
             const userId = model.user.userId;
             const driver = true;
             const accepted = true;
-            const rated = true;
-            const driveUser = {driveId, userId, start, stop, accepted, rated};
+            const rated = false;
+            const driveUser = {driveId, userId, start, stop, driver, accepted, rated};
             const users = [driveUser];
 
             const reports = [];
