@@ -23,6 +23,7 @@ public class SearchResourceTest extends BaseResourceTest {
     private final User SEARCH_TEST_2 = new User(idStart, Role.USER, "test2@commutecompanion.se", "ST2FirstName", "ST2LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
     private final Credentials SEARCH_TEST_CREDENTIALS_2 = new Credentials("test2@commutecompanion.se", "test", Role.USER, SEARCH_TEST_2);
 
+    private int user1Id;
     private int user2Id;
 
     private int drive1Id;
@@ -36,6 +37,7 @@ public class SearchResourceTest extends BaseResourceTest {
         // Users
         User user1 = userDao.addUser(SEARCH_TEST_CREDENTIALS_1);
         User user2 = userDao.addUser(SEARCH_TEST_CREDENTIALS_2);
+        user1Id = user1.getId();
         user2Id = user2.getId();
 
         // Data access objects
@@ -231,4 +233,53 @@ public class SearchResourceTest extends BaseResourceTest {
 
         Assert.assertEquals(2, response3.size());
     }
+
+    @Test
+    public void testPrioritizedOrder() {
+        DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
+        DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
+
+        // Drive A
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestampA = Timestamp.valueOf("2018-10-20 03:30:00").getTime();
+        long timestampA_5 = Timestamp.valueOf("2018-10-20 04:00:00").getTime();
+        Drive driveA = driveDao.addDrive(new Drive(-1, "A", "B", timestampA, timestampA_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int driveAId = driveA.getDriveId();
+        driveUserDao.addDriveUser(driveAId, user1Id, "A", "F", true, true, false);
+
+        // Drive B
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestampB = Timestamp.valueOf("2018-10-20 03:00:00").getTime();
+        long timestampB_5 = Timestamp.valueOf("2018-10-20 04:00:00").getTime();
+        Drive driveB = driveDao.addDrive(new Drive(-1, "A", "B", timestampB, timestampB_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int driveBId = driveB.getDriveId();
+        driveUserDao.addDriveUser(driveBId, user1Id, "A", "F", true, true, false);
+
+        // Drive C
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestampC = Timestamp.valueOf("2018-10-20 03:15:00").getTime();
+        long timestampC_5 = Timestamp.valueOf("2018-10-20 04:00:00").getTime();
+        Drive driveC = driveDao.addDrive(new Drive(-1, "A", "B", timestampC, timestampC_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int driveCId = driveC.getDriveId();
+        driveUserDao.addDriveUser(driveCId, user1Id, "A", "F", true, true, false);
+
+
+        long timestamp1User = Timestamp.valueOf("2018-10-20 03:00:00").getTime();
+        SearchFilter searchFilter = new SearchFilter(-1, user2Id, "A", "B", timestamp1User);
+
+        login(SEARCH_TEST_CREDENTIALS_2);
+
+        // We actually receive a List<LinkedTreeMap<String, Object>>
+        @SuppressWarnings("unchecked")
+        List<LinkedTreeMap<String, Object>> response1 = target("search")
+                .path("drives")
+                .request()
+                .post(Entity.json(searchFilter), List.class);
+
+        for (LinkedTreeMap<String, Object> driveWrap : response1) {
+            System.out.println(driveWrap);
+        }
+        System.out.println("Hello");
+    }
+
 }
