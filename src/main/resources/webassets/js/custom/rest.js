@@ -1,8 +1,8 @@
 window.base = window.base || {};
 
 window.base.rest = (() => {
-    function Role(role) {
-        this.name = role;
+    function Role(json) {
+        this.name = json;
         this.label = this.name[0] + this.name.toLowerCase().slice(1);
     }
 
@@ -22,7 +22,6 @@ window.base.rest = (() => {
         this.isAdmin = () => this.role.name === 'ADMIN';
         this.isNone = () => this.role.name === 'NONE';
     }
-
 
     function DriveWrap(json) {
         this.drive = new Drive(json.drive);
@@ -84,13 +83,6 @@ window.base.rest = (() => {
         this.arrivalTime = json.arrivalTime;
     }
 
-    function DriveReport(json) {
-        this.reportId = json.reportId;
-        this.driveId = json.driveId;
-        this.reportedByUserId = json.reportedByUserId;
-        this.reportMessage = json.reportMessage;
-    }
-
     const objOrError = (json, cons) => json.error ? json : new cons(json);
 
     window.base.User = User;
@@ -102,12 +94,11 @@ window.base.rest = (() => {
     window.base.DriveMilestone = DriveMilestone;
     window.base.DriveUser = DriveUser;
 
-
     const baseFetch = (url, config) => {
         config = config || {};
         config.credentials = 'same-origin';
         return fetch(url, config).catch(error => {
-            alert(error);
+            console.log(error);
             throw error;
         });
     };
@@ -115,38 +106,34 @@ window.base.rest = (() => {
     const jsonHeader = {
         'Content-Type': 'application/json;charset=utf-8'
     };
-    const createJsonPost = body => {
-        return {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: jsonHeader
-        };
-    };
-    
-    const createJsonPut = body => {
-        return {
-            method: 'PUT',
-            body: JSON.stringify(body),
-            headers: jsonHeader
-        };
-    };
+
+    const createJsonPost = body => ({
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: jsonHeader
+    });
+
+    const createJsonPut = body => ({
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: jsonHeader
+    });
 
     return {
-        getReportedDrives: () => baseFetch('/rest/drive/all-reports')
-            .then(response => response.json())
-            .then(drives => drives.map(d => objOrError(d, DriveWrap))),
+        getReportedDrives: () =>
+            baseFetch('/rest/drive/all-reports')
+                .then(response => response.json())
+                .then(drives => drives.map(d => objOrError(d, DriveWrap))),
 
-        getDrive: id => baseFetch('/rest/user/' + id, { method: 'GET', })
-            .then(response => response.json())
-            .then(d => objOrError(d, DriveWrap)),
+        getDrive: id =>
+            baseFetch('/rest/user/' + id, {method: 'GET',})
+                .then(response => response.json())
+                .then(d => objOrError(d, DriveWrap)),
 
-        addReport: (id, driveReport) => baseFetch('rest/drive/' + id + '/report', createJsonPost(driveReport))
-            .then(response => response.json())
-            .then(d => objOrError(d, DriveReport)),
-
-        searchDrives: searchFilter => baseFetch('/rest/search/drives', createJsonPost(searchFilter))
-            .then(response => response.json())
-            .then(driveWraps => driveWraps.map(d => objOrError(d, DriveWrap))),
+        searchDrives: searchFilter =>
+            baseFetch('/rest/search/drives', createJsonPost(searchFilter))
+                .then(response => response.json())
+                .then(driveWraps => driveWraps.map(d => objOrError(d, DriveWrap))),
 
         getUser: userId => typeof userId === 'undefined' ?
             baseFetch('/rest/user')
@@ -156,68 +143,78 @@ window.base.rest = (() => {
                 .then(response => response.json())
                 .then(u => objOrError(u, User)),
 
-        getNumberOfDrivesForUser: userId => baseFetch('/rest/drive/count/' + userId)
-            .then(response => response.text())
-            .then(i => parseInt(i)),
+        getNumberOfDrivesForUser: userId =>
+            baseFetch('/rest/drive/count/' + userId)
+                .then(response => response.text())
+                .then(i => parseInt(i)),
 
-        requestSeat: (userId, driveUser) => baseFetch('/rest/drive/' + userId + '/user', createJsonPost(driveUser))
-            .then(response => response.json())
-            .then(d => objOrError(d, DriveUser)),
+        requestSeat: (userId, driveUser) =>
+            baseFetch('/rest/drive/' + userId + '/user', createJsonPost(driveUser))
+                .then(response => response.json())
+                .then(d => objOrError(d, DriveUser)),
 
-        login: (email, password, rememberMe) => baseFetch('/rest/user/login?remember=' + rememberMe, createJsonPost({
-            email: email,
-            password: password
-        })),
+        login: (email, password, rememberMe) =>
+            baseFetch('/rest/user/login?remember=' + rememberMe, createJsonPost({email, password})),
 
-        logout: () => baseFetch('/rest/user/logout', {method: 'POST'}),
+        logout: () =>
+            baseFetch('/rest/user/logout', {method: 'POST'}),
 
-        getUsers: () => baseFetch('/rest/user/all')
-            .then(response => response.json())
-            .then(users => users.map(u => objOrError(u, User))),
+        getUsers: () =>
+            baseFetch('/rest/user/all')
+                .then(response => response.json())
+                .then(users => users.map(u => objOrError(u, User))),
 
-        addUser: credentials => baseFetch('/rest/user', createJsonPost(credentials))
-            .then(response => response.json())
-            .then(u => objOrError(u, User)),
+        addUser: credentials =>
+            baseFetch('/rest/user', createJsonPost(credentials))
+                .then(response => response.json())
+                .then(u => objOrError(u, User)),
 
-        putUser: (id, credentials) => baseFetch('/rest/user/' + id, createJsonPut(credentials))
-            .then(response => response.json())
-            .then(u => objOrError(u, User)),
+        putUser: (id, credentials) =>
+            baseFetch('/rest/user/' + id, createJsonPut(credentials))
+                .then(response => response.json())
+                .then(u => objOrError(u, User)),
 
-        deleteUser: id => baseFetch('/rest/user/' + id, {method: 'DELETE'}),
+        deleteUser: id =>
+            baseFetch('/rest/user/' + id, {method: 'DELETE'}),
 
-        getDriveWrap: id => baseFetch('/rest/drive/' + id)
-            .then(response => response.json())
-            .then(d => objOrError(d, DriveWrap)),
+        getDriveWrap: id =>
+            baseFetch('/rest/drive/' + id)
+                .then(response => response.json())
+                .then(d => objOrError(d, DriveWrap)),
 
-        addDrive: driveWrap => baseFetch('/rest/drive', createJsonPost(driveWrap))
-            .then(response => response.json())
-            .then(d => objOrError(d, DriveWrap)),
+        addDrive: driveWrap =>
+            baseFetch('/rest/drive', createJsonPost(driveWrap))
+                .then(response => response.json())
+                .then(d => objOrError(d, DriveWrap)),
 
-        putDrive: (id, driveWrap) => baseFetch('/rest/drive/' + id, createJsonPut(driveWrap))
-            .then(response => response.json())
-            .then(d => objOrError(d, DriveWrap)),
+        putDrive: (id, driveWrap) =>
+            baseFetch('/rest/drive/' + id, createJsonPut(driveWrap))
+                .then(response => response.json())
+                .then(d => objOrError(d, DriveWrap)),
 
-        getDrivesForUser: id => baseFetch('/rest/drive/user/' + id)
-            .then(response => response.json())
-            .then(driveWraps => driveWraps.map(d => objOrError(d, DriveWrap))),
+        getDrivesForUser: id =>
+            baseFetch('/rest/drive/user/' + id)
+                .then(response => response.json())
+                .then(driveWraps => driveWraps.map(d => objOrError(d, DriveWrap))),
 
-        deleteDrive: id => baseFetch('/rest/drive/' + id, {method: 'DELETE'}),
+        deleteDrive: id =>
+            baseFetch('/rest/drive/' + id, {method: 'DELETE'}),
 
         removeUserFromDrive: (driveId, userId) =>
             baseFetch('/rest/drive/' + driveId + '/user/' + userId, {method: 'DELETE'}),
 
-        warnUser: id => baseFetch('/rest/user/warn/' + id, {
-            method: 'PUT',
-            headers: jsonHeader
-        }),
+        warnUser: id =>
+            baseFetch('/rest/user/warn/' + id, createJsonPut({})),
 
-        reportDrive: (driveId, driveReport) => baseFetch('rest/drive/' + driveId + '/report', createJsonPost(driveReport))
-            .then(response => response.json())
-            .then(r => objOrError(r, DriveReport)),
+        reportDrive: (driveId, driveReport) =>
+            baseFetch('rest/drive/' + driveId + '/report', createJsonPost(driveReport))
+                .then(response => response.json())
+                .then(r => objOrError(r, DriveReport)),
 
-        rateDrive: (driveId, ratingWrap) => baseFetch('rest/drive/' + driveId + '/rate', createJsonPost(ratingWrap))
-            .then(response => response.json())
-            .then(ratingWrap => objOrError(ratingWrap, DriveRateWrap))
+        rateDrive: (driveId, ratingWrap) =>
+            baseFetch('rest/drive/' + driveId + '/rate', createJsonPost(ratingWrap))
+                .then(response => response.json())
+                .then(ratingWrap => objOrError(ratingWrap, DriveRateWrap))
     };
 })();
 
