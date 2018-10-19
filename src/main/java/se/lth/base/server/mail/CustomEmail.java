@@ -300,10 +300,10 @@ public class CustomEmail {
         intro += "<p>A passenger been accepted to travel with you from <i>";
         intro += lastPassenger.getStart() + "</i> to <i>" + lastPassenger.getStop();
         intro += "</i> on your drive from <i>" + driver.getStart() + "</i> to <i>";
-        intro += driver.getStop() + "</i> on " + formattedDepartureTime + ".<i>";
-        intro += "</i> Here is the contact information to the passenger. <i>";
-        intro += "</i> Phone number: " + passenger.getPhoneNumber() + ".<i>";
-        intro += "</i> Email: " + passenger.getPhoneNumber() + ".<p>";
+        intro += driver.getStop() + "</i> on " + formattedDepartureTime + ".";
+        intro += "Here is the contact information to the passenger.";
+        intro += "Phone number: " + passenger.getPhoneNumber();
+        intro += "Email: " + passenger.getEmail() + ".<p>";
         content.put(INTRO, intro);
 
         // Action button
