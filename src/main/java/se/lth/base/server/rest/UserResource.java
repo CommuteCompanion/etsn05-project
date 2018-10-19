@@ -136,6 +136,13 @@ public class UserResource {
     @RolesAllowed(Role.Names.ADMIN)
     @PUT
     public void warnUser(@PathParam("userId") int userId) {
+        User user = userDao.getUser(userId);
+        try {
+            mailHandler.notifyUserHasBeenWarned(user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         userDao.warnUser(userId);
     }
 
