@@ -1,7 +1,5 @@
 window.base = window.base || {};
 
-
-
 window.base.searchController = (() => {
     let model = {
         user: {},

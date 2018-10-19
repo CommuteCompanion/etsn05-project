@@ -150,8 +150,6 @@ window.base.driveController = (() => {
     };
 
     const controller = {
-        model,
-
         getDrive: () => window.base.rest.getDriveWrap(model.driveUser.driveId)
             .then(driveWrap => model.driveWrap = driveWrap),
 
