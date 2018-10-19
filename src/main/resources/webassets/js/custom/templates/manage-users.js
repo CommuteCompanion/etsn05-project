@@ -68,7 +68,25 @@ window.base.manageUsersController = (() => {
         remove: (array, element) => array.filter(e => e !== element),
 
         deleteAccount: user => {
-            window.base.rest.deleteUser(user.userId).then(function () {
+            element = document.getElementById('delete-account' + user.userId);
+            element.innerHTML = '<div class="alert alert-danger" role="alert">\n' + 
+                                    '<h5 class="alert-heading">WARNING</h5>\n'+
+                                    '<button id="delete-account-confirm' + user.userId + '" type="button" class="w-100 btn btn-danger">Delete</button>\n' +               
+                                '</div>';
+            document.getElementById('delete-account-confirm'+user.userId).onclick = () => {
+                window.base.rest.deleteUser(user.userId).then(function () {
+                    // Remove user from lists so next search is correct.
+                    model.users = controller.remove(model.users, user);
+                    model.searchedUsers = controller.remove(model.searchedUsers, user);
+    
+                    // Remove element (This can't be done in render since it won't find 
+                    // the user due to it being removed in the list.)
+                    const item = document.getElementById('manage-user-card' + user.userId);
+                    item.parentElement.removeChild(item);
+                });
+            };
+
+/*             window.base.rest.deleteUser(user.userId).then(function () {
                 // Remove user from lists so next search is correct.
                 model.users = controller.remove(model.users, user);
                 model.searchedUsers = controller.remove(model.searchedUsers, user);
@@ -77,7 +95,7 @@ window.base.manageUsersController = (() => {
                 // the user due to it being removed in the list.)
                 const item = document.getElementById('manage-user-card' + user.userId);
                 item.parentElement.removeChild(item);
-            });
+            }); */
 
         },
 
