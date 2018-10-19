@@ -100,14 +100,14 @@ public class CustomEmail {
                 body = getWelcomeBody();
                 break;
             }
-            case NEW_PASSENGER_ON_TRIP: {
-                subject = getNewPassengerOnTripSubject();
-                body = getNewPassengerOnTripBody();
+            case NEW_PASSENGER_REQUESTED: {
+                subject = getNewPassengerRequestedSubject();
+                body = getNewPassengerRequestedBody();
                 break;
             }
-            case NEW_PASSENGER_ON_TRIP_DATA: {
-                subject = getNewPassengerOnTripDataSubject();
-                body = getNewPassengerOnTripDataBody();
+            case NEW_PASSENGER_ACCEPTED: {
+                subject = getNewPassengerAcceptedSubject();
+                body = getNewPassengerAcceptedBody();
                 break;
             }
             case BOOKING_CONFIRMED: {
@@ -214,11 +214,11 @@ public class CustomEmail {
         return getResource(EMAIL_TEMPLATE, content);
     }
 
-    private String getNewPassengerOnTripSubject() {
+    private String getNewPassengerRequestedSubject() {
         return "New passenger request for your drive to " + driveWrap.getDrive().getStop();
     }
 
-    private String getNewPassengerOnTripBody() throws IOException {
+    private String getNewPassengerRequestedBody() throws IOException {
         Map<String, String> content = new HashMap<>();
         DriveUser lastPassenger = null;
         DriveUser driver = null;
@@ -243,7 +243,7 @@ public class CustomEmail {
         User driverU = userDao.getUser(driver.getUserId());
 
         // Title
-        content.put(TITLE, getNewPassengerOnTripSubject());
+        content.put(TITLE, getNewPassengerRequestedSubject());
 
         // Intro
         String intro = "<p>Hi " + driverU.getFirstName() + ",</p>";
@@ -263,11 +263,11 @@ public class CustomEmail {
         return getResource(EMAIL_TEMPLATE, content);
     }
 
-    private String getNewPassengerOnTripDataSubject() {
+    private String getNewPassengerAcceptedSubject() {
         return "New passenger is accepted to your drive to " + driveWrap.getDrive().getStop();
     }
 
-    private String getNewPassengerOnTripDataBody() throws IOException {
+    private String getNewPassengerAcceptedBody() throws IOException {
         Map<String, String> content = new HashMap<>();
         DriveUser lastPassenger = null;
         DriveUser driver = null;
@@ -293,7 +293,7 @@ public class CustomEmail {
         User passenger = userDao.getUser(lastPassenger.getUserId());
 
         // Title
-        content.put(TITLE, getNewPassengerOnTripSubject());
+        content.put(TITLE, getNewPassengerAcceptedSubject());
 
         // Intro
         String intro = "<p>Hi " + driverU.getFirstName() + ",</p>";
@@ -464,7 +464,7 @@ public class CustomEmail {
         User driverU = userDao.getUser(driver.getUserId());
 
         // Title
-        content.put(TITLE, getNewPassengerOnTripSubject());
+        content.put(TITLE, getPassengerCancelledTripSubject());
 
         // Intro
         String intro = "<p>Hi " + driverU.getFirstName() + ",</p>";
