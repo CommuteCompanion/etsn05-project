@@ -31,9 +31,7 @@ window.base.myCommutesController = (() => {
 
                 // Departure time
                 const dtd = new Date(drive.departureTime);
-                let departureTime = months[dtd.getMonth()] + ' ';
-                departureTime += dtd.getDate() + ' at ';
-                departureTime += dtd.getHours() + ':' + dtd.getMinutes();
+                let departureTime = months[dtd.getMonth()] + ' ' + dtd.getDate() + ' at ' + controller.parseTime(dtd);
 
                 // Milestones
                 const milestones = driveWraps[i].milestones;
@@ -82,7 +80,7 @@ window.base.myCommutesController = (() => {
                 for (let j = 0; j < milestones.length; j++) {
                     if (currentUser.start === milestones[j].milestone) {
                         const pickupDeparture = new Date(milestones[j].departureTime);
-                        tripStartTime = pickupDeparture.getHours() + ':' + pickupDeparture.getMinutes();
+                        tripStartTime = controller.parseTime(pickupDeparture);
                     }
                 }
 
@@ -260,6 +258,15 @@ window.base.myCommutesController = (() => {
         rateDrive: (driveId, ratingWrap) => window.base.rest.rateDrive(driveId, ratingWrap)
             .then(() => view.renderAlertBox('alert-drive-' + driveId, 'Done', 'Thank you for your rating', 'info'))
             .then(e => view.renderAlertBox('alert-drive-' + driveId, 'Oops!', 'Something went wrong, ' + e.message, 'danger')),
+
+        parseTime: date => {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            return hours + ':' + minutes;
+        },
 
         viewDrive: selection => {
             fetch('templates/drive.html')

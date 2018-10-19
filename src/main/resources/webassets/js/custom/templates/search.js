@@ -23,11 +23,9 @@ window.base.searchController = (() => {
                 const drive = model.searchResults[i].drive;
                 const driveId = drive.driveId;
                 const driveName = drive.start + ' to ' + drive.stop;
-                const dtd = new Date(drive.departureTime);
 
-                let departureTime = months[dtd.getMonth()] + ' ';
-                departureTime += dtd.getDate() + ' at ';
-                departureTime += dtd.getHours() + ':' + dtd.getMinutes();
+                const dtd = new Date(drive.departureTime);
+                const departureTime = months[dtd.getMonth()] + ' ' + dtd.getDate() + ' at ' + controller.parseTime(dtd);
 
                 const carBrand = drive.carBrand;
                 const carModel = drive.carModel;
@@ -86,7 +84,7 @@ window.base.searchController = (() => {
                 for (let j = 0; j < milestones.length; j++) {
                     if (tripStart.toLowerCase().trim() === milestones[j].milestone.toLowerCase().trim()) {
                         const milestoneDepartureTime = new Date(milestones[j].departureTime);
-                        tripStartTime += milestoneDepartureTime.getHours() + ':' + milestoneDepartureTime.getMinutes();
+                        tripStartTime += controller.parseTime(milestoneDepartureTime);
                     }
                 }
 
@@ -154,6 +152,15 @@ window.base.searchController = (() => {
     };
 
     const controller = {
+        parseTime: date => {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            return hours + ':' + minutes;
+        },
+
         sanitizeDateTimeInput: field => {
             let input = field.value;
             input = input.replace(/[^\d]+/g, '');
