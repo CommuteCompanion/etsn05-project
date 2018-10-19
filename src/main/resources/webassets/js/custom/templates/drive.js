@@ -215,6 +215,9 @@ window.base.driveController = (() => {
                 window.base.changeLocation('/');
             }
 
+            // Change the hash without firing hashchange
+            history.pushState({}, '', '#/drive');
+
             document.getElementById('drive-request').onclick = controller.submitRequest;
             document.getElementById('report-modal-trigger').onclick = view.showReportModal;
             document.getElementById('report-form').onsubmit = controller.submitReport;

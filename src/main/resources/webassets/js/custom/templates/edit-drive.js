@@ -403,6 +403,9 @@ window.base.editDriveController = (() => {
         },
 
         loadWithUserId: (id) => {
+            // Change the hash without firing hashchange
+            history.pushState({}, ' ', '#/edit-drive');
+
             controller.load(id);
         },
     };
