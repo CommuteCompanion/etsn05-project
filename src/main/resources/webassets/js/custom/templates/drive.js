@@ -90,10 +90,7 @@ window.base.driveController = (() => {
             passengerHtml = passengerHtml.length === 0 ? 'None' : passengerHtml.slice(0, passengerHtml.length - 2);
 
             const dtd = new Date(drive.departureTime);
-
-            let departureTime = months[dtd.getMonth()] + ' ';
-            departureTime += dtd.getDate() + ' at ';
-            departureTime += dtd.getHours() + ':' + dtd.getMinutes();
+            let departureTime = months[dtd.getMonth()] + ' ' + dtd.getDate() + ' at '+ controller.parseTime(dtd);
 
 
             let luggageText = '';
@@ -150,6 +147,15 @@ window.base.driveController = (() => {
     };
 
     const controller = {
+        parseTime: date => {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            return hours + ':' + minutes;
+        },
+
         getDrive: () => window.base.rest.getDriveWrap(model.driveUser.driveId)
             .then(driveWrap => model.driveWrap = driveWrap),
 
