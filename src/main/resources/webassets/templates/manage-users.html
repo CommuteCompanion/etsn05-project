@@ -1,6 +1,6 @@
 <h1>Manage users</h1>
-<form id ="search-form">
-    <div class="row manage-users-search-row">
+<form id="search-form">
+    <div class="row mb-3">
         <div class="col-md-8">
             <input type="text" class="form-control" id="search-email" placeholder="Email">
         </div>
@@ -14,31 +14,37 @@
 </form>
 
 <template id="manage-users-template">
-    <div class="card manage-users-user">
+    <div class="card mb-1 manage-users-user">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-5">
                     <div class="row">
                         <div class="col-md-8">
-                            <p class="admin-name"></p>
-                            <p class="admin-email"></p>
+                            <p class="mb-0 admin-name"></p>
+                            <p class="mb-0 admin-email"></p>
                         </div>
                         <div class="col-md-4">
-                            <p class="admin-rating"></p>
-                            <p class="admin-warning"></p>
+                            <p class="mb-0 admin-rating"></p>
+                            <p class="mb-0 admin-warning"></p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-7">
                     <div class="row">
                         <div class="col-md-4">
-                            <button type="button" class="btn-block btn btn-primary edit-profile-button">Edit profile</button>
+                            <button type="button" class="btn-block btn btn-primary edit-profile-button">
+                                Edit profile
+                            </button>
                         </div>
                         <div class="col-md-4">
-                            <button type="button" class="btn-block btn btn-warning give-warning-button">Give warning</button>
+                            <button type="button" class="btn-block btn btn-warning give-warning-button">
+                                Give warning
+                            </button>
                         </div>
                         <div class="col-md-4">
-                            <button type="button" class="btn-block btn btn-danger delete-account-button">Delete account</button>
+                            <button type="button" class="btn-block btn btn-danger delete-account-button">
+                                Delete account
+                            </button>
                         </div>
                     </div>
                 </div>
