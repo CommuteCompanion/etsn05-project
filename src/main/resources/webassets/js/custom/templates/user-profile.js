@@ -24,7 +24,7 @@ window.base.userProfileController = (() => {
             document.getElementById('set-phone-number').value = model.user.phoneNumber;
 
             let birthDate = new Date(model.user.dateOfBirth);
-            document.getElementById('set-date-of-birth').value = birthDate.getFullYear() + '-' + view.pad(birthDate.getMonth() + 1) + '-' + birthDate.getDate();
+            document.getElementById('set-date-of-birth').value = birthDate.getFullYear() + '-' + view.pad(birthDate.getMonth() + 1) + '-' + view.pad(birthDate.getDate());
 
             if (model.user.gender === 1) {
                 document.getElementById('set-female').checked = true;
