@@ -16,6 +16,10 @@ window.base.myCommutesController = (() => {
             element.innerHTML = `<div class="alert alert-${type}" role="alert">\n                    <h5 class="alert-heading">${title}</h5>\n                    <p>${message}</p>\n                </div>`;
         },
 
+        renderError: message => {
+            document.getElementById('commutes').innerHTML = `<div class="row">\n                        <div class="col-12">\n                            <h5 class="text-muted font-weight-bold">Ooops!</h5>\n                            <p class="text-muted">Something went wrong, error message: ${message}.</p>\n                        </div>\n                    </div>`;
+        },
+
         renderPage: driveWraps => {
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             let commutesHtml = '';
@@ -46,7 +50,7 @@ window.base.myCommutesController = (() => {
                 let driver;
 
                 // HTML partials
-                let ratingBox = `<form class="rate-form" id="form-drive-${driveId}"><div id="alert-drive-${driveId}"></div>`;
+                let ratingBox = '';
                 let actionButtons = '<button class="mb-3 btn btn-info btn-sm btn-block view-btn">View</button>';
 
                 // Get current drive user and set correct buttons
@@ -86,26 +90,24 @@ window.base.myCommutesController = (() => {
 
                 // HTML partial -> rate box title
                 if (Date.now() > drive.arrivalTime) {
-                    ratingBox += '<h5 class="text-muted font-weight-bold">Please rate trip</h5>';
+                    ratingBox += `<form class="rate-form" id="form-drive-${driveId}"><div id="alert-drive-${driveId}"></div><h5 class="text-muted font-weight-bold">Please rate trip</h5>`;
 
                     // HTML partial -> rating forms
                     if (currentUser.isDriver) {
                         for (let i = 1; i <= users.length; i++) {
+                            const userId = users[i - 1].info.userId;
                             const firstName = users[i - 1].info.firstName;
-                            ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-${i}" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-${i}">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
+                            ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-${i}" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-${i}" data-user-id="${userId}">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
                         }
                     } else {
                         const firstName = driver.info.firstName;
                         ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-1" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-1">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
                     }
 
-                    ratingBox += `<button type="submit" class="btn btn-secondary btn-block btn-sm">Rate</button>`;
+                    ratingBox += `<button type="submit" class="btn btn-secondary btn-block btn-sm">Rate</button></form>`;
                 } else {
                     ratingBox += '<h5 class="text-muted font-weight-bold">Drive not completed</h5>';
                 }
-
-                // HTML partial -> end rating form
-                ratingBox += '</form>';
 
                 // HTML partial -> drive row
                 commutesHtml += `\n        <div class="row mb-3 border bg-white shadow-sm pt-3 pb-3">\n            <div class="col-7 border-right">\n                <a class="view-link" id="view-drive-${driveId}" href="">\n                    <h5 class="mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                </a>\n                <div class="row">\n                    <div class="col-3">\n                            <p class="text-muted mb-0">Leaving:</p>\n                            <p class="text-muted mb-0">Pickup:</p>\n                            <p class="text-muted">Dropoff:</p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted mb-0">${departureTime}</p>\n                        <p class="text-muted mb-0"><span>${tripStart}</span> (~<span>${tripStartTime}</span>)</p>\n                        <p class="text-muted">${tripStop}</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-3 border-right">${ratingBox}</div>\n            <div class="col-2">${actionButtons}</div>\n        </div>`
@@ -162,31 +164,37 @@ window.base.myCommutesController = (() => {
                         };
                     }
 
-                    // For submit user ratings
-                    rateForm.addEventListener('submit', e => {
-                        e.preventDefault();
-                        const driveId = rateForm.id.split('-')[2];
-                        let i = 1;
-                        let ratings = [];
+                    if (typeof rateForm !== 'undefined') {
+                        // For submit user ratings
+                        rateForm.addEventListener('submit', e => {
+                            e.preventDefault();
+                            const driveId = rateForm.id.split('-')[2];
+                            let i = 1;
+                            let ratings = [];
 
-                        while (typeof document.getElementById('user-rating-' + driveId + '-' + i) !== 'undefined') {
-                            const input = document.getElementById('user-rating-' + driveId + '-' + i);
-                            const userId = input.options[input.selectedIndex].getAttribute('data-user-id');
-                            const rating = input.options[input.selectedIndex].value;
+                            while (document.getElementById('user-rating-' + driveId + '-' + i) !== null) {
+                                const input = document.getElementById('user-rating-' + driveId + '-' + i);
+                                const userId = input.options[input.selectedIndex].getAttribute('data-user-id');
+                                const rating = input.options[input.selectedIndex].value;
 
-                            ratings = {userId, rating};
+                                if (isNaN(parseInt(rating))) {
 
-                            i++;
-                        }
+                                }
 
-                        const ratingWrap = {
-                            userId: model.user.userId,
-                            driveId: driveId,
-                            ratings
-                        };
+                                ratings.push({userId, rating});
 
-                        controller.rateDrive(driveId, ratingWrap);
-                    });
+                                i++;
+                            }
+
+                            const ratingWrap = {
+                                userId: model.user.userId,
+                                driveId: driveId,
+                                ratings
+                            };
+
+                            controller.rateDrive(driveId, ratingWrap);
+                        });
+                    }
                 }
             }
         }
@@ -293,7 +301,6 @@ window.base.myCommutesController = (() => {
                 .then(controller.sortDrives)
                 .then(controller.assignUsersToDrives)
                 .then(() => view.renderPage(model.driveWraps))
-                // TODO: fix alert box
                 //.catch(view.renderError);
         },
     };
