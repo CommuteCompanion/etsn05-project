@@ -136,6 +136,10 @@ window.base.userProfileController = (() => {
 
         loadWithUserId: (id) => {
             model.userId = id;
+
+            // Change the hash without firing hashchange
+            history.pushState({}, '', '#/user-profile');
+
             controller.load();
         },
     };

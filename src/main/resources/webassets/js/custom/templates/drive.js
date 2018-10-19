@@ -150,6 +150,8 @@ window.base.driveController = (() => {
     };
 
     const controller = {
+        model,
+
         getDrive: () => window.base.rest.getDriveWrap(model.driveUser.driveId)
             .then(driveWrap => model.driveWrap = driveWrap),
 
@@ -214,6 +216,9 @@ window.base.driveController = (() => {
             if (typeof searchQuery === 'undefined' && !Object.keys(model.driveUser).length) {
                 window.base.changeLocation('/');
             }
+
+            // Change the hash without firing hashchange
+            history.pushState({}, '', '#/drive');
 
             document.getElementById('drive-request').onclick = controller.submitRequest;
             document.getElementById('report-modal-trigger').onclick = view.showReportModal;
