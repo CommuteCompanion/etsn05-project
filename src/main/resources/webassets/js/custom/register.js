@@ -65,7 +65,17 @@ window.base.registerController = (() => {
             form[e].getFieldFemale().onchange = () => {
                 form[e].isValid = !!form[e].validate();
                 controller.validateForm(form);
-            }
+            };
+            form[e].getFieldOther().onchange = () => {
+                if (form[e].validate()) {
+                    form[e].isValid = true;
+                } else {
+                    form[e].isValid = false;
+                }
+
+                controller.validateForm(form);
+            };
+
         },
 
         validateTextInput: (e, form) => {
@@ -182,9 +192,19 @@ window.base.registerController = (() => {
                 gender: {
                     getField: () => document.getElementById('register-gender-male'),
                     getFieldFemale: () => document.getElementById('register-gender-female'),
-                    getValue: () => document.getElementById('register-gender-male').checked ? 0 : 1,
+                    getFieldOther: () => document.getElementById('register-gender-other'),
+                    getValue: () => { 
+                        if (document.getElementById('register-gender-male').checked) {
+                            return 0;
+                        } else if (document.getElementById('register-gender-female').checked) {
+                            return 1;
+                        } else if (document.getElementById('register-gender-other').checked) {
+                            return 2;
+                        }
+                    },
                     validate: () => document.getElementById('register-gender-male').checked ||
-                        document.getElementById('register-gender-female').checked,
+                        document.getElementById('register-gender-female').checked || 
+                        document.getElementById('register-gender-other').checked,
                     isValid: false
                 }
             }
