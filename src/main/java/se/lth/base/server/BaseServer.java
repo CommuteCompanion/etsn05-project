@@ -8,24 +8,20 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-
 import org.eclipse.jetty.util.resource.Resource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.RolesAllowedDynamicFeature;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import se.lth.base.server.database.CreateSchema;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-
 
 public class BaseServer {
 
@@ -66,7 +62,7 @@ public class BaseServer {
         }
     }
 
-    static Handler indexHandler() {
+    private static Handler indexHandler() {
         return new AbstractHandler() {
 
             @Override
@@ -96,14 +92,14 @@ public class BaseServer {
     }
 
 
-    static Handler jerseyHandler(ResourceConfig resourceConfig) {
+    private static Handler jerseyHandler(ResourceConfig resourceConfig) {
         ServletHolder jerseyServlet = new ServletHolder(new ServletContainer(resourceConfig));
         ServletContextHandler jerseyContext = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         jerseyContext.addServlet(jerseyServlet, "/rest" + "/*");
         return jerseyContext;
     }
 
-    static Handler staticContentHandler() {
+    private static Handler staticContentHandler() {
         ResourceHandler resources = new ResourceHandler();
         resources.setResourceBase("/");
         resources.setBaseResource(Resource.newClassPathResource("/webassets"));

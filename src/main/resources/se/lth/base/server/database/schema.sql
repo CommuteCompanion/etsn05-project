@@ -54,14 +54,15 @@ CREATE TABLE drive_milestone(milestone_id INT AUTO_INCREMENT,
                              PRIMARY KEY(milestone_id),
                              FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE);
 
-CREATE TABLE drive_user(drive_id INT NOT NULL,
+CREATE TABLE drive_user(drive_user_id INT AUTO_INCREMENT,
+                        drive_id INT NOT NULL,
                         user_id INT NOT NULL,
                         start VARCHAR(255) NOT NULL,
                         stop VARCHAR(255) NOT NULL,
                         is_driver BOOLEAN NOT NULL DEFAULT FALSE,
                         accepted BOOLEAN NOT NULL DEFAULT FALSE,
                         rated BOOLEAN NOT NULL DEFAULT FALSE,
-                        PRIMARY KEY(drive_id, user_id),
+                        PRIMARY KEY(drive_user_id),
                         FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE,
                         FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
@@ -73,20 +74,12 @@ CREATE TABLE drive_report(report_id INT AUTO_INCREMENT,
                           FOREIGN KEY(drive_id) REFERENCES drive(drive_id) ON DELETE CASCADE,
                           FOREIGN KEY(reported_by_user_id) REFERENCES user(user_id) ON DELETE CASCADE);
 
-CREATE TABLE search_filter(search_filter_id INT AUTO_INCREMENT,
-                           user_id INT NOT NULL,
-                           start VARCHAR(255),
-                           stop VARCHAR(255),
-                           departure_time TIMESTAMP,
-                           PRIMARY KEY(search_filter_id),
-                           FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE);
-
 INSERT INTO user_role VALUES (1, 'ADMIN'), (2, 'USER');
 INSERT INTO user (role_id, email, salt, password_hash, first_name, last_name, phone_number, gender, date_of_birth)
-    VALUES (1, 'admin@lu.se', 8486015201299423224, '54c89afb-d106-8cf7-ff28-9362aff5a6bc', 'Admin', 'Admin', '0701234', 1, CURRENT_TIMESTAMP() - 00000010000),
-           (2, 'test@lu.se', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 1, CURRENT_TIMESTAMP() - 00000010000),
-           (2, 'driver@lu.se', -8230560395748062196, '026edaa7-7e68-4bdf-b1d5-2acda6e9ec05', 'Driver', 'Test', '070123456', 1, CURRENT_TIMESTAMP() - 00000010000),
-           (2, 'passenger@lu.se', 7048289284615084861, 'f8444eec-5d7e-8b36-ac6b-2c6042623b30', 'Passenger', 'Test', '070123456', 1, CURRENT_TIMESTAMP() - 00000010000);
+    VALUES (1, 'admin@commutecompanion.se', 8486015201299423224, '54c89afb-d106-8cf7-ff28-9362aff5a6bc', 'Admin', 'Admin', '0701234', 1, CURRENT_TIMESTAMP() - 00000010000),
+           (2, 'commutecompaniontest@gmail.com', 5336889820313124494, '144141f3-c868-85e8-0243-805ca28cdabd', 'Test', 'Test', '0701234', 1, CURRENT_TIMESTAMP() - 00000010000),
+           (2, 'driver@commutecompanion.se', -8230560395748062196, '026edaa7-7e68-4bdf-b1d5-2acda6e9ec05', 'Driver', 'Test', '070123456', 1, CURRENT_TIMESTAMP() - 00000010000),
+           (2, 'passenger@commutecompanion.se', 7048289284615084861, 'f8444eec-5d7e-8b36-ac6b-2c6042623b30', 'Passenger', 'Test', '070123456', 1, CURRENT_TIMESTAMP() - 00000010000);
 
 --INSERT INTO drive (start, stop, departure_time, arrival_time, comment, car_brand, car_model, car_color, car_license_plate, car_number_of_seats, opt_luggage_size, opt_winter_tires, opt_bicycle, opt_pets)
 --VALUES ('Gothenburg', 'Lund', CURRENT_TIMESTAMP() + 0000000020, CURRENT_TIMESTAMP() + 0000000022, 'This is test comment', 'Audi', 'A3 Sportsback', 'Black', 'DBG400', 5, 1, TRUE, FALSE, FALSE);

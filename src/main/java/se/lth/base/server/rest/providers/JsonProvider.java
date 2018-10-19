@@ -18,7 +18,7 @@ import java.lang.reflect.Type;
 /**
  * This class converts all objects in the REST API to/from JSON using Gson.
  *
- * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ * @author Group 1 ETSN05 2018
  */
 @Provider
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")

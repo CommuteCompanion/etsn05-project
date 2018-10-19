@@ -5,7 +5,6 @@
     <title>CommuteCompanion</title>
     <link rel="stylesheet" href="css/vendors/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="css/custom/main.css">
-    <link rel="stylesheet" href="css/custom/admin.css">
     <link rel="icon" href="images/favicon.ico" type="image/vnd.microsoft.icon"/>
 </head>
 <body>
@@ -14,18 +13,23 @@
     <span class="navbar-brand d-sm-block d-none">CC</span>
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-            <a class="nav-link" href="#/search"><i class="fas fa-search fa-sm"></i> Find</a>
+            <!--suppress HtmlUnknownAnchorTarget -->
+            <a class="nav-link" href="#/search"><i class="fas fa-search fa-sm"></i> Search Trip</a>
         </li>
         <li class="nav-item user-only">
-            <a class="nav-link" href="#/create-drive"><i class="fas fa-plus-circle fa-sm"></i> Post</a>
+            <!--suppress HtmlUnknownAnchorTarget -->
+            <a class="nav-link" href="#/edit-drive"><i class="fas fa-plus-circle fa-sm"></i> Post</a>
         </li>
         <li class="nav-item user-only">
+            <!--suppress HtmlUnknownAnchorTarget -->
             <a class="nav-link" href="#/my-commutes"><i class="fas fa-suitcase fa-sm"></i> My Commutes</a>
         </li>
         <li class="nav-item admin-only">
+            <!--suppress HtmlUnknownAnchorTarget -->
             <a class="nav-link" href="#/manage-users">Manage Users</a>
         </li>
         <li class="nav-item admin-only">
+            <!--suppress HtmlUnknownAnchorTarget -->
             <a class="nav-link" href="#/reported-drives">Reported Drives</a>
         </li>
     </ul>
@@ -39,6 +43,7 @@
                 </span>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <!--suppress HtmlUnknownAnchorTarget -->
                 <a class="dropdown-item" href="#/user-profile">Manage Profile</a>
                 <a class="dropdown-item" href="#" id="logout">Sign out</a>
             </div>
@@ -46,21 +51,12 @@
     </ul>
 </nav>
 
-<!-- Modal -->
-<div class="modal fade" id="main-modal" tabindex="-1" role="dialog" aria-labelledby="mainModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        </div>
-    </div>
-</div>
-
 <section id="main-tab" class="mt-3 container"></section>
 
 <script src="js/vendors/bootstrap-native-v4.min.js"></script>
 <script src="js/custom/rest.js"></script>
-<script src="js/custom/templates/create-drive.js"></script>
-<script src="js/custom/templates/drive.js"></script>
 <script src="js/custom/templates/edit-drive.js"></script>
+<script src="js/custom/templates/drive.js"></script>
 <script src="js/custom/templates/manage-users.js"></script>
 <script src="js/custom/templates/my-commutes.js"></script>
 <script src="js/custom/templates/reported-drives.js"></script>

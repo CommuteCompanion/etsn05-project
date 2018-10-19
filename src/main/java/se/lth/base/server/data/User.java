@@ -5,7 +5,7 @@ import java.sql.Date;
 
 public class User implements Principal {
 
-    public static User NONE = new User(0, Role.NONE, "none@lu.se", "-", "-", "0", 0, Date.valueOf("2018-01-01").getTime(), false, 0, 0, 0);
+    public static User NONE = new User(0, Role.NONE, "none@commutecompanion.se", "-", "-", "0", 0, Date.valueOf("2018-01-01").getTime(), false, 0, 0, 0);
 
     private final int userId;
     private final Role role;
@@ -15,13 +15,13 @@ public class User implements Principal {
     private String phoneNumber;
     private final int gender;
     private final long dateOfBirth;
-    private final Boolean drivingLicence;
+    private final Boolean drivingLicense;
     private final int ratingTotalScore;
     private final int numberOfRatings;
     private final int warning;
 
     public User(int userId, Role role, String email, String firstName, String lastName, String phoneNumber,
-			int gender, long dateOfBirth, Boolean drivingLicence, int ratingTotalScore,
+			int gender, long dateOfBirth, Boolean drivingLicense, int ratingTotalScore,
 			int numberOfRatings, int warning) {
 		this.userId = userId;
 		this.role = role;
@@ -31,7 +31,7 @@ public class User implements Principal {
 		this.phoneNumber = phoneNumber;
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
-		this.drivingLicence = drivingLicence;
+		this.drivingLicense = drivingLicense;
 		this.ratingTotalScore = ratingTotalScore;
 		this.numberOfRatings = numberOfRatings;
 		this.warning = warning;
@@ -70,7 +70,7 @@ public class User implements Principal {
 		return lastName;
 	}
 
-	public void setLastName(String lastName) {
+	void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -78,7 +78,7 @@ public class User implements Principal {
 		return phoneNumber;
 	}
 
-    public void setPhoneNumber(String phoneNumber) {
+	void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -86,21 +86,19 @@ public class User implements Principal {
 		return gender;
 	}
 
-	public long getDateOfBirth() {
+	long getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public Boolean getDrivingLicence() {
-		return drivingLicence;
+	boolean getDrivingLicense() {
+		return drivingLicense;
 	}
 
-	public int getRatingTotalScore() {
+	int getRatingTotalScore() {
 		return ratingTotalScore;
 	}
 
-	public int getNumberOfRatings() {
-		return numberOfRatings;
-	}
+	public int getNumberOfRatings() { return numberOfRatings; }
 
 	public int getWarning() {
 		return warning;

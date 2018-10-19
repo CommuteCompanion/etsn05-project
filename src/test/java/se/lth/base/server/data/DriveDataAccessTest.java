@@ -10,8 +10,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.assertFalse;
 
 /**
  * @author Group 1 ETSN05 2018
@@ -23,6 +22,7 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
 
     private int drive1Id;
     private Drive drive1;
+    private Drive drive2;
 
     @Before
     public void registerTestDrive() {
@@ -30,6 +30,7 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
         long arrivalTime = new Timestamp(Date.valueOf("2017-07-23").getTime()).getTime();
         drive1 = driveDao.addDrive(new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
         drive1Id = drive1.getDriveId();
+        drive2 = driveDao.addDrive(new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
     }
 
     @Test
@@ -56,9 +57,9 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
         assertEquals("m", drive2.getCarLicensePlate());
         assertEquals(3, drive2.getCarNumberOfSeats());
         assertEquals(2, drive2.getOptLuggageSize());
-        assertEquals(false, drive2.getOptWinterTires());
-        assertEquals(false, drive2.getOptBicycle());
-        assertEquals(false, drive2.getOptPets());
+        assertFalse(drive2.getOptWinterTires());
+        assertFalse(drive2.getOptBicycle());
+        assertFalse(drive2.getOptPets());
     }
 
     @Test
@@ -74,6 +75,7 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
     public void getNumberOfDrivesForUser() {
         DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
         driveUserDao.addDriveUser(drive1.getDriveId(), TEST.getId(), "A", "F", true, true, false);
+        driveUserDao.addDriveUser(drive2.getDriveId(), TEST.getId(), "A", "F", false, true, false);
 
         assertEquals(1, driveUserDao.getNumberOfDrivesForUser(TEST.getId()));
     }
@@ -95,7 +97,7 @@ public class DriveDataAccessTest extends BaseDataAccessTest {
     public void deleteDrive() {
         driveDao.deleteDrive(drive1Id);
         List<Drive> drives = driveDao.getDrives();
-        assertTrue(drives.isEmpty());
+        assertEquals(1, drives.size());
     }
 }
 

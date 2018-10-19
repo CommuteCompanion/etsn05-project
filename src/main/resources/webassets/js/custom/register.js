@@ -1,8 +1,20 @@
 window.base = window.base || {};
-
 window.base.changeLocation = url => window.location.replace(url);
 
 window.base.registerController = (() => {
+    const view = {
+        showFailure: msg => {
+            const alert = document.getElementById('register-alert');
+            const classList = alert.classList;
+
+            if (classList.contains('d-none')) {
+                classList.remove('d-none');
+            }
+
+            alert.innerHTML = `<h5 class="alert-heading">Oops!</h5><p>Something went wrong, error message: ${msg}</p>`;
+        }
+    };
+
     const controller = {
         setInputListeners: form => {
             const dob = form.dateOfBirth.getField();
@@ -27,6 +39,7 @@ window.base.registerController = (() => {
                 }
             }
         },
+
         sanitizeDateInput: field => {
             let input = field.value;
             input = input.replace(/[^\d]+/g, '');
@@ -42,17 +55,18 @@ window.base.registerController = (() => {
 
             field.value = input;
         },
+
         validateGenderInput: (e, form) => {
             form[e].getField().onchange = () => {
-                if (form[e].validate()) {
-                    form[e].isValid = true;
-                } else {
-                    form[e].isValid = false;
-                }
+                form[e].isValid = !!form[e].validate();
                 controller.validateForm(form);
             };
 
             form[e].getFieldFemale().onchange = () => {
+                form[e].isValid = !!form[e].validate();
+                controller.validateForm(form);
+            };
+            form[e].getFieldOther().onchange = () => {
                 if (form[e].validate()) {
                     form[e].isValid = true;
                 } else {
@@ -60,14 +74,17 @@ window.base.registerController = (() => {
                 }
 
                 controller.validateForm(form);
-            }
+            };
+
         },
+
         validateTextInput: (e, form) => {
             const field = form[e].getField();
             field.onkeyup = () => {
                 if (e === 'dateOfBirth') {
                     controller.sanitizeDateInput(form[e].getField());
                 }
+
                 const inputClassList = field.classList;
                 const spanClassList = field.nextElementSibling.children[0].classList;
                 const iconClassList = field.nextElementSibling.children[0].children[0].classList;
@@ -107,11 +124,10 @@ window.base.registerController = (() => {
                 controller.validateForm(form);
             }
         },
+
         validateForm: form => {
             for (let e in form) {
-                if (form.hasOwnProperty(e) &&
-                    typeof form[e].isValid !== 'undefined' &&
-                    !form[e].isValid) {
+                if (form.hasOwnProperty(e) && typeof form[e].isValid !== 'undefined' && !form[e].isValid) {
                     if (!form.submit.hasAttribute('disabled')) {
                         form.submit.setAttribute('disabled', '');
                     }
@@ -123,6 +139,7 @@ window.base.registerController = (() => {
                 form.submit.removeAttribute('disabled');
             }
         },
+
         getForm: function () {
             return {
                 submit: document.getElementById('register'),
@@ -162,12 +179,12 @@ window.base.registerController = (() => {
                     getValue: () => Date.parse(document.getElementById('register-date-of-birth').value),
                     validate: () => {
                         const field = document.getElementById('register-date-of-birth');
-                        const LEGAL_AGE = 1000 * 60 * 60 * 24 * 364 * 18;
-                        return field.checkValidity() && Date.now() - Date.parse(field.value) >= LEGAL_AGE;
+                        const legalAge = 1000 * 60 * 60 * 24 * 364 * 18;
+                        return field.checkValidity() && Date.now() - Date.parse(field.value) >= legalAge;
                     },
                     isValid: false
                 },
-                drivingLicence: {
+                drivingLicense: {
                     getField: () => document.getElementById('register-driving-license'),
                     getValue: () => document.getElementById('register-driving-license').checked,
                     validate: () => document.getElementById('register-driving-license').checkValidity(),
@@ -175,16 +192,26 @@ window.base.registerController = (() => {
                 gender: {
                     getField: () => document.getElementById('register-gender-male'),
                     getFieldFemale: () => document.getElementById('register-gender-female'),
-                    getValue: () => document.getElementById('register-gender-male').checked ? 0 : 1,
+                    getFieldOther: () => document.getElementById('register-gender-other'),
+                    getValue: () => { 
+                        if (document.getElementById('register-gender-male').checked) {
+                            return 0;
+                        } else if (document.getElementById('register-gender-female').checked) {
+                            return 1;
+                        } else if (document.getElementById('register-gender-other').checked) {
+                            return 2;
+                        }
+                    },
                     validate: () => document.getElementById('register-gender-male').checked ||
-                        document.getElementById('register-gender-female').checked,
+                        document.getElementById('register-gender-female').checked || 
+                        document.getElementById('register-gender-other').checked,
                     isValid: false
                 }
             }
         },
         submitUser: submitEvent => {
             submitEvent.preventDefault();
-            let {email, password, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence, gender} = controller.getForm();
+            let {email, password, firstName, lastName, phoneNumber, dateOfBirth, drivingLicense, gender} = controller.getForm();
 
             email = email.getValue();
             password = password.getValue();
@@ -192,23 +219,23 @@ window.base.registerController = (() => {
             lastName = lastName.getValue();
             phoneNumber = phoneNumber.getValue();
             dateOfBirth = dateOfBirth.getValue();
-            drivingLicence = drivingLicence.getValue();
+            drivingLicense = drivingLicense.getValue();
             gender = gender.getValue();
 
-            const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicence, gender};
+            const user = {email, firstName, lastName, phoneNumber, dateOfBirth, drivingLicense, gender};
 
             const role = "USER";
             const credentials = {email, password, role, user};
 
             window.base.rest.addUser(credentials).then(user => {
                 if (user.error) {
-                    controller.showFailure(user.message);
+                    view.showFailure(user.message);
                 } else {
                     window.base.rest.login(email, password, false).then(response => {
                         if (response.ok) {
                             window.base.changeLocation('/');
                         } else {
-                            controller.showFailure(user.message);
+                            view.showFailure(user.message);
                         }
                     });
                 }
@@ -216,22 +243,13 @@ window.base.registerController = (() => {
 
             return false;
         },
-        showFailure: msg => {
-            const alert = document.getElementById('register-alert');
-            const classList = alert.classList;
 
-            if (classList.contains('d-none')) {
-                classList.remove('d-none');
-            }
-
-            alert.innerHTML = '<h4 class="alert-heading">Oops!</h4>'
-                + '<p>Something went wrong, error message: ' + msg + '</p>';
-        },
         load: () => {
             let form = controller.getForm();
             controller.setInputListeners(form);
             form.form.onsubmit = controller.submitUser;
         },
+
         initOnLoad: () => document.addEventListener('DOMContentLoaded', window.base.registerController.load)
     };
 

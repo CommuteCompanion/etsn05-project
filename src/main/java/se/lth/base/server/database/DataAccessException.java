@@ -19,12 +19,12 @@ public class DataAccessException extends RuntimeException {
         this.errorType = errorType;
     }
 
-    public DataAccessException(String message, Throwable cause, ErrorType errorType) {
+    DataAccessException(String message, Throwable cause, ErrorType errorType) {
         super(message, cause);
         this.errorType = errorType;
     }
 
-    public DataAccessException(Throwable cause, ErrorType errorType) {
+    DataAccessException(Throwable cause, ErrorType errorType) {
         super(errorType.toString(), cause);
         this.errorType = errorType;
     }

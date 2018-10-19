@@ -11,7 +11,8 @@ public class Drive {
     private final int carNumberOfSeats;
     private final int optLuggageSize;
     private final String start;
-    private final String stop, comment;
+    private final String stop;
+    private final String comment;
     private final String carBrand;
     private final String carModel;
     private final String carColor;
@@ -59,67 +60,108 @@ public class Drive {
         this.optPets = optPets;
     }
 
-    /** Returns the driveId. */
+    /**
+     * Returns the driveId.
+     */
     public int getDriveId() {
         return driveId;
     }
 
-    /** Returns the start location. */
+    /**
+     * Returns the start location.
+     */
     public String getStart() {
         return start;
     }
-    /** Returns the stop location. */
+
+    /**
+     * Returns the stop location.
+     */
     public String getStop() {
         return stop;
     }
-    /** Returns the departure time. */
+
+    /**
+     * Returns the departure time.
+     */
     public long getDepartureTime() {
         return departureTime;
     }
-    
-    /** Returns the arrival time. */
+
+    /**
+     * Returns the arrival time.
+     */
     public long getArrivalTime() {
         return arrivalTime;
     }
 
-    /** Returns the comment of a drive. */
+    /**
+     * Returns the comment of a drive.
+     */
     public String getComment() {
         return comment;
     }
-    /** Returns the brand of the car. */
-    public String getCarBrand() {
+
+    /**
+     * Returns the brand of the car.
+     */
+    String getCarBrand() {
         return carBrand;
     }
-    /** Returns the model of the car. */
-    public String getCarModel() {
+
+    /**
+     * Returns the model of the car.
+     */
+    String getCarModel() {
         return carModel;
     }
-    /** Returns the color of the car. */
+
+    /**
+     * Returns the color of the car.
+     */
     public String getCarColor() {
         return carColor;
     }
-    /** Returns the license plate of the car. */
+
+    /**
+     * Returns the license plate of the car.
+     */
     public String getCarLicensePlate() {
         return carLicensePlate;
     }
-    /** Returns the number of seats in the car. */
+
+    /**
+     * Returns the number of seats in the car.
+     */
     public int getCarNumberOfSeats() {
         return carNumberOfSeats;
     }
-    /** Returns the size of the luggage in the car. */
-    public int getOptLuggageSize() {
+
+    /**
+     * Returns the size of the luggage in the car.
+     */
+    int getOptLuggageSize() {
         return optLuggageSize;
     }
-    /** Returns true if the car has winter tires, otherwise false. */
-    public boolean getOptWinterTires() {
+
+    /**
+     * Returns true if the car has winter tires, otherwise false.
+     */
+    boolean getOptWinterTires() {
         return optWinterTires;
     }
-    /** Returns true if it is possible to bring a bicycle, otherwise false. */
-    public boolean getOptBicycle() {
+
+    /**
+     * Returns true if it is possible to bring a bicycle, otherwise false.
+     */
+    boolean getOptBicycle() {
         return optBicycle;
     }
-    /** Returns true if pets are allowed in the car, otherwise false. */
-    public boolean getOptPets() {
+
+    /**
+     * Returns true if pets are allowed in the car, otherwise false.
+     */
+    boolean getOptPets() {
         return optPets;
     }
 }

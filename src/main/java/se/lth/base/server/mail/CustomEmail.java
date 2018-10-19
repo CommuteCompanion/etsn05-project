@@ -105,6 +105,11 @@ public class CustomEmail {
                 body = getNewPassengerOnTripBody();
                 break;
             }
+            case NEW_PASSENGER_ON_TRIP_DATA: {
+                subject = getNewPassengerOnTripDataSubject();
+                body = getNewPassengerOnTripDataBody();
+                break;
+            }
             case BOOKING_CONFIRMED: {
                 subject = getBookingConfirmedSubject();
                 body = getBookingConfirmedBody();
@@ -258,6 +263,60 @@ public class CustomEmail {
         return getResource(EMAIL_TEMPLATE, content);
     }
 
+    private String getNewPassengerOnTripDataSubject() {
+        return "New passenger is accepted to your drive to " + driveWrap.getDrive().getStop();
+    }
+
+    private String getNewPassengerOnTripDataBody() throws IOException {
+        Map<String, String> content = new HashMap<>();
+        DriveUser lastPassenger = null;
+        DriveUser driver = null;
+        long departureTime = driveWrap.getDrive().getDepartureTime();
+        String formattedDepartureTime = new SimpleDateFormat("EEEEE MMMMM d 'at' HH:mm").format(new Date(departureTime));
+
+        // Fetch the driver and last passenger added
+        for (DriveUser u : driveWrap.getUsers()) {
+            if (u.isDriver()) {
+                driver = u;
+            }
+
+            lastPassenger = u;
+        }
+
+        if (driver == null) {
+            throw new IllegalArgumentException("Driver is null");
+        }
+
+        // Get the user data
+        UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+        User driverU = userDao.getUser(driver.getUserId());
+        User passenger = userDao.getUser(lastPassenger.getUserId());
+
+        // Title
+        content.put(TITLE, getNewPassengerOnTripSubject());
+
+        // Intro
+        String intro = "<p>Hi " + driverU.getFirstName() + ",</p>";
+        intro += "<p>A passenger been accepted to travel with you from <i>";
+        intro += lastPassenger.getStart() + "</i> to <i>" + lastPassenger.getStop();
+        intro += "</i> on your drive from <i>" + driver.getStart() + "</i> to <i>";
+        intro += driver.getStop() + "</i> on " + formattedDepartureTime + ".<i>";
+        intro += "</i> Here is the contact information to the passenger. <i>";
+        intro += "</i> Phone number: " + passenger.getPhoneNumber() + ".<i>";
+        intro += "</i> Email: " + passenger.getPhoneNumber() + ".<p>";
+        content.put(INTRO, intro);
+
+        // Action button
+        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Drive"));
+
+        // Add recipient
+        String fullName = driverU.getFirstName() + " " + driverU.getLastName();
+        recipients.add(new Recipient(fullName, driverU.getEmail(), Message.RecipientType.TO));
+
+        return getResource(EMAIL_TEMPLATE, content);
+    }
+
+
     private String getBookingConfirmedSubject() {
         return "Your booking request is confirmed";
     }
@@ -292,7 +351,8 @@ public class CustomEmail {
 
         // Intro
         String intro = "<p>Hi " + singleUser.getFirstName() + ",</p>";
-        intro += "<p>Your booking request with " + driverU.getFirstName() + " from <i>";
+        intro += "<p>Your booking request with " + driverU.getFirstName() + "with phone number <i>";
+        intro += driverU.getPhoneNumber() + " and email </i>" + driverU.getEmail() + " from <i>";
         intro += acceptedPassenger.getStart() + "</i> to <i>" + acceptedPassenger.getStop();
         intro += "</i> on " + formattedDepartureDate + " has been accepted.</p>";
         content.put(INTRO, intro);

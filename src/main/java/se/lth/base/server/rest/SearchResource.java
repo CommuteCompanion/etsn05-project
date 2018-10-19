@@ -2,14 +2,10 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
-import se.lth.base.server.mail.MailHandler;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,20 +19,6 @@ public class SearchResource {
     private final DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
     private final DriveMilestoneDataAccess driveMilestoneDao = new DriveMilestoneDataAccess(Config.instance().getDatabaseDriver());
     private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
-    private final SearchFilterDataAccess searchFilterDao = new SearchFilterDataAccess(Config.instance().getDatabaseDriver());
-    private final MailHandler mailHandler = new MailHandler();
-    private final User user;
-
-    // A trip with departure time within interval 13.00-13.10 will match drive milestone with departure time 13.10
-    private final int SEARCH_MINUTES_MARGIN = 60;
-
-    public SearchResource(@Context ContainerRequestContext context) {
-        this.user = (User) context.getProperty(User.class.getSimpleName());
-    }
-
-    public SearchResource(User user) {
-        this.user = user;
-    }
 
     /**
      * This method lets a user search for drives by specifying search parameters such as trip start, stop and departure time
@@ -64,6 +46,9 @@ public class SearchResource {
 
         // Get all drives matching start and end point of search
         List<Drive> filteredDrives = filterDrivesMatchingTrip(tripStart, tripStop, departureTime);
+
+        // Remove drives with too many drive users
+        removeDrivesWithTooManyDriveUsers(filteredDrives);
 
         // Turn into DriveWraps
         List<DriveWrap> driveWraps = new ArrayList<>();
@@ -128,129 +113,16 @@ public class SearchResource {
         return users;
     }
 
-    /**
-     * A user can call this method to subscribe to a search filter. Matches will be notified through email.
-     *
-     * @param searchFilter SearchFilter DTO.
-     * @return a new SearchFilter with correct searchFilterId
-     */
-    @Path("subsribe")
-    @POST
-    @RolesAllowed(Role.Names.USER)
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public SearchFilter subscribeToSearch(SearchFilter searchFilter) {
-        return searchFilterDao.addSearchFilter(new SearchFilter(-1, user.getId(), searchFilter.getStart(), searchFilter.getStop(), searchFilter.getDepartureTime()));
-    }
-
-    /**
-     * This method will check for any possible matches between a Drive and existing SearchFilters.
-     * Matches will be notified through email.
-     *
-     * @param drive The drive one wishes to check matches against.
-     */
-    public void matchDriveWithSearchFilters(Drive drive) {
-        List<SearchFilter> searchFilters = searchFilterDao.getSearchFilters();
-        for (SearchFilter searchFilter : searchFilters) {
-            List<DriveWrap> drivesMatching = getDrives(searchFilter);
-            for (DriveWrap driveWrap : drivesMatching) {
-                Drive tempDrive = driveWrap.getDrive();
-                if (tempDrive.getDriveId() == drive.getDriveId()) {
-                    // Match found, notify user by email
-                    try {
-                        mailHandler.notifyUserSearchFilterMatch(driveWrap, userDao.getUser(searchFilter.getUserId()), searchFilter);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks if it is possible for a user to book a specific Drive.
-     *
-     * @param driveId the id of the drive that one wishes to see if it is possible to book
-     * @param start   at what milestone the user will be starting at
-     * @param stop    at what milestone the user will stop at
-     * @return a list of drives associated with this user, conflicting with the entered drive
-     */
-    @Path("checkbookingoverlap/{driveId}/{start}/{stop}")
-    @GET
-    @RolesAllowed(Role.Names.USER)
-    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<Drive> checkBookingOverlap(@PathParam("driveId") int driveId, @PathParam("start") String start, @PathParam("stop") String stop) {
-        Drive drive = driveDao.getDrive(driveId);
-        List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(driveId);
-        // Add drive start and stop as milestones to list
-        driveMilestones.add(0, new DriveMilestone(-1, -1, drive.getStart(), drive.getDepartureTime()));
-        driveMilestones.add(new DriveMilestone(-1, -1, drive.getStop(), drive.getArrivalTime()));
-
-        // Find the time that the user would be busy if user participated in drive
-        long busyTimeStart = -1;
-        long busyTimeEnd = -1;
-
-        for (DriveMilestone dm : driveMilestones) {
-            if (dm.getMilestone().toLowerCase().trim().equals(start.toLowerCase().trim())) {
-                busyTimeStart = dm.getDepartureTime();
-            } else if (dm.getMilestone().toLowerCase().trim().equals(stop.toLowerCase().trim())) {
-                busyTimeEnd = dm.getDepartureTime();
-            }
-        }
-
-        // Check for time conflicts with other already booked drives/trips
-        List<Drive> associatedDrives = getDriveAssociatedWithUser(user.getId());
-        Iterator<Drive> driveIterator = associatedDrives.iterator();
-        while (driveIterator.hasNext()) {
-            Drive d = driveIterator.next();
-            List<DriveMilestone> tempDriveMilestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
-            // Add drive start and stop as milestones to list
-            tempDriveMilestones.add(0, new DriveMilestone(-1, -1, d.getStart(), d.getDepartureTime()));
-            tempDriveMilestones.add(new DriveMilestone(-1, -1, d.getStop(), d.getArrivalTime()));
-
-            // Find the time that the user is busy in this drive
-            long tempBusyTimeStart = -1;
-            long tempBusyTimeEnd = -1;
-
-            DriveUser driveUser = driveUserDao.getDriveUser(d.getDriveId(), user.getId());
-
-            for (DriveMilestone dm : tempDriveMilestones) {
-                if (dm.getMilestone().toLowerCase().trim().equals(driveUser.getStart().toLowerCase().trim())) {
-                    tempBusyTimeStart = dm.getDepartureTime();
-                } else if (dm.getMilestone().toLowerCase().trim().equals(driveUser.getStop().toLowerCase().trim())) {
-                    tempBusyTimeEnd = dm.getDepartureTime();
-                }
-            }
-
-            if (tempBusyTimeEnd < busyTimeStart || tempBusyTimeStart > busyTimeEnd) {
-                // No conflict
-                driveIterator.remove();
-            }
-        }
-
-        // Return all booked drives that are in conflict with the new booking
-        return associatedDrives;
-    }
-
-    private List<Drive> getDriveAssociatedWithUser(int userId) {
-        List<Drive> drives = driveDao.getDrives();
+    private void removeDrivesWithTooManyDriveUsers(List<Drive> drives) {
         Iterator<Drive> iterator = drives.iterator();
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
-            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(drive.getDriveId());
-            for (int i = 0; i < driveUsers.size(); i++) {
-                DriveUser driveUser = driveUsers.get(i);
-                if (driveUser.getUserId() == userId) {
-                    // User is associated with this drive, keep drive in list
-                    break;
-                }
-                if (i + 1 == driveUsers.size()) {
-                    // User is not associated with this drive, remove drive from list
-                    iterator.remove();
-                }
+            int numberOfSeats = drive.getCarNumberOfSeats();
+            int usersInDrive = driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) - 1; // Remove driver
+            if (numberOfSeats == usersInDrive) {
+                iterator.remove();
             }
-
         }
-        return drives;
     }
 
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
@@ -379,12 +251,14 @@ public class SearchResource {
     }
 
     private boolean checkDepartureTimeMatch(Timestamp departureTime, String startMilestone, List<DriveMilestone> driveMilestones) {
+        int searchMinutesMargin = 60;
+
         // Find the departure time of the milestone
         for (DriveMilestone driveMilestone : driveMilestones) {
             if (driveMilestone.getMilestone().toLowerCase().trim().equals(startMilestone.toLowerCase().trim())) {
                 Timestamp milestoneDepartureTime = new Timestamp(driveMilestone.getDepartureTime());
 
-                Timestamp timeMargin = new Timestamp(milestoneDepartureTime.getTime() - SEARCH_MINUTES_MARGIN * 60 * 1000);
+                Timestamp timeMargin = new Timestamp(milestoneDepartureTime.getTime() - searchMinutesMargin * 60 * 1000);
                 if ((timeMargin.before(departureTime) || timeMargin.equals(departureTime)) &&
                         (departureTime.before(milestoneDepartureTime) || departureTime.equals(milestoneDepartureTime))) {
                     return true;
@@ -398,12 +272,12 @@ public class SearchResource {
         private int startIndex;
         private int stopIndex;
 
-        public DriveUserInterval(String start, String stop, List<DriveMilestone> milestones) {
+        DriveUserInterval(String start, String stop, List<DriveMilestone> milestones) {
             startIndex = getIndexOfMilestone(start, milestones);
             stopIndex = getIndexOfMilestone(stop, milestones);
         }
 
-        private int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
+        int getIndexOfMilestone(String name, List<DriveMilestone> milestones) {
             for (int i = 0; i < milestones.size(); i++) {
                 if (milestones.get(i).getMilestone().toLowerCase().trim().equals(name.toLowerCase().trim())) {
                     return i;
@@ -412,11 +286,11 @@ public class SearchResource {
             return -1;
         }
 
-        public int getStartIndex() {
+        int getStartIndex() {
             return startIndex;
         }
 
-        public int getStopIndex() {
+        int getStopIndex() {
             return stopIndex;
         }
     }

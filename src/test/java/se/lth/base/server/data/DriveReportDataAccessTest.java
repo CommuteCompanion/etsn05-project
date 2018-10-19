@@ -18,8 +18,8 @@ public class DriveReportDataAccessTest extends BaseDataAccessTest {
 
     @Before
     public void createDrive() {
-        long departureTime = new Timestamp(2018 - 1900, 10, 20, 12, 0, 0, 0).getTime();
-        long arrivalTime = new Timestamp(2018 - 1900, 10, 20, 13, 0, 0, 0).getTime();
+        long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
         drive = new Drive(-1, "A", "C", departureTime, arrivalTime, "c", "x", "y", "z", "x1", 1, 1, false, false, false);
         drive = driveDao.addDrive(drive);
     }
@@ -43,7 +43,7 @@ public class DriveReportDataAccessTest extends BaseDataAccessTest {
         Assert.assertEquals("Lorem ipsum", driveReport.getReportMessage());
 
         // Delete drive report
-        Assert.assertEquals(true, driveReportDao.deleteDriveReport(driveReport.getReportId()));
+        Assert.assertTrue(driveReportDao.deleteDriveReport(driveReport.getReportId()));
 
         // Check for empty list
         driveReports = driveReportDao.getDriveReportsForDrive(drive.getDriveId());

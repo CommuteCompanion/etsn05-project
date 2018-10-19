@@ -1,0 +1,190 @@
+<div class="row text-center pt-1">
+    <div class="col" id="drive-header-col">
+        <p id="drive-header"></p>
+    </div>
+    <div class="col" id="passenger-header">
+        <p>Passengers</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col" id="drive-col">
+        <form id="user-form" class="col-md">
+            <div id="user-settings" class="form-group">
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="set-from" class="col-md">From</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-from" required
+                                   pattern="[a-zA-Z-æøåÆØÅäÄöÖ]{1,20}" placeholder="Eg. Lund">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="set-to" class="col-md">To</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-to" required
+                                   pattern="[a-zA-Z-æøåÆØÅäÄöÖ]{1,20}" placeholder="Eg. Gothenburg">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="set-date" class="col-md">Date</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-date" required placeholder="YYYY-MM-DD">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="set-time-leave" class="col-md">Time Leave</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-time-leave" required placeholder="HH:MM">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="set-time-arrival" class="col-md">Time Arrival</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-time-arrival" required placeholder="HH:MM">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4 mb-2">
+                    <div class="col">
+                        <div class="col-md text-center">
+                            <button id="add-stop-btn" type="button" class="btn btn-primary w-75">Add Stop</button>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="col-md text-center">
+                            <button id="remove-stop-btn" type="button" class="btn btn-outline-primary w-75">Remove
+                                Stop
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Div where stops are added to-->
+                <div id="stop-row">
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="col-md">
+                            <label for="set-comment">Drive comment</label>
+                            <textarea class="form-control" id="set-comment" rows="4" placeholder="Eg. 'I am allergic to nuts'"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="set-brand" class="col-md">Car brand</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-brand" required
+                                   pattern="[a-zA-Z-æøåÆØÅäÄöÖ]{1,20}" placeholder="Eg. Audi">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="set-model" class="col-md">Car model</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-model" required
+                                   pattern="[a-zA-Z-æøåÆØÅäÄöÖ0-9]{1,20}" placeholder="Eg. Q7">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="set-color" class="col-md">Color</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-color" required
+                                   pattern="[a-zA-Z-æøåÆØÅäÄöÖ]{1,12}" placeholder="Eg. Green">
+                        </div>
+                    </div>
+                    <div class="col">
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <label for="set-license" class="col-md">License plate</label>
+                        <div class="col-md">
+                            <input type="text" class="form-control" id="set-license" required pattern="[A-Z0-9]{1,6}"
+                                   placeholder="Eg. ABC123">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="set-seats" class="col-md">Number of available seats</label>
+                        <div class="col-md">
+                            <input type="number" class="form-control" id="set-seats" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input id="set-bikes" class="form-check-input" type="checkbox" value="noBike">
+                                Allow bikes
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input id="set-pets" class="form-check-input" type="checkbox" value="petOk">
+                                Allow pets
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input id="set-tires" class="form-check-input" type="checkbox" value="hasWinter">
+                                Has winter tires
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="col-md">
+                            <label class="form-check-label w-100">
+                                <label for="set-luggage">Size of luggage</label>
+                                <select class="form-control" id="set-luggage">
+                                    <option value="0">Small</option>
+                                    <option value="1">Medium</option>
+                                    <option value="2">Large</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col">
+                        <div class="col" id="alert-row">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="col">
+                            <button id="create-drive-btn" type="submit" class="btn btn-secondary w-100">Create Drive
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col text-center" id="passenger-col">
+        <div class="row my-3" id="passenger-row">
+        </div>
+        <div class="row mt-5">
+            <div class="col my-5">
+                <button id="delete-drive-btn" type="button" class="btn btn-danger w-100 mt-4">Delete Drive</button>
+            </div>
+        </div>
+    </div>
+</div>

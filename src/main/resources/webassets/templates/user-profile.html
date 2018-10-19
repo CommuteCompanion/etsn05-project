@@ -5,7 +5,7 @@
             <div class="row my-2">
                 <label for="set-email" class="col-md-4">Email</label>
                 <div class="col-md-8">
-                    <input type="text" class="form-control" id="set-email"  required
+                    <input type="text" class="form-control" id="set-email" required
                            pattern=".{4,}">
                     <small id="edit-email-help" class="form-text text-muted">Minimum 4 characters.</small>
                 </div>
@@ -28,44 +28,65 @@
                 <label class="col-md-4">Gender</label>
                 <div class="col-md-8">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-female" name="set-gender" runat="server" class="custom-control-input" value="female">
+                        <input type="radio" id="set-female" name="set-gender" class="custom-control-input"
+                               value="female">
                         <label class="custom-control-label" for="set-female">Female</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-male" name="set-gender" runat="server" class="custom-control-input" value="male">
+                        <input type="radio" id="set-male" name="set-gender" class="custom-control-input" value="male">
                         <label class="custom-control-label" for="set-male">Male</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="set-other" name="set-gender" runat="server" class="custom-control-input" value="male">
+                        <label class="custom-control-label" for="set-other">Other</label>
                     </div>
                 </div>
             </div>
             <div class="row my-2">
-                <label class="col-md-4">Driving licence</label>
-                <div class="col-md-8" id="licence">
+                <label class="col-md-4">Driving license</label>
+                <div class="col-md-8" id="license">
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-licence-true" name="set-licence" class="custom-control-input"
+                        <input type="radio" id="set-license-true" name="set-license" class="custom-control-input"
                                value="true">
-                        <label class="custom-control-label" for="set-licence-true">Yes</label>
+                        <label class="custom-control-label" for="set-license-true">Yes</label>
                     </div>
                     <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" id="set-licence-false" name="set-licence" class="custom-control-input"
+                        <input type="radio" id="set-license-false" name="set-license" class="custom-control-input"
                                value="false">
-                        <label class="custom-control-label" for="set-licence-false">No</label>
+                        <label class="custom-control-label" for="set-license-false">No</label>
                     </div>
+                </div>
+            </div>
+            <div class="row my-2">
+                <label for="set-phone-number" class="col-md-4">Phone number</label>
+                <div class="col-md-8">
+                    <input pattern="^(\+|0)\d{6,}$" type="tel" class="form-control" id="set-phone-number"
+                           data-content="Must start with + or 0 and be at least 7 digits" data-toggle="popover"
+                           data-trigger="focus">
+                </div>
+            </div>
+            <div class="row my-2">
+                <label for="set-date-of-birth" class="col-md-4">Date of birth</label>
+                <div class="col-md-8">
+                    <input pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}$" type="tel" class="form-control border-right-0"
+                           id="set-date-of-birth" placeholder="Date of birth"
+                           data-content="You must be at least 18 years old to use commute companion."
+                           data-toggle="popover" data-trigger="focus">
+                    <small id="edit-date-of-birth-help" class="form-text text-muted">YYYY-MM-DD</small>
                 </div>
             </div>
             <div class="row my-2">
                 <label for="set-password" class="col-md-4">New password</label>
                 <div class="col-md-8">
-                    <input type="password" class="form-control" id="set-password" 
-                           pattern=".{8,}">
+                    <input type="password" class="form-control" id="set-password" pattern=".{8,}">
                     <small id="edit-password-help" class="form-text text-muted">Minimum 8 characters.</small>
                 </div>
             </div>
             <div class="row my-2">
                 <label class="col-md-4">Confirm new password</label>
                 <div class="col-md-8">
-                    <input type="password" class="form-control" id="set-password-confirm" 
-                           pattern=".{8,}">        
-                </div>       
+                    <input title="confirm-password" type="password" class="form-control" id="set-password-confirm" pattern=".{8,}">
+                </div>
             </div>
             <div class="row my-5">
                 <div class="col-6">
@@ -78,6 +99,7 @@
         </div>
     </form>
     <div id="user-settings-information" class="col-md-5 my-2">
+        <div id="user-profile-alert-box"></div>
         <button id="delete-account" type="button" class="w-100 btn btn-danger">Delete account</button>
     </div>
 </div>

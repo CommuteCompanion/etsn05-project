@@ -24,11 +24,9 @@ import java.util.regex.Pattern;
 /**
  * Used for authentication and user operations requiring passwords.
  *
- * @author Rasmus Ros, rasmus.ros@cs.lth.se
+ * @author Group 1 ETSN05 2018
  */
 public class Credentials {
-
-    // Password hashing function parameters.
     private static final int SIZE = 256;
     private static final int ITERATION_COST = 16;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA1";
@@ -38,6 +36,14 @@ public class Credentials {
     private final Role role;
     private final User user;
 
+    /**
+     * Creates a new Credentials object
+     *
+     * @param email    user email
+     * @param password user password
+     * @param role     user role
+     * @param user     user info
+     */
     public Credentials(String email, String password, Role role, User user) {
         this.email = email;
         this.password = password;
@@ -49,57 +55,54 @@ public class Credentials {
         return new SecureRandom().nextLong();
     }
 
+    /**
+     * Get a user's email
+     *
+     * @return user email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Get a user's role
+     *
+     * @return user role
+     */
     public Role getRole() {
         return role;
     }
 
+    /**
+     * Get user info
+     *
+     * @return user object
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Check if the credentials object has a password
+     *
+     * @return true/false
+     */
     public boolean hasPassword() {
-        return password != null;
+        return password != null && !password.equals("");
     }
 
-    private String phoneNumberSanitizer(String phoneNumber) {
-        // Strip illegal characters
-        phoneNumber = phoneNumber.trim().replaceAll("[^+0-9]", "");
-
-        // Check for number format
-        if (phoneNumber.substring(0, 2).equals("00")) {
-            phoneNumber = "+" + phoneNumber.substring(2);
-        } else if (phoneNumber.substring(0, 1).equals("0")) {
-            phoneNumber = "+46" + phoneNumber.substring(1);
-        }
-
-        return phoneNumber;
-    }
-
-    private String nameSanitizer(String name) {
-        // Strip illegal chars and make lowercase
-        name = name.trim().replaceAll("[^\\s-A-zÅÄÖåäö]", "").toLowerCase();
-        StringBuilder sb = new StringBuilder(name);
-        Pattern p = Pattern.compile("[\\s+-]");
-        Matcher m = p.matcher(name);
-
-        // Capitalize first character in every word in first name
-        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-        while (m.find()) {
-            int charPos = m.start() + 1;
-            sb.setCharAt(charPos, Character.toUpperCase(sb.charAt(charPos)));
-        }
-
-        return sb.toString();
-    }
-
+    /**
+     * Sanitize the credential object from faulty input
+     */
     public void sanitizeAndValidate() {
         sanitizeAndValidate(true);
     }
 
+    /**
+     * Sanitize the credential object from faulty input
+     *
+     * @param checkPass if checks should be made on the password
+     */
     public void sanitizeAndValidate(boolean checkPass) {
         String firstName = user.getFirstName();
         String lastName = user.getLastName();
@@ -118,10 +121,6 @@ public class Credentials {
 
         if (dateOfBirth == 0) {
             throw new WebApplicationException("Date of birth not specified", Response.Status.BAD_REQUEST);
-        }
-
-        if (user.getDrivingLicence() == null) {
-            throw new WebApplicationException("Driving license not specified", Response.Status.BAD_REQUEST);
         }
 
         if (email == null) {
@@ -181,7 +180,7 @@ public class Credentials {
         }
 
         // Check password
-        if (checkPass && password.matches("^(?=.*[^A-z]{3,}).{8,}$")) {
+        if (checkPass && !password.matches("^(?=.*\\d)(?=.*\\d)(?=.*\\d).{7,}$")) {
             throw new WebApplicationException("Password not secure enough, minimum 8 characters whereof 3 non alpha", Response.Status.BAD_REQUEST);
         }
     }
@@ -205,5 +204,36 @@ public class Credentials {
         } catch (InvalidKeySpecException ex) {
             throw new IllegalStateException("Invalid SecretKeyFactory", ex);
         }
+    }
+
+    private String phoneNumberSanitizer(String phoneNumber) {
+        // Strip illegal characters
+        phoneNumber = phoneNumber.trim().replaceAll("[^+0-9]", "");
+
+        // Check for number format
+        if (phoneNumber.substring(0, 2).equals("00")) {
+            phoneNumber = "+" + phoneNumber.substring(2);
+        } else if (phoneNumber.substring(0, 1).equals("0")) {
+            phoneNumber = "+46" + phoneNumber.substring(1);
+        }
+
+        return phoneNumber;
+    }
+
+    private String nameSanitizer(String name) {
+        // Strip illegal chars and make lowercase
+        name = name.trim().replaceAll("[^\\s-A-zÅÄÖåäö]", "").toLowerCase();
+        StringBuilder sb = new StringBuilder(name);
+        Pattern p = Pattern.compile("[\\s+-]");
+        Matcher m = p.matcher(name);
+
+        // Capitalize first character in every word in first name
+        sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+        while (m.find()) {
+            int charPos = m.start() + 1;
+            sb.setCharAt(charPos, Character.toUpperCase(sb.charAt(charPos)));
+        }
+
+        return sb.toString();
     }
 }
