@@ -376,7 +376,7 @@ window.base.editDriveController = (() => {
         },
 
         deleteDrive: () => window.base.rest.deleteDrive(model.driveWrap.drive.driveId)
-        .then(() => window.location.replace('/')),
+        .then(() => window.location.replace('/#/my-commutes')),
 
         load: (id) => {
             model.theId.id = id;
