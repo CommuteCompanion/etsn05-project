@@ -30,13 +30,13 @@ window.base.rest = (() => {
         this.reports = typeof json.reports !== 'undefined' ? json.reports.map(report => new DriveReport(report)) : {}
     }
 
-    function DriveRateWrap(json) {
+    function DriveRatingWrap(json) {
         this.userId = json.userId;
         this.driveId = json.driveId;
-        this.ratings = json.ratings.map(rating => new DriveRate(rating));
+        this.ratings = json.ratings.map(rating => new DriveRating(rating));
     }
 
-    function DriveRate(json) {
+    function DriveRating(json) {
         this.userId = json.userId;
         this.rating = json.rating;
     }
@@ -212,9 +212,9 @@ window.base.rest = (() => {
                 .then(r => objOrError(r, DriveReport)),
 
         rateDrive: (driveId, ratingWrap) =>
-            baseFetch('rest/drive/' + driveId + '/rate', createJsonPost(ratingWrap))
+            baseFetch('rest/drive/' + driveId + '/rate', createJsonPut(ratingWrap))
                 .then(response => response.json())
-                .then(ratingWrap => objOrError(ratingWrap, DriveRateWrap))
+                .then(r => objOrError(r, DriveRatingWrap))
     };
 })();
 

@@ -243,20 +243,22 @@ public class DriveResource {
     @PUT
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void rateUsers(@PathParam("driveId") int driveId, DriveRatingWrap rating) {
+    public DriveRatingWrap rateUsers(@PathParam("driveId") int driveId, DriveRatingWrap rating) {
         if (driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
             throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
         }
+
         if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
             for (DriveRating dr : rating.getRatings()) {
                 userDao.updateUserRating(dr);
             }
         } else {
             userDao.updateUserRating(rating.getRatings().get(0));
-
         }
+
         driveUserDao.hasRated(user.getId(), driveId);
 
+        return rating;
     }
 
     @Path("{driveId}/report")
