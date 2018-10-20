@@ -59,7 +59,13 @@ window.base.myCommutesController = (() => {
                             driver = users[j];
                             currentUser.isDriver = true;
                             actionButtons += `<button class="btn btn-danger btn-sm btn-block edit-btn" id="edit-drive-${driveId}">Edit</button>`;
+                        } else {
+                            actionButtons += `<button class="btn btn-danger btn-sm btn-block cancel-btn" id="cancel-trip-${driveId}">Cancel Seat</button>`;
                         }
+                    }
+
+                    if (users[j].driver) {
+                        driver = users[j];
                     }
                 }
 
@@ -125,12 +131,14 @@ window.base.myCommutesController = (() => {
                 const viewLinks = document.getElementsByClassName('view-link');
                 const viewButtons = document.getElementsByClassName('view-btn');
                 const editButtons = document.getElementsByClassName('edit-btn');
+                const cancelButtons = document.getElementsByClassName('cancel-btn');
                 const rateForms = document.getElementsByClassName('rate-form');
 
                 for (let i = 0; i < viewLinks.length; i++) {
                     const viewLink = viewLinks[i];
                     const viewButton = viewButtons[i];
                     const editButton = editButtons[i];
+                    const cancelButton = cancelButtons[i];
                     const rateForm = rateForms[i];
 
                     // For clicking on a headline link
@@ -151,6 +159,13 @@ window.base.myCommutesController = (() => {
                     viewButton.onclick = e => {
                         e.preventDefault();
                         viewLink.click();
+                    };
+
+                    // For clicking on a view button
+                    cancelButton.onclick = e => {
+                        e.preventDefault();
+                        const driveId = cancelButton.id.split('-')[2];
+                        controller.cancelTrip(driveId);
                     };
 
                     if (typeof editButton !== 'undefined') {
@@ -193,9 +208,6 @@ window.base.myCommutesController = (() => {
     };
 
     const controller = {
-        view,
-        model,
-
         // Rest calls
         getUser: () => window.base.rest.getUser()
             .then(user => {
@@ -255,6 +267,9 @@ window.base.myCommutesController = (() => {
         }),
 
         // Outgoing logic
+        cancelTrip: (wrapper, driveId) => window.base.rest.removeUserFromDrive(driveId, model.user.userId)
+            .then(() => wrapper.remove()),
+
         rateDrive: (driveId, ratingWrap) => window.base.rest.rateDrive(driveId, ratingWrap)
             .then(() => view.renderAlertBox('alert-drive-' + driveId, 'Done', 'Thank you for your rating', 'info'))
             .then(e => view.renderAlertBox('alert-drive-' + driveId, 'Oops!', 'Something went wrong, ' + e.message, 'danger')),
