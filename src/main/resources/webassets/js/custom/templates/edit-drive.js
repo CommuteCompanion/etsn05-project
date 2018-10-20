@@ -249,7 +249,9 @@ window.base.editDriveController = (() => {
             }
         },
 
-        createDrive: () => {
+        createDrive: submitEvent => {
+            submitEvent.preventDefault();
+            
             let optWinterTires;
             let optBicycle;
             let optPets;
