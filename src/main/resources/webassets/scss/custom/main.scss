@@ -1,14 +1,14 @@
 // Override Bootstrap default colors
 
-$primary:       #A8D0E6;
-$secondary:     #374785;
-$success:       #24305E;
-$info:          #A8D0E6;
-$warning:       #F8E9A1;
-$danger:        #F76C6C;
+$primary: #A8D0E6;
+$secondary: #374785;
+$success: #24305E;
+$info: #A8D0E6;
+$warning: #F8E9A1;
+$danger: #F76C6C;
 
 body {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 @import "../vendors/bootstrap/bootstrap";
@@ -18,41 +18,60 @@ body {
 }
 
 .search-bg {
-    width: 100vw;
-    position: relative;
-    background-color: $gray-100;
-    left: calc(-1 * (100vw - 100%) / 2);
-    min-height: calc(100vh - 50px);
+  width: 100vw;
+  position: relative;
+  background-color: $gray-100;
+  left: calc(-1 * (100vw - 100%) / 2);
+  min-height: calc(100vh - 50px);
 }
 
 .drive-gray-bg {
-    width: 100vw;
-    position: relative;
-    background-color: $gray-100;
-    left: calc(-1 * (100vw - 100%) / 2);
-    min-height: calc(100vh - 200px);
+  width: 100vw;
+  position: relative;
+  background-color: $gray-100;
+  left: calc(-1 * (100vw - 100%) / 2);
+  min-height: calc(100vh - 200px);
 }
 
 .blue-strip-fw {
-    width: 100vw;
-    position: relative;
-    background-color: $info;
-    left: calc(-1 * (100vw - 100%) / 2);
+  width: 100vw;
+  position: relative;
+  background-color: $info;
+  left: calc(-1 * (100vw - 100%) / 2);
 }
 
 .h-100px {
-    min-height: 50px;
+  min-height: 50px;
 }
 
 .border-r-5 {
-    border-radius: 5px;
+  border-radius: 5px;
 }
 
 .border-rb-5 {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .push-to-bottom {
   position: absolute;
+}
+
+.loader {
+  border: 8px solid $gray-100;
+  border-top: 8px solid $info;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 2s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

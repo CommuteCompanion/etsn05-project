@@ -218,6 +218,7 @@ public class DriveResource {
         if (!driveUserDao.getDriveUser(driveId, user.getId()).isDriver() && user.getId() != userId) {
             throw new WebApplicationException("Only driver or yourself allowed to delete", Status.UNAUTHORIZED);
         }
+
         Drive drive = driveDao.getDrive(driveId);
         List<DriveUser> users = driveUserDao.getDriveUsersForDrive(driveId);
         List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(driveId);
@@ -225,18 +226,14 @@ public class DriveResource {
 
         DriveWrap driveWrap = new DriveWrap(drive, milestones, users, reports);
 
-        if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
-            try {
+        try {
+            if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
                 mailHandler.notifyPassengerDriverRemovedPassenger(driveWrap, userDao.getUser(userId));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else if (user.getId() == userId) {
-            try {
+            } else if (user.getId() == userId) {
                 mailHandler.notifyDriverPassengerCancelledTrip(driveWrap, userDao.getUser(userId));
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         driveUserDao.deleteDriveUser(driveId, userId);

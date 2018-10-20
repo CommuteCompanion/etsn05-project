@@ -39,7 +39,6 @@ public class CustomEmail {
     private final DriveWrap driveWrap;
     private final EmailType emailType;
     private final User singleUser;
-    private SearchFilter searchFilter;
     private List<Recipient> recipients;
 
     /**
@@ -48,7 +47,7 @@ public class CustomEmail {
      * @param driveWrap DriveWrap DTO
      * @param emailType EmailType defined by se.lth.base.server.mail.EmailType
      */
-    public CustomEmail(DriveWrap driveWrap, EmailType emailType) {
+    CustomEmail(DriveWrap driveWrap, EmailType emailType) {
         this(driveWrap, emailType, null);
     }
 
@@ -58,23 +57,15 @@ public class CustomEmail {
      * @param user      User to be warned
      * @param emailType EmailType defined by se.lth.base.server.mail.EmailType
      */
-    public CustomEmail(User user, EmailType emailType) {
+    CustomEmail(User user, EmailType emailType) {
         this(null, emailType, user);
     }
 
-    // TODO: Additional constructor to handle search filter match and adjust master constructor
-    public CustomEmail(DriveWrap driveWrap, EmailType emailType, User user) {
+    CustomEmail(DriveWrap driveWrap, EmailType emailType, User user) {
         this.driveWrap = driveWrap;
         this.emailType = emailType;
         this.recipients = new ArrayList<>();
         this.singleUser = user;
-    }
-
-    public CustomEmail(DriveWrap driveWrap, EmailType emailType, User user, SearchFilter searchFilter) {
-        this.driveWrap = driveWrap;
-        this.emailType = emailType;
-        this.singleUser = user;
-        this.searchFilter = searchFilter;
     }
 
     public Email getEmail() throws IOException {
