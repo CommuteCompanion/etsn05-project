@@ -12,8 +12,8 @@ window.base.myCommutesController = (() => {
     };
 
     const view = {
-        renderAlertBox: (element, title, message, type) => {
-            element.innerHTML = `<div class="alert alert-${type}" role="alert">\n                    <h5 class="alert-heading">${title}</h5>\n                    <p>${message}</p>\n                </div>`;
+        renderAlertBox: (element, message, type) => {
+            element.innerHTML = `<div class="alert alert-${type}" role="alert"><span>${message}</span></div>`;
         },
 
         renderError: message => {
@@ -90,21 +90,24 @@ window.base.myCommutesController = (() => {
 
                 // HTML partial -> rate box title
                 if (Date.now() > drive.arrivalTime) {
-                    ratingBox += `<form class="rate-form" id="form-drive-${driveId}"><div id="alert-drive-${driveId}"></div><h5 class="text-muted font-weight-bold">Please rate trip</h5>`;
+                    ratingBox += `<div id="alert-drive-${driveId}"></div><form class="rate-form" id="form-drive-${driveId}"><h5 class="text-muted font-weight-bold">Please rate trip for</h5>`;
 
                     // HTML partial -> rating forms
                     if (currentUser.isDriver) {
                         for (let i = 1; i <= users.length; i++) {
                             const userId = users[i - 1].info.userId;
-                            const firstName = users[i - 1].info.firstName;
-                            ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-${i}" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-${i}" data-user-id="${userId}">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
+                            if (userId !== model.user.userId) {
+                                const firstName = users[i - 1].info.firstName;
+                                ratingBox += `<div class="form-group row mb-0">\n                                    <label for="user-rating-${driveId}-${i}" class="col-6 col-form-label">${firstName}</label>\n                                    <div class="col-6">\n                                      <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-${i}" data-user-id="${userId}">\n                                          <option>5</option>\n                                          <option>4</option>\n                                          <option>3</option>\n                                          <option>2</option>\n                                          <option>1</option>\n                                      </select>\n                                    </div>\n                                </div>`;
+                            }
                         }
                     } else {
+                        const userId = driver.info.userId;
                         const firstName = driver.info.firstName;
-                        ratingBox += `<div class="form-group">\n                            <label for="user-rating-${driveId}-1" class="sr-only">${firstName}</label>\n                            <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-1">\n                              <option disabled selected>${firstName}</option>\n                              <option>1</option>\n                              <option>2</option>\n                              <option>3</option>\n                              <option>4</option>\n                              <option>5</option>\n                            </select>\n                          </div>`;
+                        ratingBox += `<div class="form-group row mb-0">\n                                    <label for="user-rating-${driveId}-${i}" class="col-6 col-form-label">${firstName}</label>\n                                    <div class="col-6">\n                                      <select class="form-control rate-select form-control-sm" id="user-rating-${driveId}-${i}" data-user-id="${userId}">\n                                          <option>5</option>\n                                          <option>4</option>\n                                          <option>3</option>\n                                          <option>2</option>\n                                          <option>1</option>\n                                      </select>\n                                    </div>\n                                </div>`;
                     }
 
-                    ratingBox += `<button type="submit" class="btn btn-secondary btn-block btn-sm">Rate</button></form>`;
+                    ratingBox += `<button type="submit" class="mt-2 btn btn-secondary btn-block btn-sm">Rate</button></form>`;
                 } else {
                     ratingBox += '<h5 class="text-muted font-weight-bold">Drive not completed</h5>';
                 }
@@ -168,22 +171,24 @@ window.base.myCommutesController = (() => {
                         // For submit user ratings
                         rateForm.addEventListener('submit', e => {
                             e.preventDefault();
-                            const driveId = rateForm.id.split('-')[2];
-                            let i = 1;
+                            const driveId = parseInt(rateForm.id.split('-')[2]);
+                            let noUsers = 0;
                             let ratings = [];
 
-                            while (document.getElementById('user-rating-' + driveId + '-' + i) !== null) {
-                                const input = document.getElementById('user-rating-' + driveId + '-' + i);
-                                const userId = input.options[input.selectedIndex].getAttribute('data-user-id');
-                                const rating = input.options[input.selectedIndex].value;
-
-                                if (isNaN(parseInt(rating))) {
-
+                            for (let i = 0; i < model.driveWraps.length; i++) {
+                                if (model.driveWraps[i].drive.driveId === driveId) {
+                                    noUsers = model.driveWraps[i].users.length;
                                 }
+                            }
 
-                                ratings.push({userId, rating});
+                            for (let i = 1; i <= noUsers; i++) {
+                                if (document.getElementById('user-rating-' + driveId + '-' + i) !== null) {
+                                    const input = document.getElementById('user-rating-' + driveId + '-' + i);
+                                    const ratedUserId = parseInt(input.getAttribute('data-user-id'));
+                                    const rating = parseInt(input.options[input.selectedIndex].value);
 
-                                i++;
+                                    ratings.push({ratedUserId, rating});
+                                }
                             }
 
                             const ratingWrap = {
@@ -231,7 +236,7 @@ window.base.myCommutesController = (() => {
         filterDrives: driveWraps => driveWraps.filter(driveWrap => {
             const users = driveWrap.users;
             for (let i = 0; i < users.length; i++) {
-                if (users[i].userId === model.user.userId && users[i].rated === true) {
+                if (users[i].userId === model.user.userId && users[i].rated === true || users.length === 1) {
                     return false;
                 }
             }
@@ -264,8 +269,16 @@ window.base.myCommutesController = (() => {
 
         // Outgoing logic
         rateDrive: (driveId, ratingWrap) => window.base.rest.rateDrive(driveId, ratingWrap)
-            .then(() => view.renderAlertBox('alert-drive-' + driveId, 'Done', 'Thank you for your rating', 'info'))
-            .then(e => view.renderAlertBox('alert-drive-' + driveId, 'Oops!', 'Something went wrong, ' + e.message, 'danger')),
+            .then(rating => {
+                if (rating.error) {
+                    throw rating;
+                }
+
+                const alertBox = document.getElementById('alert-drive-' + driveId);
+                view.renderAlertBox(alertBox, 'Thank you for your rating', 'info');
+                alertBox.nextElementSibling.classList.add('d-none');
+            })
+            .catch(e => view.renderAlertBox(document.getElementById('alert-drive-' + driveId), 'Something went wrong, ' + e.message, 'danger')),
 
         parseTime: date => {
             let hours = date.getHours();
@@ -301,7 +314,7 @@ window.base.myCommutesController = (() => {
                 .then(controller.sortDrives)
                 .then(controller.assignUsersToDrives)
                 .then(() => view.renderPage(model.driveWraps))
-                //.catch(view.renderError);
+            //.catch(view.renderError);
         },
     };
 
