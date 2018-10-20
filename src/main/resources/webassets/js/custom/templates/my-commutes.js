@@ -1,10 +1,5 @@
 window.base = window.base || {};
 
-/* TODO:
- - rate users
- - implement cancel seat
- */
-
 window.base.myCommutesController = (() => {
     const model = {
         user: {},
@@ -16,8 +11,8 @@ window.base.myCommutesController = (() => {
             element.innerHTML = `<div class="alert alert-${type}" role="alert"><span>${message}</span></div>`;
         },
 
-        renderError: message => {
-            document.getElementById('commutes').innerHTML = `<div class="row">\n                        <div class="col-12">\n                            <h5 class="text-muted font-weight-bold">Ooops!</h5>\n                            <p class="text-muted">Something went wrong, error message: ${message}.</p>\n                        </div>\n                    </div>`;
+        renderError: e => {
+            document.getElementById('commutes').innerHTML = `<div class="row">\n                        <div class="col-12">\n                            <h5 class="text-muted font-weight-bold">Ooops!</h5>\n                            <p class="text-muted">Something went wrong, error message: ${e.message}.</p>\n                        </div>\n                    </div>`;
         },
 
         renderPage: driveWraps => {
@@ -64,7 +59,9 @@ window.base.myCommutesController = (() => {
                             currentUser.isDriver = true;
                             actionButtons += `<button class="btn btn-danger btn-sm btn-block edit-btn" id="edit-drive-${driveId}">Edit</button>`;
                         } else {
-                            actionButtons += `<button class="btn btn-danger btn-sm btn-block cancel-btn" id="cancel-trip-${driveId}">Cancel Seat</button>`;
+                            if (Date.now() > drive.arrivalTime) {
+                                actionButtons += `<button class="btn btn-danger btn-sm btn-block cancel-btn" id="cancel-trip-${driveId}">Cancel Seat</button>`;
+                            }
                         }
                     }
 
@@ -166,12 +163,21 @@ window.base.myCommutesController = (() => {
                         viewLink.click();
                     };
 
-                    // For clicking on a view button
-                    cancelButton.onclick = e => {
-                        e.preventDefault();
-                        const driveId = cancelButton.id.split('-')[2];
-                        controller.cancelTrip(driveId);
-                    };
+                    if (typeof cancelButton !== 'undefined') {
+                        // For clicking on a view button
+                        cancelButton.onclick = e => {
+                            e.preventDefault();
+                            const driveId = cancelButton.id.split('-')[2];
+                            const col = cancelButton.parentElement;
+                            const row = col.parentElement
+
+                            col.classList.add('pt-4','pb-4');
+                            col.innerHTML = '<div class="loader"></div>';
+
+                            controller.cancelTrip(row, driveId);
+                        };
+
+                    }
 
                     if (typeof editButton !== 'undefined') {
                         // For clicking on an edit button
@@ -329,7 +335,7 @@ window.base.myCommutesController = (() => {
                 .then(controller.sortDrives)
                 .then(controller.assignUsersToDrives)
                 .then(() => view.renderPage(model.driveWraps))
-            //.catch(view.renderError);
+                .catch(view.renderError);
         },
     };
 

@@ -22,7 +22,7 @@ public class MailHandler {
 	private static final int DEFAULT_PORT = 587;
 	private static final String DEFAULT_USERNAME = "yourcommutecompanion@gmail.com";
 	private static final String DEFAULT_PASSWORD = "+++commute95";
-	public static final String DEFAULT_SENDER = DEFAULT_USERNAME;
+	static final String DEFAULT_SENDER = DEFAULT_USERNAME;
 	
 	private Mailer mailer;
 	
@@ -86,16 +86,6 @@ public class MailHandler {
      */
     public void sendLinkToRatingScreen(DriveWrap driveWrap) throws IOException {
         sendMail(new CustomEmail(driveWrap,EmailType.RATING).getEmail());
-    }
-
-    /**
-     * Sends an email to a user notifying them that there is a new match for their search filter
-     *
-     * @param driveWrap    DriveWrap DTO
-     * @param searchFilter SearchFilter DTO
-     */
-    public void notifyUserSearchFilterMatch(DriveWrap driveWrap, User user, SearchFilter searchFilter) throws IOException {
-        sendMail(new CustomEmail(driveWrap, EmailType.FILTER_MATCH, user, searchFilter).getEmail());
     }
 
     /**
