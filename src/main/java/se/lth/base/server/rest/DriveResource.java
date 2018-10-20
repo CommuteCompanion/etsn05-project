@@ -41,6 +41,15 @@ public class DriveResource {
         Drive drive = driveWrap.getDrive();
         List<DriveMilestone> milestones = driveWrap.getMilestones();
 
+        int driveId = drive.getDriveId();
+        String start = drive.getStart();
+        String stop = drive.getStop();
+
+        //Check so that the driver is not creating a drive that overlaps another drive that the driver is associated with
+        if (!checkBookingOverlap(driveId, start, stop).isEmpty()) {
+            throw new WebApplicationException("This trip is overlapping with another trip that you are on", Status.CONFLICT);
+        }
+
         // Add drive
         drive = driveDao.addDrive(drive);
 
@@ -332,7 +341,6 @@ public class DriveResource {
         // Find the time that the user would be busy if user participated in drive
         long busyTimeStart = -1;
         long busyTimeEnd = -1;
-
         for (DriveMilestone dm : driveMilestones) {
             if (dm.getMilestone().toLowerCase().trim().equals(start.toLowerCase().trim())) {
                 busyTimeStart = dm.getDepartureTime();
