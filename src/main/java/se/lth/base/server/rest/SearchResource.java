@@ -118,7 +118,7 @@ public class SearchResource {
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
             int numberOfSeats = drive.getCarNumberOfSeats();
-            int usersInDrive = driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) - 1; // Remove driver
+            int usersInDrive = driveUserDao.getNumberOfUsersInDrive(drive.getDriveId());
             if (numberOfSeats == usersInDrive) {
                 iterator.remove();
             }
