@@ -20,7 +20,7 @@ window.base.driveController = (() => {
             alertClasses.remove('alert-info');
             alertClasses.add('alert-danger');
 
-            element.innerHTML = `<h5 class="alert-heading">Oops!</h5><p>Something went wrong, error message: ${msg}.</p>`;
+            element.innerHTML = `<span>Something went wrong, error message: ${msg}.</span>`;
         },
 
         showSuccess: (msg, element) => {
@@ -30,7 +30,7 @@ window.base.driveController = (() => {
             alertClasses.remove('alert-danger');
             alertClasses.add('alert-info');
 
-            element.innerHTML = `<h5 class="alert-heading">Done</h5><p>${msg}</p>`;
+            element.innerHTML = `<span>${msg}</span>`;
         },
 
         renderDrive: () => {
@@ -83,7 +83,7 @@ window.base.driveController = (() => {
                     driverRating = rating;
                 } else if (user.accepted) {
                     acceptedPassengers++;
-                    passengerHtml += `${firstName} (<i class="fas fa-star fa-sm">${rating}), `;
+                    passengerHtml += `${firstName} (<i class="fas fa-star fa-sm"></i>${rating}), `;
                 }
             }
 
@@ -186,6 +186,12 @@ window.base.driveController = (() => {
                     } else {
                         view.showSuccess('Your report has been sent', document.getElementById('report-alert-box'));
                         document.getElementById('report-message').value = '';
+                        const submitButton = document.getElementById('report-message').parentElement.nextElementSibling.firstElementChild
+                        const parent = document.getElementById('report-message').parentElement;
+
+                        submitButton.textContent = 'Close';
+                        submitButton.setAttribute('data-dismiss','modal');
+                        parent.remove();
                     }
                 });
         },
