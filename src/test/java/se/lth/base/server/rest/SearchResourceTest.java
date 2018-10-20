@@ -11,6 +11,7 @@ import se.lth.base.server.data.*;
 import javax.ws.rs.client.Entity;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SearchResourceTest extends BaseResourceTest {
@@ -23,7 +24,12 @@ public class SearchResourceTest extends BaseResourceTest {
     private final User SEARCH_TEST_2 = new User(idStart, Role.USER, "test2@commutecompanion.se", "ST2FirstName", "ST2LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
     private final Credentials SEARCH_TEST_CREDENTIALS_2 = new Credentials("test2@commutecompanion.se", "test", Role.USER, SEARCH_TEST_2);
 
+    private final User SEARCH_TEST_3 = new User(idStart, Role.USER, "test3@commutecompanion.se", "ST3FirstName", "ST3LastName", "+4670207579", 0, Date.valueOf("1995-01-01").getTime(), true, 0, 0, 0);
+    private final Credentials SEARCH_TEST_CREDENTIALS_3 = new Credentials("test3@commutecompanion.se", "test", Role.USER, SEARCH_TEST_3);
+
+    private int user1Id;
     private int user2Id;
+    private int user3Id;
 
     private int drive1Id;
     private int drive2Id;
@@ -36,7 +42,10 @@ public class SearchResourceTest extends BaseResourceTest {
         // Users
         User user1 = userDao.addUser(SEARCH_TEST_CREDENTIALS_1);
         User user2 = userDao.addUser(SEARCH_TEST_CREDENTIALS_2);
+        User user3 = userDao.addUser(SEARCH_TEST_CREDENTIALS_3);
+        user1Id = user1.getId();
         user2Id = user2.getId();
+        user3Id = user3.getId();
 
         // Data access objects
         DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
@@ -220,7 +229,7 @@ public class SearchResourceTest extends BaseResourceTest {
                 .request()
                 .get(List.class);
 
-        Assert.assertEquals(2, response2.size());
+        Assert.assertEquals(3, response2.size());
 
         // We actually receive a List<LinkedTreeMap<String, Object>>
         @SuppressWarnings("unchecked")
@@ -229,6 +238,81 @@ public class SearchResourceTest extends BaseResourceTest {
                 .request()
                 .get(List.class);
 
-        Assert.assertEquals(2, response3.size());
+        Assert.assertEquals(3, response3.size());
     }
+
+    @Test
+    /*
+     * 1. Drive B has lowest diff in departure time vs users departure time (driver1)
+     * 2. Drive D has a little later departure time, but better rating than drive C (driver3)
+     * 3. Drive C has the same departure time as drive D. (driver1)
+     * 4. Drive A has longest diff in depart time (driver1)
+     *
+     */
+    public void testPrioritizedOrder() {
+        DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
+        DriveUserDataAccess driveUserDao = new DriveUserDataAccess(Config.instance().getDatabaseDriver());
+        UserDataAccess userDataAccess = new UserDataAccess(Config.instance().getDatabaseDriver());
+
+        userDataAccess.updateUserRating(new DriveRating(user1Id, 3));
+        userDataAccess.updateUserRating(new DriveRating(user3Id, 4));
+
+        // Drive A
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestampA = Timestamp.valueOf("2018-10-20 03:30:00").getTime();
+        long timestampA_5 = Timestamp.valueOf("2018-10-20 04:00:00").getTime();
+        Drive driveA = driveDao.addDrive(new Drive(-1, "A", "B", timestampA, timestampA_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int driveAId = driveA.getDriveId();
+        driveUserDao.addDriveUser(driveAId, user1Id, "A", "B", true, true, false);
+
+        // Drive B
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestampB = Timestamp.valueOf("2018-10-20 03:00:00").getTime();
+        long timestampB_5 = Timestamp.valueOf("2018-10-20 04:00:00").getTime();
+        Drive driveB = driveDao.addDrive(new Drive(-1, "A", "B", timestampB, timestampB_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int driveBId = driveB.getDriveId();
+        driveUserDao.addDriveUser(driveBId, user1Id, "A", "B", true, true, false);
+
+        // Drive C
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestampC = Timestamp.valueOf("2018-10-20 03:15:00").getTime();
+        long timestampC_5 = Timestamp.valueOf("2018-10-20 04:00:00").getTime();
+        Drive driveC = driveDao.addDrive(new Drive(-1, "A", "B", timestampC, timestampC_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int driveCId = driveC.getDriveId();
+        driveUserDao.addDriveUser(driveCId, user1Id, "A", "B", true, true, false);
+
+        // Drive D (same as drive C but for driver with better rating)
+        Timestamp.valueOf("2018-10-20 12:00:00").getTime();
+        long timestampD = Timestamp.valueOf("2018-10-20 03:15:00").getTime();
+        long timestampD_5 = Timestamp.valueOf("2018-10-20 04:00:00").getTime();
+        Drive driveD = driveDao.addDrive(new Drive(-1, "A", "B", timestampD, timestampD_5, "Comment", "x", "x", "x", "x", 1, 1, false, false, false));
+        int driveDId = driveD.getDriveId();
+        driveUserDao.addDriveUser(driveDId, user3Id, "A", "B", true, true, false);
+
+        long timestamp1User = Timestamp.valueOf("2018-10-20 03:00:00").getTime();
+        SearchFilter searchFilter = new SearchFilter(-1, user2Id, "A", "B", timestamp1User);
+
+        login(SEARCH_TEST_CREDENTIALS_2);
+
+        // We actually receive a List<LinkedTreeMap<String, Object>>
+        @SuppressWarnings("unchecked")
+        List<LinkedTreeMap<String, Object>> response1 = target("search")
+                .path("drives")
+                .request()
+                .post(Entity.json(searchFilter), List.class);
+
+        List<Integer> driveIdOrder = new ArrayList<>();
+        for (LinkedTreeMap<String, Object> driveWrap : response1) {
+            @SuppressWarnings("unchecked")
+            LinkedTreeMap<String, Object> drive = (LinkedTreeMap<String, Object>) driveWrap.get("drive");
+            int driveId = (int) Math.round((Double) drive.get("driveId"));
+            driveIdOrder.add(driveId);
+        }
+
+        Assert.assertEquals(driveBId, (int) driveIdOrder.get(0));
+        Assert.assertEquals(driveDId, (int) driveIdOrder.get(1));
+        Assert.assertEquals(driveCId, (int) driveIdOrder.get(2));
+        Assert.assertEquals(driveAId, (int) driveIdOrder.get(3));
+    }
+
 }
