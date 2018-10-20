@@ -254,7 +254,7 @@ window.base.myCommutesController = (() => {
         filterDrives: driveWraps => driveWraps.filter(driveWrap => {
             const users = driveWrap.users;
             for (let i = 0; i < users.length; i++) {
-                if (users[i].userId === model.user.userId && users[i].rated === true || users.length === 1) {
+                if (users[i].userId === model.user.userId && users[i].rated === true) {
                     return false;
                 }
             }
