@@ -275,6 +275,7 @@ public class SearchResource {
         // Loop through all drives
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
+
             // Create drive stop and start as "DriveMilestones" and add the to the list
             // Milestone id is not of interest and is therefore set to -1
             DriveMilestone driveStart = new DriveMilestone(-1, drive.getDriveId(), drive.getStart(), drive.getDepartureTime());
@@ -393,6 +394,11 @@ public class SearchResource {
         for (DriveMilestone driveMilestone : driveMilestones) {
             if (driveMilestone.getMilestone().toLowerCase().trim().equals(startMilestone.toLowerCase().trim())) {
                 Timestamp milestoneDepartureTime = new Timestamp(driveMilestone.getDepartureTime());
+
+                // Remove drives that have passed
+                if (milestoneDepartureTime.getTime() < departureTime.getTime()) {
+                    return false;
+                }
 
                 Timestamp timeMargin = new Timestamp(milestoneDepartureTime.getTime() - searchMinutesMargin * 60 * 1000);
                 if ((timeMargin.before(departureTime) || timeMargin.equals(departureTime)) &&
