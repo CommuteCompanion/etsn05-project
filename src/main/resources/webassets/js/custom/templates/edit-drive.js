@@ -17,10 +17,7 @@ window.base.editDriveController = (() => {
                 model.driveWraps = d;
                 if (d.length === 0 || model.theId.id === undefined) {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
-                    if (document.getElementById('passenger-header') != null) {
-                        document.getElementById('passenger-header').remove();
-                        document.getElementById('passenger-col').remove();
-                    }
+                    document.getElementById('delete-drive-btn').remove();
                 } else {
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
