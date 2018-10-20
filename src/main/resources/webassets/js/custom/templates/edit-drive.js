@@ -112,6 +112,7 @@ window.base.editDriveController = (() => {
                         removeBtn.onclick = (function () {
                             document.getElementById('remove-col-' + i).remove();
                             document.getElementById('remove-col-' + i).remove();
+                            document.getElementById('remove-col-' + i).remove();
                             window.base.rest.removeUserFromDrive(model.driveWrap.drive.driveId, userId);
                         });
                     })(i);
@@ -130,28 +131,48 @@ window.base.editDriveController = (() => {
                     window.base.rest.getUser(model.driveWrap.users[i].userId).then(u => {
                         nameText.innerHTML = u.firstName;
                     });
-                    const removeCol = document.createElement('div');
-                    const removeBtn = document.createElement('button');
+                    const acceptCol = document.createElement('div');
+                    const acceptBtn = document.createElement('button');
 
-                    removeCol.className = 'col-6 mt-3';
-                    removeCol.id = 'remove-col-' + i;
-                    removeBtn.type = 'button';
-                    removeBtn.className = 'btn btn-success w-100';
-                    removeBtn.innerHTML = 'Accept';
-                    removeBtn.id = 'removePass-' + i;
+                    acceptCol.className = 'col-3 mt-3';
+                    acceptCol.id = 'remove-col-' + i;
+                    acceptBtn.type = 'button';
+                    acceptBtn.className = 'btn btn-success w-100';
+                    acceptBtn.innerHTML = 'Accept';
+                    acceptBtn.id = 'removePass-' + i;
                     (function(i){
                         removeBtn.onclick = (function () {
                             model.driveWrap.users[i].accepted = true;
-                            removeBtn.className = 'btn btn-danger w-100';
+                            acceptBtn.className = 'btn btn-danger w-100';
+                            controller.updateDrive(model.driveWrap);
+                            view.render(model.theId.id);
+                        });
+                    })(i);
+                    
+                    const declineCol = document.createElement('div');
+                    const declineBtn = document.createElement('button');
+                    
+                    declineCol.className = 'col-3 mt-3';
+                    declineCol.id = 'remove-col-' + i;
+                    declineBtn.type = 'button';
+                    declineBtn.className = 'btn btn-danger w-100';
+                    declineBtn.innerHTML = 'Decline';
+                    declineBtn.id = 'removePass-' + i;
+                    (function(i){
+                        declineBtn.onclick = (function () {
+                            model.driveWrap.users[i].splice(i, 1);
+                            declineBtn.className = 'btn btn-danger w-100';
                             controller.updateDrive(model.driveWrap);
                             view.render(model.theId.id);
                         });
                     })(i);
 
                     nameCol.append(nameText);
-                    removeCol.append(removeBtn);
+                    acceptCol.append(acceptBtn);
+                    declineCol.append(declineBtn);
                     document.getElementById('passenger-row').append(nameCol);
-                    document.getElementById('passenger-row').append(removeCol);
+                    document.getElementById('passenger-row').append(acceptCol);
+                    document.getElementById('passenger-row').append(declineCol);
                 }
             }
         },
