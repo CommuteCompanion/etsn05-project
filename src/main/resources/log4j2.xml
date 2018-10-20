@@ -9,7 +9,6 @@
         </Console>
     </appenders>
     <Loggers>
-        <Logger name="org.simplejavamail" level="trace"/>
         <Logger name="org.simplejavamail.mailer.internal.socks" level="warn"/>
 
         <Root level="info">
