@@ -57,7 +57,7 @@ public class MailHandler {
      * @param driveWrap DriveWrap DTO object
      */
     public void notifyDriverNewPassengerRequested(DriveWrap driveWrap) throws IOException {
-	    sendMail(new CustomEmail(driveWrap,EmailType.NEW_PASSENGER_ON_TRIP).getEmail());
+        sendMail(new CustomEmail(driveWrap, EmailType.NEW_PASSENGER_REQUESTED).getEmail());
     }
 
     /**
@@ -66,10 +66,8 @@ public class MailHandler {
      * @param driveWrap DriveWrap DTO object
      */
     public void notifyDriverNewPassengerAccepted(DriveWrap driveWrap) throws IOException {
-        sendMail(new CustomEmail(driveWrap, EmailType.NEW_PASSENGER_ON_TRIP_DATA).getEmail());
+        sendMail(new CustomEmail(driveWrap, EmailType.NEW_PASSENGER_ACCEPTED).getEmail());
     }
-
-
 
     /**
      * Send an email to a specified user

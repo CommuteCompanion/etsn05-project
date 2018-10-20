@@ -195,8 +195,12 @@ public class DriveResource {
             DriveWrap driveWrap = new DriveWrap(drive, milestones, users, reports);
 
             try {
-                mailHandler.notifyPassengerBookingConfirmed(driveWrap, userDao.getUser(userId));
                 mailHandler.notifyDriverNewPassengerAccepted(driveWrap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                mailHandler.notifyPassengerBookingConfirmed(driveWrap, userDao.getUser(userId));
             } catch (IOException e) {
                 e.printStackTrace();
             }
