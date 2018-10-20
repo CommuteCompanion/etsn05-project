@@ -46,11 +46,11 @@ public class DriveResource {
 
         // Add all milestones
         for (DriveMilestone m : milestones) {
-          if (milestones.size() < 4) {
-            driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime());
-          } else {
-              throw new WebApplicationException("You are only allowed to add 4 milestones to your drive", Status.BAD_REQUEST);
-          }
+            if (milestones.size() < 4) {
+                driveMilestoneDao.addMilestone(drive.getDriveId(), m.getMilestone(), m.getDepartureTime());
+            } else {
+                throw new WebApplicationException("You are only allowed to add 4 milestones to your drive", Status.BAD_REQUEST);
+            }
         }
 
         // Add driver to list of users
@@ -69,33 +69,33 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     public DriveWrap putDrive(@PathParam("driveId") int driveId, DriveWrap driveWrap) {
         if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
-        	Drive drive = driveDao.updateDrive(driveWrap.getDrive());
-        	for(DriveMilestone m : driveWrap.getMilestones()) {
-				try {
-					driveMilestoneDao.getMilestone(m.getMilestoneId());
-					driveMilestoneDao.updateMilestone(m.getMilestoneId(), m.getMilestone(), m.getDepartureTime());
-				} catch (DataAccessException e) {
-					driveMilestoneDao.addMilestone(driveId, m.getMilestone(), m.getDepartureTime());
-				}
-        	}
-        	for(DriveUser u : driveWrap.getUsers()) {
-				try {
-					driveUserDao.getDriveUser(driveId, u.getUserId());
-					driveUserDao.updateDriveUser(driveId, u.getUserId(), u.getStart(), u.getStop(), u.isDriver(), u.isAccepted(), u.hasRated());
-				} catch (DataAccessException e) {
-					driveUserDao.addDriveUser(driveId, u.getUserId(), u.getStart(), u.getStop(), u.isDriver(), u.isAccepted(), u.hasRated());
-				}
-        	}
-        	for(DriveReport r : driveWrap.getReports()) {
-        		try {
-        			driveReportDao.getDriveReport(r.getReportId());
-        			driveReportDao.updateDriveReport(r);
-        		} catch (DataAccessException e) {
-        			driveReportDao.addDriveReport(driveId, r.getReportedByUserId(), r.getReportMessage());
-        		}
-        	}
+            Drive drive = driveDao.updateDrive(driveWrap.getDrive());
+            for (DriveMilestone m : driveWrap.getMilestones()) {
+                try {
+                    driveMilestoneDao.getMilestone(m.getMilestoneId());
+                    driveMilestoneDao.updateMilestone(m.getMilestoneId(), m.getMilestone(), m.getDepartureTime());
+                } catch (DataAccessException e) {
+                    driveMilestoneDao.addMilestone(driveId, m.getMilestone(), m.getDepartureTime());
+                }
+            }
+            for (DriveUser u : driveWrap.getUsers()) {
+                try {
+                    driveUserDao.getDriveUser(driveId, u.getUserId());
+                    driveUserDao.updateDriveUser(driveId, u.getUserId(), u.getStart(), u.getStop(), u.isDriver(), u.isAccepted(), u.hasRated());
+                } catch (DataAccessException e) {
+                    driveUserDao.addDriveUser(driveId, u.getUserId(), u.getStart(), u.getStop(), u.isDriver(), u.isAccepted(), u.hasRated());
+                }
+            }
+            for (DriveReport r : driveWrap.getReports()) {
+                try {
+                    driveReportDao.getDriveReport(r.getReportId());
+                    driveReportDao.updateDriveReport(r);
+                } catch (DataAccessException e) {
+                    driveReportDao.addDriveReport(driveId, r.getReportedByUserId(), r.getReportMessage());
+                }
+            }
 
-        	return new DriveWrap(drive, driveWrap.getMilestones(), driveWrap.getUsers(), driveWrap.getReports());
+            return new DriveWrap(drive, driveWrap.getMilestones(), driveWrap.getUsers(), driveWrap.getReports());
         }
 
         throw new WebApplicationException("Only driver allowed to update drive", Status.UNAUTHORIZED);
@@ -246,20 +246,22 @@ public class DriveResource {
     @PUT
     @RolesAllowed(Role.Names.USER)
     @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public void rateUsers(@PathParam("driveId") int driveId, DriveRatingWrap rating) {
-    	if (driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
-    		throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
-    	}
-    		if(driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
-    			for (DriveRating dr : rating.getRatings()) {
-    				userDao.updateUserRating(dr);
-    			}
-    		} else {
-    			userDao.updateUserRating(rating.getRatings().get(0));
-    			
-    		}
-    		driveUserDao.hasRated(user.getId(), driveId);
-    	
+    public DriveRatingWrap rateUsers(@PathParam("driveId") int driveId, DriveRatingWrap rating) {
+        if (driveUserDao.getDriveUser(driveId, user.getId()).hasRated()) {
+            throw new WebApplicationException("You have already rated", Status.UNAUTHORIZED);
+        }
+
+        if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+            for (DriveRating dr : rating.getRatings()) {
+                userDao.updateUserRating(dr);
+            }
+        } else {
+            userDao.updateUserRating(rating.getRatings().get(0));
+        }
+
+        driveUserDao.hasRated(user.getId(), driveId);
+
+        return rating;
     }
 
     @Path("{driveId}/report")
@@ -288,9 +290,9 @@ public class DriveResource {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<DriveWrap> getDrivesForUser(@PathParam("userId") int userId) {
         if (userId == user.getId() || user.getRole().clearanceFor(Role.ADMIN)) {
-        	List<DriveWrap> driveWraps = new ArrayList<>();
-        	List<Drive> drives = driveDao.getDrivesForUser(userId);
-        	attachDriveDetails(drives, driveWraps);
+            List<DriveWrap> driveWraps = new ArrayList<>();
+            List<Drive> drives = driveDao.getDrivesForUser(userId);
+            attachDriveDetails(drives, driveWraps);
 
             return driveWraps;
         }
@@ -307,7 +309,7 @@ public class DriveResource {
     }
 
     private void attachDriveDetails(List<Drive> drives, List<DriveWrap> driveWraps) {
-        for(Drive d : drives) {
+        for (Drive d : drives) {
             List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
             List<DriveUser> users = driveUserDao.getDriveUsersForDrive(d.getDriveId());
             List<DriveReport> reports = driveReportDao.getDriveReportsForDrive(d.getDriveId());
