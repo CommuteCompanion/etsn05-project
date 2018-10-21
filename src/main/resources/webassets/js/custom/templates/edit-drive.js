@@ -19,9 +19,9 @@ window.base.editDriveController = (() => {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     document.getElementById('delete-drive-btn').remove();
                 } else {
+                    document.getElementById('delete-drive-btn').style.display = "inline";
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
-                    document.getElementById('delete-drive-btn').style.display = "inline";
                     for (let i = 0; i < d.length; i++) {
                         if (d[i].drive.driveId == model.theId.id) {
                             model.driveWrap = d[i];
@@ -143,7 +143,6 @@ window.base.editDriveController = (() => {
                             model.driveWrap.users[i].accepted = true;
                             acceptBtn.className = 'btn btn-danger w-100';
                             controller.updateDrive(model.driveWrap);
-                            view.render(model.theId.id);
                         });
                     })(i);
 
@@ -161,7 +160,6 @@ window.base.editDriveController = (() => {
                             model.driveWrap.users.splice(i, 1);
                             declineBtn.className = 'btn btn-danger w-100';
                             controller.updateDrive(model.driveWrap);
-                            view.render(model.theId.id);
                         });
                     })(i);
 
