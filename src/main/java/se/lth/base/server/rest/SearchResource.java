@@ -272,6 +272,8 @@ public class SearchResource {
             return drives;
         }
 
+        boolean resetStart = tripStart == null;
+        boolean resetStop = tripStop == null;
         // Loop through all drives
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
@@ -285,11 +287,11 @@ public class SearchResource {
             driveMilestones.add(0, driveStart);
             driveMilestones.add(driveStop);
 
-            if (tripStart == null) {
+            if (resetStart) {
                 tripStart = driveMilestones.get(0).getMilestone();
             }
 
-            if (tripStop == null) {
+            if (resetStop) {
                 tripStop = driveMilestones.get(driveMilestones.size() - 1).getMilestone();
             }
 
