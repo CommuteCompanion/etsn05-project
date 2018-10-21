@@ -39,7 +39,7 @@ window.base.driveController = (() => {
             const driveUsers = model.driveWrap.users;
             let driver;
             let passengerHtml = '';
-            let acceptedPassengers = 1;
+            let acceptedPassengers = 0;
 
             for (let i = 0; i < driveUsers.length; i++) {
                 if (driveUsers[i].driver) {
