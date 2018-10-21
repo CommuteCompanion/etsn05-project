@@ -95,7 +95,7 @@ window.base.reportedDrivesController = (() => {
     const controller = {
         dismissReport: report => {
             const item = document.getElementById('reported-drives' + report.reportId);
-            item.parentElement.removeChild(item);
+            base.rest.dismissReport(report.reportId);
         },
 
         giveWarningDriver: (report, user) => window.base.rest.warnUser(user.userId)

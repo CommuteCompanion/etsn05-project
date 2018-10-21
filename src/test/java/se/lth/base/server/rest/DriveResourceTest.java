@@ -3,7 +3,6 @@ package se.lth.base.server.rest;
 import org.junit.Before;
 import org.junit.Test;
 import se.lth.base.server.BaseResourceTest;
-import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
 
 import javax.ws.rs.ForbiddenException;
@@ -41,7 +40,7 @@ public class DriveResourceTest extends BaseResourceTest {
 		driveId = driveWrap.getDrive().getDriveId();
 		logout();
     }
-    
+
     @Test(expected = ForbiddenException.class)
     public void getDrivesAsUser() {
         login(TEST_CREDENTIALS);
@@ -114,7 +113,7 @@ public class DriveResourceTest extends BaseResourceTest {
 			assertNotEquals(du.getUserId(), ADMIN.getId());
         }
     }
-    
+
     @Test(expected = WebApplicationException.class)
 	public void createDriveWithWrongTime() {
     	login(TEST_CREDENTIALS);
@@ -126,12 +125,12 @@ public class DriveResourceTest extends BaseResourceTest {
 				.request()
 				.post(Entity.json(newDriveWrap), DriveWrap.class);
     }
-    
+
 	@Test
 	public void createAndUpdateDrive() {
 		login(TEST_CREDENTIALS);
-		long departureTime = Timestamp.valueOf("2018-12-01 20:00:00").getTime();
-        long arrivalTime = Timestamp.valueOf("2018-12-01 21:00:00").getTime();
+        long departureTime = Timestamp.valueOf("2018-12-03 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-03 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
 		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")
@@ -177,8 +176,8 @@ public class DriveResourceTest extends BaseResourceTest {
 	@Test(expected = NotFoundException.class)
 	public void deleteDrive() {
 		login(TEST_CREDENTIALS);
-		long departureTime = Timestamp.valueOf("2018-12-01 20:00:00").getTime();
-        long arrivalTime = Timestamp.valueOf("2018-12-01 21:00:00").getTime();
+        long departureTime = Timestamp.valueOf("2018-12-02 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-02 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
 		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")
@@ -293,5 +292,47 @@ public class DriveResourceTest extends BaseResourceTest {
         .get(DriveWrap.class);
 		assertTrue(driveWrap.getUsers().get(1).hasRated());
     }
-    
+
+    //quick and dirty test. different times. All should throw exceptions
+    @Test
+    public void testOverlapping() {
+        login(TEST_CREDENTIALS);
+        long departureTime = Timestamp.valueOf("2018-01-01 20:30:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-01-01 21:00:00").getTime();
+        Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
+        DriveWrap newDriveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        try {
+            newDriveWrap = target("drive")
+                    .request()
+                    .post(Entity.json(newDriveWrap), DriveWrap.class);
+
+            fail("Expected WebApplicationException => \"This trip is overlapping with another trip that you are on\"");
+        } catch (Exception e) {
+            try {
+                departureTime = Timestamp.valueOf("2018-01-01 19:30:00").getTime();
+                arrivalTime = Timestamp.valueOf("2018-01-01 20:30:00").getTime();
+                drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
+                newDriveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                newDriveWrap = target("drive")
+                        .request()
+                        .post(Entity.json(newDriveWrap), DriveWrap.class);
+
+                fail("Expected WebApplicationException => \"This trip is overlapping with another trip that you are on\"");
+            } catch (Exception e2) {
+                try {
+                    departureTime = Timestamp.valueOf("2018-01-01 19:30:00").getTime();
+                    arrivalTime = Timestamp.valueOf("2018-01-01 21:30:00").getTime();
+                    drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
+                    newDriveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+                    newDriveWrap = target("drive")
+                            .request()
+                            .post(Entity.json(newDriveWrap), DriveWrap.class);
+
+                    fail("Expected WebApplicationException => \"This trip is overlapping with another trip that you are on\"");
+                } catch (Exception e3) {
+                    //Success
+                }
+            }
+        }
+    }
 }
