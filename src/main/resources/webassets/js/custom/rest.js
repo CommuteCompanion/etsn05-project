@@ -217,7 +217,10 @@ window.base.rest = (() => {
         rateDrive: (driveId, ratingWrap) =>
             baseFetch('rest/drive/' + driveId + '/rate', createJsonPut(ratingWrap))
                 .then(response => response.json())
-                .then(r => objOrError(r, DriveRatingWrap))
+                .then(r => objOrError(r, DriveRatingWrap)),
+        
+        acceptDriveuser: (driveId, userId) => 
+            baseFetch('rest/drive/' + driveId + '/user/' + userId, {method: 'PUT'})
     };
 })();
 
