@@ -139,11 +139,10 @@ window.base.editDriveController = (() => {
                     acceptBtn.innerHTML = 'Accept';
                     acceptBtn.id = 'removePass-' + i;
                     (function(i){
-                        removeBtn.onclick = (function () {
+                        acceptBtn.onclick = (function () {
                             model.driveWrap.users[i].accepted = true;
                             acceptBtn.className = 'btn btn-danger w-100';
                             controller.updateDrive(model.driveWrap);
-                            view.render(model.theId.id);
                         });
                     })(i);
                     
@@ -158,10 +157,9 @@ window.base.editDriveController = (() => {
                     declineBtn.id = 'removePass-' + i;
                     (function(i){
                         declineBtn.onclick = (function () {
-                            model.driveWrap.users[i].splice(i, 1);
+                            model.driveWrap.users.splice(i, 1);
                             declineBtn.className = 'btn btn-danger w-100';
                             controller.updateDrive(model.driveWrap);
-                            view.render(model.theId.id);
                         });
                     })(i);
 
