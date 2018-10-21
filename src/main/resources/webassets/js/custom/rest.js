@@ -120,6 +120,9 @@ window.base.rest = (() => {
     });
 
     return {
+        dismissReport: (reportId) => {
+            baseFetch('/rest/drive/report/' + reportId, {method: 'DELETE'});
+        },
         getReportedDrives: () =>
             baseFetch('/rest/drive/all-reports')
                 .then(response => response.json())
