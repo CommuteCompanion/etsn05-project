@@ -7,6 +7,7 @@ package se.lth.base.server.data;
  * @see DriveMilestoneDataAccess
  */
 public class DriveMilestone {
+
 	private final int milestoneId;
     private final int driveId;
 	private final String milestone;
@@ -45,5 +46,36 @@ public class DriveMilestone {
     /** @return the time of the departure from the MileStone*/
     public long getDepartureTime() {
         return departureTime;
+    }
+    
+    @Override
+    public int hashCode() {
+    	final int prime = 31;
+    	int result = 1;
+    	result = prime * result + (int) (departureTime ^ (departureTime >>> 32));
+    	result = prime * result + driveId;
+    	result = prime * result + ((milestone == null) ? 0 : milestone.hashCode());
+    	return result;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+    	if (this == obj)
+    		return true;
+    	if (obj == null)
+    		return false;
+    	if (getClass() != obj.getClass())
+    		return false;
+    	DriveMilestone other = (DriveMilestone) obj;
+    	if (departureTime != other.departureTime)
+    		return false;
+    	if (driveId != other.driveId)
+    		return false;
+    	if (milestone == null) {
+    		if (other.milestone != null)
+    			return false;
+    	} else if (!milestone.equals(other.milestone))
+    		return false;
+    	return true;
     }
 }
