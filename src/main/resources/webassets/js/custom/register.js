@@ -67,12 +67,7 @@ window.base.registerController = (() => {
                 controller.validateForm(form);
             };
             form[e].getFieldOther().onchange = () => {
-                if (form[e].validate()) {
-                    form[e].isValid = true;
-                } else {
-                    form[e].isValid = false;
-                }
-
+                form[e].isValid = !!form[e].validate();
                 controller.validateForm(form);
             };
 

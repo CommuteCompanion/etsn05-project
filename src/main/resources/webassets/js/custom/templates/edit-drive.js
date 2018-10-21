@@ -19,7 +19,6 @@ window.base.editDriveController = (() => {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     document.getElementById('delete-drive-btn').remove();
                 } else {
-                    document.getElementById('delete-drive-btn').style.display = "inline";
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
                     for (let i = 0; i < d.length; i++) {
@@ -139,16 +138,17 @@ window.base.editDriveController = (() => {
                     acceptBtn.innerHTML = 'Accept';
                     acceptBtn.id = 'removePass-' + i;
                     (function(i){
-                        acceptBtn.onclick = (function () {
+                        removeBtn.onclick = (function () {
                             model.driveWrap.users[i].accepted = true;
                             acceptBtn.className = 'btn btn-danger w-100';
                             controller.updateDrive(model.driveWrap);
+                            view.render(model.theId.id);
                         });
                     })(i);
-                    
+
                     const declineCol = document.createElement('div');
                     const declineBtn = document.createElement('button');
-                    
+
                     declineCol.className = 'col-3 mt-3';
                     declineCol.id = 'remove-col-' + i;
                     declineBtn.type = 'button';
@@ -157,9 +157,10 @@ window.base.editDriveController = (() => {
                     declineBtn.id = 'removePass-' + i;
                     (function(i){
                         declineBtn.onclick = (function () {
-                            model.driveWrap.users.splice(i, 1);
+                            model.driveWrap.users[i].splice(i, 1);
                             declineBtn.className = 'btn btn-danger w-100';
                             controller.updateDrive(model.driveWrap);
+                            view.render(model.theId.id);
                         });
                     })(i);
 
