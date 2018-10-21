@@ -365,7 +365,7 @@ window.base.editDriveController = (() => {
                         model.searchQuery.driveId = d.drive.driveId;
                         model.searchQuery.tripStart = d.drive.start;
                         model.searchQuery.tripStop = d.drive.stop;
-                        model.searchQuery.tripStartTime = controller.parseTime(d.drive.departureTime);
+                        model.searchQuery.tripStartTime = controller.parseTime(new Date(d.drive.departureTime));
                         model.driveWrap = d;
                         model.theId.id = model.driveWrap.drive.driveId;
                     }
@@ -398,7 +398,7 @@ window.base.editDriveController = (() => {
                     model.searchQuery.driveId = d.drive.driveId;
                     model.searchQuery.tripStart = d.drive.start;
                     model.searchQuery.tripStop = d.drive.stop;
-                    model.searchQuery.tripStartTime = d.drive.departureTime;
+                    model.searchQuery.tripStartTime = controller.parseTime(new Date(d.drive.departureTime));
                 }
             }).then(() => {
                 if (!error) {
