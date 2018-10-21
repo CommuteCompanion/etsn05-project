@@ -19,8 +19,6 @@ window.base.myCommutesController = (() => {
             const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
             let commutesHtml = '';
             let drivesFound = true;
-            let firstDrive = true;
-            let firstTrip = true;
 
             for (let i = 0; i < driveWraps.length; i++) {
                 // Basic data
@@ -70,15 +68,6 @@ window.base.myCommutesController = (() => {
                     }
                 }
 
-                // Set correct headline for drives
-                if (currentUser.isDriver && firstDrive === true) {
-                    firstDrive = false;
-                    commutesHtml += '<div class="row"><div class="col-12"><h5 class="text-muted font-weight-bold">My Drives</h5></div></div>';
-                } else if (firstTrip === true) {
-                    firstTrip = false;
-                    commutesHtml += '<div class="row"><div class="col-12"><h5 class="text-muted font-weight-bold">My Trips</h5></div></div>';
-                }
-
                 // Set correct pickup and drop off points
                 tripStart = currentUser.start;
                 tripStop = currentUser.stop;
@@ -116,17 +105,20 @@ window.base.myCommutesController = (() => {
                 }
 
                 // HTML partial -> drive row
-                commutesHtml += `\n        <div class="row mb-3 border bg-white shadow-sm pt-3 pb-3">\n            <div class="col-7 border-right">\n                <a class="view-link" id="view-drive-${driveId}" href="">\n                    <h5 class="mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                </a>\n                <div class="row">\n                    <div class="col-3">\n                            <p class="text-muted mb-0">Leaving:</p>\n                            <p class="text-muted mb-0">Pickup:</p>\n                            <p class="text-muted">Dropoff:</p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted mb-0">${departureTime}</p>\n                        <p class="text-muted mb-0"><span>${tripStart}</span> (~<span>${tripStartTime}</span>)</p>\n                        <p class="text-muted">${tripStop}</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-3 border-right">${ratingBox}</div>\n            <div class="col-2">${actionButtons}</div>\n        </div>`
+                commutesHtml = `\n        <div class="row mb-3 border bg-white shadow-sm pt-3 pb-3">\n            <div class="col-7 border-right">\n                <a class="view-link" id="view-drive-${driveId}" href="">\n                    <h5 class="mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                </a>\n                <div class="row">\n                    <div class="col-3">\n                            <p class="text-muted mb-0">Leaving:</p>\n                            <p class="text-muted mb-0">Pickup:</p>\n                            <p class="text-muted">Dropoff:</p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted mb-0">${departureTime}</p>\n                        <p class="text-muted mb-0"><span>${tripStart}</span> (~<span>${tripStartTime}</span>)</p>\n                        <p class="text-muted">${tripStop}</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-3 border-right">${ratingBox}</div>\n            <div class="col-2">${actionButtons}</div>\n        </div>`
+                if (currentUser.isDriver) {
+                    document.getElementById('my-drives').innerHTML += commutesHtml;
+                } else {
+                    document.getElementById('my-trips').innerHTML += commutesHtml;
+                }
             }
 
             // HTML partial -> not drives found
             if (commutesHtml.length === 0) {
                 drivesFound = false;
                 commutesHtml = `<div class="row">\n                        <div class="col-12">\n                            <h5 class="text-muted font-weight-bold">No drives found</h5>\n                        </div>\n                    </div>`
+                document.getElementById('commutes').innerHTML = commutesHtml;
             }
-
-            // Render page
-            document.getElementById('commutes').innerHTML = commutesHtml;
 
             // Add logic if drives were rendered
             if (drivesFound) {
