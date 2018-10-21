@@ -129,8 +129,8 @@ public class DriveResourceTest extends BaseResourceTest {
 	@Test
 	public void createAndUpdateDrive() {
 		login(TEST_CREDENTIALS);
-		long departureTime = Timestamp.valueOf("2018-12-01 20:00:00").getTime();
-        long arrivalTime = Timestamp.valueOf("2018-12-01 21:00:00").getTime();
+        long departureTime = Timestamp.valueOf("2018-12-03 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-03 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
 		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")
@@ -176,8 +176,8 @@ public class DriveResourceTest extends BaseResourceTest {
 	@Test(expected = NotFoundException.class)
 	public void deleteDrive() {
 		login(TEST_CREDENTIALS);
-		long departureTime = Timestamp.valueOf("2018-12-01 20:00:00").getTime();
-        long arrivalTime = Timestamp.valueOf("2018-12-01 21:00:00").getTime();
+        long departureTime = Timestamp.valueOf("2018-12-02 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-02 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
 		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")

@@ -12,7 +12,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -345,16 +344,17 @@ public class DriveResource {
         List<Drive> drivesForUser = driveDao.getDrivesForUser(userId);
         List<Drive> conflictingDrives = new ArrayList<>();
         drivesForUser.forEach(d -> {
-
-            if (requestedDrive.getDepartureTime() > d.getDepartureTime()) {
-                //if departure is larger => departure must also be larger than other drive's arrival
-                if (requestedDrive.getDepartureTime() < d.getArrivalTime()) {
-                    conflictingDrives.add(d);
-                }
-            } else {
-                //if departure is smaller => arrival must also be smaller than other's departure
-                if (requestedDrive.getArrivalTime() > d.getDepartureTime()) {
-                    conflictingDrives.add(d);
+            if (d.getDriveId() != requestedDrive.getDriveId()) {
+                if (requestedDrive.getDepartureTime() > d.getDepartureTime()) {
+                    //if departure is larger => departure must also be larger than other drive's arrival
+                    if (requestedDrive.getDepartureTime() < d.getArrivalTime()) {
+                        conflictingDrives.add(d);
+                    }
+                } else {
+                    //if departure is smaller => arrival must also be smaller than other's departure
+                    if (requestedDrive.getArrivalTime() > d.getDepartureTime()) {
+                        conflictingDrives.add(d);
+                    }
                 }
             }
         });
