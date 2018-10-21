@@ -12,6 +12,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,7 +40,12 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     public DriveWrap createDrive(DriveWrap driveWrap) {
         Drive drive = driveWrap.getDrive();
+        if(drive.getDepartureTime() < System.currentTimeMillis()) {
+        	throw new WebApplicationException("Can't create a drive with a departure time before the current time", Status.PRECONDITION_FAILED);
+        }
+
         List<DriveMilestone> milestones = driveWrap.getMilestones();
+
 
         int driveId = drive.getDriveId();
         String start = drive.getStart();
@@ -148,7 +154,8 @@ public class DriveResource {
 
         DriveWrap driveWrap = new DriveWrap(drive, milestones, users, reports);
 
-        if (!driveWrap.getUsers().isEmpty()) {
+        //If there are more users in the drive except for the driver they should recieve an email.
+        if (driveWrap.getUsers().size() > 1) {
             try {
                 mailHandler.notifyPassengersDriverCancelledDrive(driveWrap);
             } catch (IOException e) {

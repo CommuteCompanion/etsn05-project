@@ -30,8 +30,8 @@ public class DriveResourceTest extends BaseResourceTest {
     @Before
     public void setup() {
     	login(TEST_CREDENTIALS);
-    	long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
-        long arrivalTime = Timestamp.valueOf("2018-01-01 21:00:00").getTime();
+    	long departureTime = Timestamp.valueOf("2018-12-01 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-01 21:00:00").getTime();
         Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "Brand", "Model", "Color", "License Plate", 4, 1, false, false, false);
         driveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		driveWrap = target("drive")
@@ -112,12 +112,25 @@ public class DriveResourceTest extends BaseResourceTest {
         for(DriveUser du : driveWrap.getUsers()) {
 			assertNotEquals(du.getUserId(), ADMIN.getId());
         }
-    }    
+    }
+
+    @Test(expected = WebApplicationException.class)
+	public void createDriveWithWrongTime() {
+    	login(TEST_CREDENTIALS);
+		long departureTime = Timestamp.valueOf("2018-01-01 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-01-01 21:00:00").getTime();
+		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
+		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+		newDriveWrap = target("drive")
+				.request()
+				.post(Entity.json(newDriveWrap), DriveWrap.class);
+    }
+
 	@Test
 	public void createAndUpdateDrive() {
 		login(TEST_CREDENTIALS);
-        long departureTime = Timestamp.valueOf("2018-01-02 20:00:00").getTime();
-        long arrivalTime = Timestamp.valueOf("2018-01-02 21:00:00").getTime();
+		long departureTime = Timestamp.valueOf("2018-12-01 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-01 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "F", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 1, 1, true, true, false);
 		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")
@@ -163,8 +176,8 @@ public class DriveResourceTest extends BaseResourceTest {
 	@Test(expected = NotFoundException.class)
 	public void deleteDrive() {
 		login(TEST_CREDENTIALS);
-        long departureTime = Timestamp.valueOf("2018-01-03 20:00:00").getTime();
-        long arrivalTime = Timestamp.valueOf("2018-01-03 21:00:00").getTime();
+		long departureTime = Timestamp.valueOf("2018-12-01 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-01 21:00:00").getTime();
 		Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
 		DriveWrap newDriveWrap= new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		newDriveWrap = target("drive")
@@ -215,12 +228,22 @@ public class DriveResourceTest extends BaseResourceTest {
     @Test
     public void numberOfDrivesForUser() {
     	login(TEST_CREDENTIALS);
-
+    	//user has one drive that isn't completed yet
+    	//add one that is
+    	Drive drive = new Drive(-1, "A", "B", System.currentTimeMillis() + 100, System.currentTimeMillis() + 500,
+    			"Comment", "Brand", "Model", "Color", "License Plate", 4, 1, false, false, false);
+    	driveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+ 		driveWrap = target("drive")
+ 				.request()
+ 				.post(Entity.json(driveWrap), DriveWrap.class);
+ 		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {	}
 		int numberOfDrives = target("drive")
 				.path("count/" + TEST.getId())
 				.request()
 				.get(int.class);
-        assertEquals(1, numberOfDrives);
+		assertEquals(1, numberOfDrives);
     }
 	
     @Test

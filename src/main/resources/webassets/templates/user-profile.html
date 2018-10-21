@@ -3,14 +3,6 @@
     <form id="user-form" class="col-md-7">
         <div id="user-settings" class="form-group">
             <div class="row my-2">
-                <label for="set-email" class="col-md-4">Email</label>
-                <div class="col-md-8">
-                    <input type="text" class="form-control" id="set-email" required
-                           pattern=".{4,}">
-                    <small id="edit-email-help" class="form-text text-muted">Minimum 4 characters.</small>
-                </div>
-            </div>
-            <div class="row my-2">
                 <label for="set-firstname" class="col-md-4">First name</label>
                 <div class="col-md-8">
                     <input type="text" class="form-control" id="set-firstname" pattern="[A-Za-z]{0,}">
@@ -63,16 +55,6 @@
                     <input pattern="^(\+|0)\d{6,}$" type="tel" class="form-control" id="set-phone-number"
                            data-content="Must start with + or 0 and be at least 7 digits" data-toggle="popover"
                            data-trigger="focus">
-                </div>
-            </div>
-            <div class="row my-2">
-                <label for="set-date-of-birth" class="col-md-4">Date of birth</label>
-                <div class="col-md-8">
-                    <input pattern="^[0-9]{4}-[0-9]{2}-[0-9]{2}$" type="tel" class="form-control border-right-0"
-                           id="set-date-of-birth" placeholder="Date of birth"
-                           data-content="You must be at least 18 years old to use commute companion."
-                           data-toggle="popover" data-trigger="focus">
-                    <small id="edit-date-of-birth-help" class="form-text text-muted">YYYY-MM-DD</small>
                 </div>
             </div>
             <div class="row my-2">
