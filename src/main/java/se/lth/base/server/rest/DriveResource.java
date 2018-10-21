@@ -287,6 +287,14 @@ public class DriveResource {
         return driveReportDao.addDriveReport(driveId, user.getId(), driveReport.getReportMessage());
     }
 
+    @Path("report/{reportId}")
+    @DELETE
+    @RolesAllowed(Role.Names.ADMIN)
+    @Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
+    public void dismissReport(@PathParam("reportId") int reportId) {
+        driveReportDao.deleteDriveReport(reportId);
+    }
+
     @Path("all-reports")
     @GET
     @RolesAllowed(Role.Names.ADMIN)
