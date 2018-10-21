@@ -40,7 +40,20 @@ window.base.reportedDrivesController = (() => {
                     });
 
                 Promise.all([p1, p2]).then(() => {
-                    t.content.querySelector('.report-start-destination-time').textContent = drive.drive.start + ' to ' + drive.drive.stop + ', ' + new Date(drive.drive.departureTime);
+                    const dt = new Date(drive.drive.departureTime);
+
+                    const year = dt.getFullYear();
+                    let month = dt.getMonth();
+                    let date = dt.getDate();
+                    let hour = dt.getHours();
+                    let minute = dt.getMinutes();
+                    month = month < 10 ? '0' + month : month;
+                    date = date < 10 ? '0' + date : date;
+                    hour = hour < 10 ? '0' + hour : hour;
+                    minute = minute < 10 ? '0' + minute : minute;
+                    const formattedDate = year + '-' + month + '-' + date + ' ' + hour + ':' + minute;
+
+                    t.content.querySelector('.report-start-destination-time').textContent = drive.drive.start + ' to ' + drive.drive.stop + ', ' + formattedDate;
                     t.content.querySelector('.report-driver').textContent = 'Driver: ' + driver.firstName + ' ' + driver.lastName;
                     t.content.querySelector('.report-driver-rating-warning').textContent = view.getRenderedRating(driver) + ' | ' + driver.warning + ' warnings';
                     t.content.querySelector('.report-driver-rating-warning').id = 'report-driver-rating-warning' + report.reportId;

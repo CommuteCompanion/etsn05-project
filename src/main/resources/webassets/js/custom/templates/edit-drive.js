@@ -145,10 +145,10 @@ window.base.editDriveController = (() => {
                             controller.updateDrive(model.driveWrap);
                         });
                     })(i);
-                    
+
                     const declineCol = document.createElement('div');
                     const declineBtn = document.createElement('button');
-                    
+
                     declineCol.className = 'col-3 mt-3';
                     declineCol.id = 'remove-col-' + i;
                     declineBtn.type = 'button';
