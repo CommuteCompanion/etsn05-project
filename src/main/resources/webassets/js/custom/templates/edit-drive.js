@@ -19,6 +19,7 @@ window.base.editDriveController = (() => {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     document.getElementById('delete-drive-btn').remove();
                 } else {
+                    document.getElementById('delete-drive-btn').style.display = "inline";
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
                     for (let i = 0; i < d.length; i++) {
