@@ -78,6 +78,9 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     public DriveWrap putDrive(@PathParam("driveId") int driveId, DriveWrap driveWrap) {
         if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+            if (!checkBookingOverlap(user.getId(), driveWrap.getDrive()).isEmpty()) {
+                throw new WebApplicationException("This trip is overlapping with another trip that you are on", Status.CONFLICT);
+            }
             Drive drive = driveDao.updateDrive(driveWrap.getDrive());
             for (DriveMilestone m : driveWrap.getMilestones()) {
                 try {

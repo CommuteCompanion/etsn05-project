@@ -356,9 +356,11 @@ window.base.editDriveController = (() => {
 
 
             if (model.theId.id === undefined){
+                let error = false;
                 window.base.rest.addDrive(driveWrap).then(d => {
                     if (d.error) {
-                        alert(d.error);
+                        alert("Could not create drive, are you already in a drive at that time?");
+                        error = true;
                     } else {
                         model.searchQuery.driveId = d.drive.driveId;
                         model.searchQuery.tripStart = d.drive.start;
@@ -368,7 +370,9 @@ window.base.editDriveController = (() => {
                         model.theId.id = model.driveWrap.drive.driveId;
                     }
                 }).then(() => {
-                    controller.loadDrivePage();
+                    if (!error) {
+                        controller.loadDrivePage();
+                    }
                 });
             } else {
                 controller.updateDrive(driveWrap);
@@ -385,13 +389,21 @@ window.base.editDriveController = (() => {
         },
 
         updateDrive: drive => {
+            let error = false;
             window.base.rest.putDrive(model.theId.id, drive).then((d) => {
-                model.searchQuery.driveId = d.drive.driveId;
-                model.searchQuery.tripStart = d.drive.start;
-                model.searchQuery.tripStop = d.drive.stop;
-                model.searchQuery.tripStartTime = d.drive.departureTime;
+                if (d.error) {
+                    alert("Could not create drive, are you already in a drive at that time?");
+                    error = true;
+                } else {
+                    model.searchQuery.driveId = d.drive.driveId;
+                    model.searchQuery.tripStart = d.drive.start;
+                    model.searchQuery.tripStop = d.drive.stop;
+                    model.searchQuery.tripStartTime = d.drive.departureTime;
+                }
             }).then(() => {
-                controller.loadDrivePage(); 
+                if (!error) {
+                    controller.loadDrivePage();
+                }
             });
         },
 
@@ -400,7 +412,7 @@ window.base.editDriveController = (() => {
 
         load: (id) => {
             model.theId.id = id;
-            document.getElementById('set-date')
+            document.getElementById('set-date');
             document.getElementById('user-form').onsubmit = controller.createDrive;
             document.getElementById('delete-drive-btn').onclick = controller.deleteDrive;
             document.getElementById('add-stop-btn').onclick = controller.addStop;
