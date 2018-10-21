@@ -57,8 +57,8 @@ window.base.editDriveController = (() => {
             const arrivalDate = new Date(model.driveWrap.drive.arrivalTime);
 
             document.getElementById('set-date').value = leaveDate.yyyymmdd();
-            document.getElementById('set-time-leave').value = leaveDate.toString().split(' ')[4];
-            document.getElementById('set-time-arrival').value = arrivalDate.toString().split(' ')[4];
+            document.getElementById('set-time-leave').value = leaveDate.toString().split(' ')[4].slice(0, 5);
+            document.getElementById('set-time-arrival').value = arrivalDate.toString().split(' ')[4].slice(0, 5);
             document.getElementById('set-comment').value = model.driveWrap.drive.comment;
             document.getElementById('set-brand').value = model.driveWrap.drive.carBrand;
             document.getElementById('set-model').value = model.driveWrap.drive.carModel;
@@ -210,6 +210,7 @@ window.base.editDriveController = (() => {
                 inputTime.type = 'text';
                 inputTime.id = 'set-stop-time-' + (counter+1);
                 inputTime.placeholder = 'HH:MM';
+                inputTime.pattern = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
                 inputTime.className = 'form-control';
                 colMdTime.append(labelTime);
                 colMdName.append(labelName);
@@ -262,7 +263,7 @@ window.base.editDriveController = (() => {
                 stopDiv.append(colTime);
                 document.getElementById('stop-row').append(stopDiv);
                 inputName.value = text;
-                inputTime.value = depTime.toString().split(' ')[4];
+                inputTime.value = depTime.toString().split(' ')[4].slice(0, 5);
             }
         },
 
