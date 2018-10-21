@@ -136,7 +136,8 @@ public class DriveResource {
 
         DriveWrap driveWrap = new DriveWrap(drive, milestones, users, reports);
 
-        if (!driveWrap.getUsers().isEmpty()) {
+        //If there are more users in the drive except for the driver they should recieve an email.
+        if (driveWrap.getUsers().size() > 1) {
             try {
                 mailHandler.notifyPassengersDriverCancelledDrive(driveWrap);
             } catch (IOException e) {
