@@ -2,9 +2,7 @@ package se.lth.base.server.rest;
 
 import org.junit.Test;
 import se.lth.base.server.BaseResourceTest;
-import se.lth.base.server.data.Credentials;
-import se.lth.base.server.data.Role;
-import se.lth.base.server.data.User;
+import se.lth.base.server.data.*;
 
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.NotFoundException;
@@ -13,6 +11,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -149,6 +149,60 @@ public class UserResourceTest extends BaseResourceTest {
                 .path(Integer.toString(newUser.getId()))
                 .request()
                 .delete(Void.class); // Include response type to trigger exception
+    }
+
+    @Test
+    public void deletingUserDeletesItsDrives() {
+        GenericType<List<DriveWrap>> DRIVEWRAP_LIST = new GenericType<List<DriveWrap>>() {
+        };
+
+        //new user
+        Credentials newCredentials = new Credentials("pelle@commutecompanion.se", "passphrase123", Role.USER, TEST);
+        User newUser = target("user")
+                .request()
+                .post(Entity.json(newCredentials), User.class);
+        login(newCredentials);
+
+        //Add a drive as a user
+        long departureTime = Timestamp.valueOf("2018-12-02 20:00:00").getTime();
+        long arrivalTime = Timestamp.valueOf("2018-12-02 21:00:00").getTime();
+        Drive drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
+        DriveWrap driveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        target("drive")
+                .request()
+                .post(Entity.json(driveWrap), DriveWrap.class);
+
+        logout();
+        login(ADMIN_CREDENTIALS);
+
+        //Add a drive as admin
+        departureTime = Timestamp.valueOf("2018-12-02 20:00:00").getTime();
+        arrivalTime = Timestamp.valueOf("2018-12-02 21:00:00").getTime();
+        drive = new Drive(-1, "A", "B", departureTime, arrivalTime, "Comment", "x", "x", "x", "x", 2, 1, true, true, false);
+        driveWrap = new DriveWrap(drive, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        target("drive")
+                .request()
+                .post(Entity.json(driveWrap), DriveWrap.class);
+
+        //get drives and expect there to be 2
+        List<DriveWrap> alldrives = target("drive")
+                .path("all")
+                .request()
+                .get(DRIVEWRAP_LIST);
+        assertEquals(2, alldrives.size());
+
+        //delete user
+        target("user")
+                .path(Integer.toString(newUser.getId()))
+                .request()
+                .delete(Void.class);
+
+        // get drives and expect only 1.
+        alldrives = target("drive")
+                .path("all")
+                .request()
+                .get(DRIVEWRAP_LIST);
+        assertEquals(1, alldrives.size());
     }
 
     @Test(expected = NotFoundException.class)
