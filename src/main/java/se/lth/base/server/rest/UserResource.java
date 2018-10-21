@@ -26,6 +26,7 @@ public class UserResource {
     private final User user;
     private final Session session;
     private final UserDataAccess userDao = new UserDataAccess(Config.instance().getDatabaseDriver());
+    private final DriveDataAccess driveDao = new DriveDataAccess(Config.instance().getDatabaseDriver());
     private final MailHandler mailHandler = new MailHandler();
 
     public UserResource(@Context ContainerRequestContext context) {
@@ -151,6 +152,11 @@ public class UserResource {
     @DELETE
     public void deleteUser(@PathParam("userId") int userId) {
         if (userId == user.getId() || user.getRole().getLevel() > userDao.getUser(userId).getRole().getLevel()) {
+
+            //remove users drives
+            List<Drive> userDrives = driveDao.getDrivesForUser(userId);
+            userDrives.forEach(d -> driveDao.deleteDrive(d.getDriveId()));
+
             if (!userDao.deleteUser(userId)) {
                 throw new WebApplicationException("Could not delete user", Response.Status.NOT_FOUND);
             }
