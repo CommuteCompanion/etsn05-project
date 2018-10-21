@@ -19,6 +19,10 @@ window.base.editDriveController = (() => {
                     document.getElementById('drive-header').innerHTML = 'Create Drive';
                     document.getElementById('delete-drive-btn').remove();
                 } else {
+                    const passengerNode = document.getElementById("passenger-row");
+                    while (passengerNode.firstChild) {
+                        passengerNode.removeChild(passengerNode.firstChild);
+                    }
                     document.getElementById('delete-drive-btn').style.display = "inline";
                     document.getElementById('drive-header').innerHTML = 'Edit Drive';
                     document.getElementById('create-drive-btn').innerHTML = 'Edit Drive';
@@ -110,7 +114,6 @@ window.base.editDriveController = (() => {
                         removeBtn.onclick = (function () {
                             document.getElementById('remove-col-' + i).remove();
                             document.getElementById('remove-col-' + i).remove();
-                            document.getElementById('remove-col-' + i).remove();
                             window.base.rest.removeUserFromDrive(model.driveWrap.drive.driveId, userId);
                         });
                     })(i);
@@ -140,9 +143,8 @@ window.base.editDriveController = (() => {
                     acceptBtn.id = 'removePass-' + i;
                     (function (i) {
                         acceptBtn.onclick = (function () {
-                            model.driveWrap.users[i].accepted = true;
-                            acceptBtn.className = 'btn btn-danger w-100';
-                            controller.updateDrive(model.driveWrap);
+                            window.base.rest.acceptDriveuser(model.theId.id, userId);
+                            view.render();
                         });
                     })(i);
 
@@ -157,9 +159,9 @@ window.base.editDriveController = (() => {
                     declineBtn.id = 'removePass-' + i;
                     (function (i) {
                         declineBtn.onclick = (function () {
-                            model.driveWrap.users.splice(i, 1);
-                            declineBtn.className = 'btn btn-danger w-100';
-                            controller.updateDrive(model.driveWrap);
+                            window.base.rest.removeUserFromDrive(model.theId.id, userId).then(() => {
+                                view.render();  
+                            })
                         });
                     })(i);
 
@@ -383,9 +385,9 @@ window.base.editDriveController = (() => {
             fetch('templates/drive.html')
                 .then(response => response.text())
                 .then(tabHtml => {
-                    document.getElementById('main-tab').innerHTML = tabHtml;
-                    window.base.driveController().loadQuery(model.searchQuery);
-                });
+                document.getElementById('main-tab').innerHTML = tabHtml;
+                window.base.driveController().loadQuery(model.searchQuery);
+            });
         },
 
         updateDrive: drive => {
