@@ -12,7 +12,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -43,9 +42,19 @@ public class DriveResource {
         if(drive.getDepartureTime() < System.currentTimeMillis()) {
         	throw new WebApplicationException("Can't create a drive with a departure time before the current time", Status.PRECONDITION_FAILED);
         }
-        
+
         List<DriveMilestone> milestones = driveWrap.getMilestones();
-        
+
+
+        int driveId = drive.getDriveId();
+        String start = drive.getStart();
+        String stop = drive.getStop();
+
+        //Check so that the driver is not creating a drive that overlaps another drive that the driver is associated with
+        if (!checkBookingOverlap(user.getId(), drive).isEmpty()) {
+            throw new WebApplicationException("This trip is overlapping with another trip that you are on", Status.CONFLICT);
+        }
+
         // Add drive
         drive = driveDao.addDrive(drive);
 
@@ -74,6 +83,9 @@ public class DriveResource {
     @RolesAllowed(Role.Names.USER)
     public DriveWrap putDrive(@PathParam("driveId") int driveId, DriveWrap driveWrap) {
         if (driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+            if (!checkBookingOverlap(user.getId(), driveWrap.getDrive()).isEmpty()) {
+                throw new WebApplicationException("This trip is overlapping with another trip that you are on", Status.CONFLICT);
+            }
             Drive drive = driveDao.updateDrive(driveWrap.getDrive());
             for (DriveMilestone m : driveWrap.getMilestones()) {
                 try {
@@ -163,10 +175,10 @@ public class DriveResource {
                 throw new WebApplicationException("You are already on this drive", Status.PRECONDITION_FAILED);
             }
         }
-        if (driveDao.getDrive(driveId).getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId)) {
-            List<Drive> collidingDrives = checkBookingOverlap(driveId, driveUser.getStart(), driveUser.getStop());
+        Drive drive = driveDao.getDrive(driveId);
+        if (drive.getCarNumberOfSeats() > driveUserDao.getNumberOfUsersInDrive(driveId)) {
+            List<Drive> collidingDrives = checkBookingOverlap(driveUser.getUserId(), drive);
             if (collidingDrives.isEmpty()) {
-                Drive drive = driveDao.getDrive(driveId);
                 List<DriveMilestone> milestones = driveMilestoneDao.getMilestonesForDrive(driveId);
                 List<DriveReport> reports = driveReportDao.getDriveReportsForDrive(driveId);
 
@@ -323,62 +335,31 @@ public class DriveResource {
     /**
      * Checks if it is possible for a user to book a specific Drive.
      *
-     * @param driveId the id of the drive that one wishes to see if it is possible to book
-     * @param start   at what milestone the user will be starting at
-     * @param stop    at what milestone the user will stop at
+     * @param userId the id of user
+     * @param requestedDrive the id of the drive that one wishes to see if it is possible to book
      * @return a list of drives associated with this user, conflicting with the entered drive
      */
-    private List<Drive> checkBookingOverlap(int driveId, String start, String stop) {
-        Drive drive = driveDao.getDrive(driveId);
-        List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(driveId);
-        // Add drive start and stop as milestones to list
-        driveMilestones.add(0, new DriveMilestone(-1, -1, drive.getStart(), drive.getDepartureTime()));
-        driveMilestones.add(new DriveMilestone(-1, -1, drive.getStop(), drive.getArrivalTime()));
+    private List<Drive> checkBookingOverlap(int userId, Drive requestedDrive) {
 
-        // Find the time that the user would be busy if user participated in drive
-        long busyTimeStart = -1;
-        long busyTimeEnd = -1;
-
-        for (DriveMilestone dm : driveMilestones) {
-            if (dm.getMilestone().toLowerCase().trim().equals(start.toLowerCase().trim())) {
-                busyTimeStart = dm.getDepartureTime();
-            } else if (dm.getMilestone().toLowerCase().trim().equals(stop.toLowerCase().trim())) {
-                busyTimeEnd = dm.getDepartureTime();
-            }
-        }
-
-        // Check for time conflicts with other already booked drives/trips
-        List<Drive> associatedDrives = getDriveAssociatedWithUser(user.getId());
-        Iterator<Drive> driveIterator = associatedDrives.iterator();
-        while (driveIterator.hasNext()) {
-            Drive d = driveIterator.next();
-            List<DriveMilestone> tempDriveMilestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
-            // Add drive start and stop as milestones to list
-            tempDriveMilestones.add(0, new DriveMilestone(-1, -1, d.getStart(), d.getDepartureTime()));
-            tempDriveMilestones.add(new DriveMilestone(-1, -1, d.getStop(), d.getArrivalTime()));
-
-            // Find the time that the user is busy in this drive
-            long tempBusyTimeStart = -1;
-            long tempBusyTimeEnd = -1;
-
-            DriveUser driveUser = driveUserDao.getDriveUser(d.getDriveId(), user.getId());
-
-            for (DriveMilestone dm : tempDriveMilestones) {
-                if (dm.getMilestone().toLowerCase().trim().equals(driveUser.getStart().toLowerCase().trim())) {
-                    tempBusyTimeStart = dm.getDepartureTime();
-                } else if (dm.getMilestone().toLowerCase().trim().equals(driveUser.getStop().toLowerCase().trim())) {
-                    tempBusyTimeEnd = dm.getDepartureTime();
+        List<Drive> drivesForUser = driveDao.getDrivesForUser(userId);
+        List<Drive> conflictingDrives = new ArrayList<>();
+        drivesForUser.forEach(d -> {
+            if (d.getDriveId() != requestedDrive.getDriveId()) {
+                if (requestedDrive.getDepartureTime() > d.getDepartureTime()) {
+                    //if departure is larger => departure must also be larger than other drive's arrival
+                    if (requestedDrive.getDepartureTime() < d.getArrivalTime()) {
+                        conflictingDrives.add(d);
+                    }
+                } else {
+                    //if departure is smaller => arrival must also be smaller than other's departure
+                    if (requestedDrive.getArrivalTime() > d.getDepartureTime()) {
+                        conflictingDrives.add(d);
+                    }
                 }
             }
+        });
 
-            if (tempBusyTimeEnd < busyTimeStart || tempBusyTimeStart > busyTimeEnd) {
-                // No conflict
-                driveIterator.remove();
-            }
-        }
-
-        // Return all booked drives that are in conflict with the new booking
-        return associatedDrives;
+        return conflictingDrives;
     }
 
     private List<Drive> getDriveAssociatedWithUser(int userId) {
