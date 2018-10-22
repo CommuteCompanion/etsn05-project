@@ -2,7 +2,6 @@ package se.lth.base.server.rest;
 
 import se.lth.base.server.Config;
 import se.lth.base.server.data.*;
-import se.lth.base.server.database.DataAccessException;
 import se.lth.base.server.mail.MailHandler;
 
 import javax.annotation.security.RolesAllowed;
@@ -154,7 +153,7 @@ public class DriveResource {
     @DELETE
     @RolesAllowed(Role.Names.USER)
     public void deleteDrive(@PathParam("driveId") int driveId) {
-        if (!driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
+        if (!user.getRole().clearanceFor(Role.USER) && !driveUserDao.getDriveUser(driveId, user.getId()).isDriver()) {
             throw new WebApplicationException("Only driver allowed to delete drive", Status.UNAUTHORIZED);
         }
         Drive drive = driveDao.getDrive(driveId);
