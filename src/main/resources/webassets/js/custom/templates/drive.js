@@ -66,11 +66,11 @@ window.base.driveController = (() => {
                 const firstName = user.info.firstName;
                 const score = user.info.ratingTotalScore;
                 const reviews = user.info.numberOfRatings;
-                const rating = reviews === 0 ? 'No' : parseFloat(score / reviews).toFixed(2);
+                const rating = reviews === 0 ? ' no rating' : parseFloat(score / reviews).toFixed(2);
 
                 if (user.userId === model.user.userId) {
                     requestButton.setAttribute('disabled', '');
-                    requestButton.textContent = 'Requested';
+                    requestButton.textContent = user.accepted ? 'Accepted' : 'Requested';
                 }
 
                 if (user.userId === model.user.userId && user.driver) {

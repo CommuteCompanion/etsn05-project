@@ -77,7 +77,7 @@ window.base.searchController = (() => {
 
                 for (let j = 0; j < users.length; j++) {
                     if (users[j].userId === model.user.userId) {
-                        requestButtonText = 'Requested';
+                        requestButtonText = users[j].accepted ? 'Accepted' : 'Requested';
                         requestButtonDisabled = 'disabled';
                     }
 
