@@ -125,7 +125,7 @@ window.base.reportedDrivesController = (() => {
         deleteDrive: report => window.base.rest.deleteDrive(report.drive.driveId)
             .then(() => {
                 const item = document.getElementById('reported-drives' + report.reportId);
-                item.parentElement.removeChild(item);
+                location.reload();
             }),
 
         load: () => window.base.rest.getReportedDrives()
