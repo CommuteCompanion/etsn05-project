@@ -57,7 +57,7 @@ window.base.myCommutesController = (() => {
                             currentUser.isDriver = true;
                             actionButtons += `<button class="btn btn-danger btn-sm btn-block edit-btn" id="edit-drive-${driveId}">Edit</button>`;
                         } else {
-                            if (Date.now() > drive.arrivalTime) {
+                            if (Date.now() < drive.departureTime) {
                                 actionButtons += `<button class="btn btn-danger btn-sm btn-block cancel-btn" id="cancel-trip-${driveId}">Cancel Seat</button>`;
                             }
                         }
