@@ -7,11 +7,13 @@ window.base.reportedDrivesController = (() => {
 
     const view = {
         getDriverUserId: function (drive) {
+            let driverId;
             drive.users.forEach(user => {
                 if (user.driver === true) {
-                    return user.userId;
+                    driverId = user.userId;
                 }
             });
+            return driverId;
         },
 
         getRenderedRating: function (user) {
