@@ -1,5 +1,5 @@
 window.base = window.base || {};
- 
+
 window.base.reportedDrivesController = (() => {
     const model = {
         drives: [],
