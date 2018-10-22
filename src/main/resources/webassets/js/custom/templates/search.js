@@ -212,7 +212,20 @@ window.base.searchController = (() => {
             stop = stop.length === 0 ? null : stop;
 
             let departureTime = document.getElementById('search-departure-time').value.trim();
-            departureTime = departureTime.length === 0 ? -1 : new Date(departureTime).getTime();
+
+            if (departureTime.length === 0) {
+                departureTime = -1;
+            } else {
+                const dateTime = departureTime.split(' ');
+                const dArr = dateTime[0].split('-');
+                const tArr = dateTime[1].split(':');
+                const year = parseInt(dArr[0]);
+                const month = parseInt(dArr[1]) - 1;
+                const day = parseInt(dArr[2]);
+                const hour = parseInt(tArr[0]);
+                const minute = parseInt(tArr[1]);
+                departureTime = new Date(year, month, day, hour, minute).getTime();
+            }
 
             model.searchQuery = {tripStart: start, tripStop: stop, tripDepartureTime: departureTime};
 
