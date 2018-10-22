@@ -8,6 +8,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Path("search")
 public class SearchResource {
@@ -128,13 +129,15 @@ public class SearchResource {
                     break;
                 }
             }
-            double driverRating = -1;
-            try {
-                if (driver.getNumberOfRatings() != 0) {
-                    driverRating = driver.getRatingTotalScore() / (double) driver.getNumberOfRatings();
-                }
-            } catch (NullPointerException e) {
 
+            double driverRating = -1;
+
+            if (driver == null) {
+                throw new NullPointerException();
+            }
+
+            if (driver.getNumberOfRatings() != 0) {
+                driverRating = driver.getRatingTotalScore() / (double) driver.getNumberOfRatings();
             }
 
             long departureTimeDifference = -1;
@@ -186,8 +189,8 @@ public class SearchResource {
         }
 
         // Sort (begin sorting least prioritized first)
-        Collections.sort(dataList, new DriveRatingComparator());
-        Collections.sort(dataList, new DepartureTimeComparator());
+        dataList.sort(new DriveRatingComparator());
+        dataList.sort(new DepartureTimeComparator());
 
         List<Drive> prioritizedList = new ArrayList<>();
         for (Data d : dataList) {
@@ -218,12 +221,8 @@ public class SearchResource {
             return drive;
         }
 
-        public long getDepartureTimeDifference() {
+        long getDepartureTimeDifference() {
             return departureTimeDifference;
-        }
-
-        public double getDriverRating() {
-            return driverRating;
         }
     }
 
@@ -237,7 +236,7 @@ public class SearchResource {
             } else if (o2.getDepartureTimeDifference() == -1) {
                 return -1;
             } else {
-                return new Long(o1.getDepartureTimeDifference()).compareTo(new Long(o2.getDepartureTimeDifference()));
+                return Long.compare(o1.getDepartureTimeDifference(), o2.getDepartureTimeDifference());
             }
         }
     }
@@ -245,7 +244,7 @@ public class SearchResource {
     private class DriveRatingComparator implements Comparator<Data> {
         @Override
         public int compare(Data o1, Data o2) {
-            return new Double(o1.driverRating).compareTo(o2.driverRating) * -1;
+            return Double.compare(o1.driverRating, o2.driverRating) * -1;
         }
     }
 
@@ -262,8 +261,9 @@ public class SearchResource {
     }
 
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
-        // Get all drives
-        List<Drive> drives = driveDao.getDrives();
+        // Filter out all past drives
+        List<Drive> drives = driveDao.getDrives().stream().filter(d -> new Timestamp(d.getDepartureTime()).getTime() > new Timestamp(System.currentTimeMillis()).getTime()).collect(Collectors.toList());
+
         Iterator<Drive> iterator = drives.iterator();
 
         if ((tripStart == null || tripStart.isEmpty()) && (tripStop == null || tripStop.isEmpty()) && departureTime == null) {
