@@ -5,7 +5,10 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.email.Recipient;
 import org.slf4j.LoggerFactory;
 import se.lth.base.server.Config;
-import se.lth.base.server.data.*;
+import se.lth.base.server.data.DriveUser;
+import se.lth.base.server.data.DriveWrap;
+import se.lth.base.server.data.User;
+import se.lth.base.server.data.UserDataAccess;
 
 import javax.mail.Message;
 import java.io.BufferedReader;
@@ -33,7 +36,7 @@ public class CustomEmail {
     private final static String INTRO = "intro";
     private final static String BUTTON = "button";
     private final static String OUTRO = "outro";
-    private final static String WEBSITE_LINK = "http://www.yourcommutecompanion.herokuapp.com";
+    private final static String WEBSITE_LINK = "http://commutecompanion.hopto.org";
     private final static String EMAIL_TEMPLATE = "email-template.html";
 
     private final DriveWrap driveWrap;
@@ -245,7 +248,7 @@ public class CustomEmail {
         content.put(INTRO, intro);
 
         // Action button
-        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Drive"));
+        content.put(BUTTON, getButton(WEBSITE_LINK, "View Drive"));
 
         // Add recipient
         String fullName = driverU.getFirstName() + " " + driverU.getLastName();
@@ -298,7 +301,7 @@ public class CustomEmail {
         content.put(INTRO, intro);
 
         // Action button
-        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Drive"));
+        content.put(BUTTON, getButton(WEBSITE_LINK, "View Drive"));
 
         // Add recipient
         String fullName = driverU.getFirstName() + " " + driverU.getLastName();
@@ -349,7 +352,7 @@ public class CustomEmail {
         content.put(INTRO, intro);
 
         // Action button
-        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Trip"));
+        content.put(BUTTON, getButton(WEBSITE_LINK, "View Trip"));
 
         // Add recipient
         String fullName = singleUser.getFirstName() + " " + singleUser.getLastName();
@@ -395,7 +398,7 @@ public class CustomEmail {
         // Action button
         content.put(BUTTON, getButton(WEBSITE_LINK, "Rate Your Trip"));
 
-        return getResource(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), content);
+        return getResource(EMAIL_TEMPLATE, content);
     }
 
     private String getFilterMatchSubject() {
@@ -466,7 +469,7 @@ public class CustomEmail {
         content.put(INTRO, intro);
 
         // Action button
-        content.put(BUTTON, getButton(WEBSITE_LINK + "/drive/" + driveWrap.getDrive().getDriveId(), "View Drive"));
+        content.put(BUTTON, getButton(WEBSITE_LINK, "View Drive"));
 
         // Add recipient
         String fullName = driverU.getFirstName() + " " + driverU.getLastName();

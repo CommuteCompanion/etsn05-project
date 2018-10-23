@@ -42,7 +42,7 @@ One can also start the server by double-clicking the .jar (not recommended, the 
 #### Testing
 `mvn test` will run back-end tests.
 
-IntelliJ or Eclipse supports a simple right-click on the test folder followed by clicking "Run all tests". Through these IDE's you can also run individual tests (both test-classes and methods).
+IntelliJ and Eclipse supports a simple right-click on the test folder followed by clicking "Run all tests". Through these IDE's you can also run individual tests (both test-classes and methods).
 
 To run front-end tests, you must start the server and visit "localhost:8080/specs.html" (assuming you did not change url).
 
@@ -58,5 +58,6 @@ A video explaining the general architecture and design of the system: https://ww
 All bugfixes and features are done in separated branches. When ready for review; a pull request is made from said branch into develop. 
 
 #### Troubleshooting
- - The project uses Bootstrap and sass-files to offer an esthetically nice look to the website. This means that before the server can be launched for the first time (or after changing a .scss-file), one needs to run a sass-compiler. This is integrated into maven, so running `mvn package` is fine. If only css files need to be updated (e.g. no need to run tests and rebuild java classes), simply run the "sass:update-stylesheets" from the sass-plugin (complicated through CLI, easier through IntelliJ).
+ - The project uses Bootstrap and sass-files to offer an esthetically nice look to the website. This means that before the server can be launched for the first time (or after changing a .scss-file), one needs to run a sass-compiler. This is integrated into maven, so running `mvn package` is fine. If only css files need to be updated (e.g. no need to run tests and rebuild java classes), simply run the `mvn sass:update-stylesheets` from the sass-plugin.
  - If there is no database installed, CreateSchema.java will provide one when executing the server. After that, it can be very easy to forget that you have to manually run `CreateSchema.main()` to reset it. You may want to do that after changing the database.
+ - Emails include a link to the website hosted for global access. This website will not reflect any drives, users, or other things changed in a development launch (i.e. running it from localhost:8080).
