@@ -20,7 +20,7 @@ window.base.driveController = (() => {
             alertClasses.remove('alert-info');
             alertClasses.add('alert-danger');
 
-            element.innerHTML = `<h5 class="alert-heading">Oops!</h5><p>Something went wrong, error message: ${msg}.</p>`;
+            element.innerHTML = `<span>Something went wrong, error message: ${msg}.</span>`;
         },
 
         showSuccess: (msg, element) => {
@@ -30,7 +30,7 @@ window.base.driveController = (() => {
             alertClasses.remove('alert-danger');
             alertClasses.add('alert-info');
 
-            element.innerHTML = `<h5 class="alert-heading">Done</h5><p>${msg}</p>`;
+            element.innerHTML = `<span>${msg}</span>`;
         },
 
         renderDrive: () => {
@@ -39,7 +39,7 @@ window.base.driveController = (() => {
             const driveUsers = model.driveWrap.users;
             let driver;
             let passengerHtml = '';
-            let acceptedPassengers = 1;
+            let acceptedPassengers = 0;
 
             for (let i = 0; i < driveUsers.length; i++) {
                 if (driveUsers[i].driver) {
@@ -66,11 +66,11 @@ window.base.driveController = (() => {
                 const firstName = user.info.firstName;
                 const score = user.info.ratingTotalScore;
                 const reviews = user.info.numberOfRatings;
-                const rating = reviews === 0 ? 'No' : parseFloat(score / reviews).toFixed(2);
+                const rating = reviews === 0 ? ' no rating' : parseFloat(score / reviews).toFixed(2);
 
                 if (user.userId === model.user.userId) {
                     requestButton.setAttribute('disabled', '');
-                    requestButton.textContent = 'Requested';
+                    requestButton.textContent = user.accepted ? 'Accepted' : 'Requested';
                 }
 
                 if (user.userId === model.user.userId && user.driver) {
@@ -83,17 +83,14 @@ window.base.driveController = (() => {
                     driverRating = rating;
                 } else if (user.accepted) {
                     acceptedPassengers++;
-                    passengerHtml += `${firstName} (<i class="fas fa-star fa-sm">${rating}), `;
+                    passengerHtml += `${firstName} (<i class="fas fa-star fa-sm"></i>${rating}), `;
                 }
             }
 
             passengerHtml = passengerHtml.length === 0 ? 'None' : passengerHtml.slice(0, passengerHtml.length - 2);
 
             const dtd = new Date(drive.departureTime);
-
-            let departureTime = months[dtd.getMonth()] + ' ';
-            departureTime += dtd.getDate() + ' at ';
-            departureTime += dtd.getHours() + ':' + dtd.getMinutes();
+            let departureTime = months[dtd.getMonth()] + ' ' + dtd.getDate() + ' at '+ controller.parseTime(dtd);
 
 
             let luggageText = '';
@@ -150,6 +147,15 @@ window.base.driveController = (() => {
     };
 
     const controller = {
+        parseTime: date => {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            return hours + ':' + minutes;
+        },
+
         getDrive: () => window.base.rest.getDriveWrap(model.driveUser.driveId)
             .then(driveWrap => model.driveWrap = driveWrap),
 
@@ -180,6 +186,12 @@ window.base.driveController = (() => {
                     } else {
                         view.showSuccess('Your report has been sent', document.getElementById('report-alert-box'));
                         document.getElementById('report-message').value = '';
+                        const submitButton = document.getElementById('report-message').parentElement.nextElementSibling.firstElementChild
+                        const parent = document.getElementById('report-message').parentElement;
+
+                        submitButton.textContent = 'Close';
+                        submitButton.setAttribute('data-dismiss','modal');
+                        parent.remove();
                     }
                 });
         },
@@ -214,6 +226,9 @@ window.base.driveController = (() => {
             if (typeof searchQuery === 'undefined' && !Object.keys(model.driveUser).length) {
                 window.base.changeLocation('/');
             }
+
+            // Change the hash without firing hashchange
+            history.pushState({}, '', '#/drive');
 
             document.getElementById('drive-request').onclick = controller.submitRequest;
             document.getElementById('report-modal-trigger').onclick = view.showReportModal;

@@ -7,11 +7,13 @@ window.base.reportedDrivesController = (() => {
 
     const view = {
         getDriverUserId: function (drive) {
+            let driverId;
             drive.users.forEach(user => {
                 if (user.driver === true) {
-                    return user.userId;
+                    driverId = user.userId;
                 }
             });
+            return driverId;
         },
 
         getRenderedRating: function (user) {
@@ -40,7 +42,20 @@ window.base.reportedDrivesController = (() => {
                     });
 
                 Promise.all([p1, p2]).then(() => {
-                    t.content.querySelector('.report-start-destination-time').textContent = drive.drive.start + ' to ' + drive.drive.stop + ', ' + new Date(drive.drive.departureTime);
+                    const dt = new Date(drive.drive.departureTime);
+
+                    const year = dt.getFullYear();
+                    let month = dt.getMonth() + 1;
+                    let date = dt.getDate();
+                    let hour = dt.getHours();
+                    let minute = dt.getMinutes();
+                    month = month < 10 ? '0' + month : month;
+                    date = date < 10 ? '0' + date : date;
+                    hour = hour < 10 ? '0' + hour : hour;
+                    minute = minute < 10 ? '0' + minute : minute;
+                    const formattedDate = year + '-' + month + '-' + date + ' ' + hour + ':' + minute;
+
+                    t.content.querySelector('.report-start-destination-time').textContent = drive.drive.start + ' to ' + drive.drive.stop + ', ' + formattedDate;
                     t.content.querySelector('.report-driver').textContent = 'Driver: ' + driver.firstName + ' ' + driver.lastName;
                     t.content.querySelector('.report-driver-rating-warning').textContent = view.getRenderedRating(driver) + ' | ' + driver.warning + ' warnings';
                     t.content.querySelector('.report-driver-rating-warning').id = 'report-driver-rating-warning' + report.reportId;
@@ -82,7 +97,7 @@ window.base.reportedDrivesController = (() => {
     const controller = {
         dismissReport: report => {
             const item = document.getElementById('reported-drives' + report.reportId);
-            item.parentElement.removeChild(item);
+            base.rest.dismissReport(report.reportId);
         },
 
         giveWarningDriver: (report, user) => window.base.rest.warnUser(user.userId)
@@ -112,7 +127,7 @@ window.base.reportedDrivesController = (() => {
         deleteDrive: report => window.base.rest.deleteDrive(report.drive.driveId)
             .then(() => {
                 const item = document.getElementById('reported-drives' + report.reportId);
-                item.parentElement.removeChild(item);
+                location.reload();
             }),
 
         load: () => window.base.rest.getReportedDrives()

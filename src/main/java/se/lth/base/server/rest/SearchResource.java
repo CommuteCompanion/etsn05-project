@@ -7,10 +7,8 @@ import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Path("search")
 public class SearchResource {
@@ -49,6 +47,12 @@ public class SearchResource {
 
         // Remove drives with too many drive users
         removeDrivesWithTooManyDriveUsers(filteredDrives);
+
+        // Prioritize drive list (don't prioritize if all input is null)
+        if (!((tripStart == null || tripStart.isEmpty()) && (tripStop == null || tripStop.isEmpty()) && departureTime == null)) {
+            filteredDrives = prioritizeDriveList(filteredDrives, tripStart, tripStop, departure);
+        }
+
 
         // Turn into DriveWraps
         List<DriveWrap> driveWraps = new ArrayList<>();
@@ -113,12 +117,143 @@ public class SearchResource {
         return users;
     }
 
+    private List<Drive> prioritizeDriveList(List<Drive> drives, String tripStart, String tripStop, long departureTime) {
+        List<Data> dataList = new ArrayList<>();
+
+        for (Drive d : drives) {
+            User driver = null;
+            List<DriveUser> driveUsers = driveUserDao.getDriveUsersForDrive(d.getDriveId());
+            for (DriveUser driveUser : driveUsers) {
+                if (driveUser.isDriver()) {
+                    driver = userDao.getUser(driveUser.getUserId());
+                    break;
+                }
+            }
+
+            double driverRating = -1;
+
+            if (driver == null) {
+                throw new NullPointerException();
+            }
+
+            if (driver.getNumberOfRatings() != 0) {
+                driverRating = driver.getRatingTotalScore() / (double) driver.getNumberOfRatings();
+            }
+
+            long departureTimeDifference = -1;
+
+            if ((tripStart == null || tripStart.isEmpty()) && (tripStop == null || tripStop.isEmpty())) {
+                if (departureTime != -1) {
+                    // Compare passenger departure time with drive departure time
+                    departureTimeDifference = d.getDepartureTime() - departureTime;
+                    dataList.add(new Data(d, departureTimeDifference, driverRating));
+                } else {
+                    dataList.add(new Data(d, -1, driverRating));
+                }
+            } else if (tripStart == null || tripStart.isEmpty()) {
+                if (departureTime != -1) {
+                    // Compare passenger departure time with drive departure time
+                    departureTimeDifference = d.getDepartureTime() - departureTime;
+                    dataList.add(new Data(d, departureTimeDifference, driverRating));
+                } else {
+                    dataList.add(new Data(d, -1, driverRating));
+                }
+            } else if (tripStop == null || tripStop.isEmpty()) {
+                if (departureTime != -1) {
+                    // Compare passenger departure time with drive milestone departure time
+                    List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(d.getDriveId());
+                    driveMilestones.add(0, new DriveMilestone(-1, d.getDriveId(), d.getStart(), d.getDepartureTime()));
+                    for (DriveMilestone driveMilestone : driveMilestones) {
+                        if (driveMilestone.getMilestone().equals(tripStart)) {
+                            departureTimeDifference = d.getDepartureTime() - departureTime;
+                        }
+                    }
+                    dataList.add(new Data(d, departureTimeDifference, driverRating));
+                } else {
+                    dataList.add(new Data(d, -1, driverRating));
+                }
+            } else {
+                if (departureTime != -1) {
+                    // Compare passenger departure time with drive milestone departure time
+                    List<DriveMilestone> driveMilestones = getMilestonesIncludingStartStop(d);
+                    for (DriveMilestone driveMilestone : driveMilestones) {
+                        if (driveMilestone.getMilestone().equals(tripStart)) {
+                            departureTimeDifference = d.getDepartureTime() - departureTime;
+                        }
+                    }
+                    dataList.add(new Data(d, departureTimeDifference, driverRating));
+                } else {
+                    dataList.add(new Data(d, -1, driverRating));
+                }
+            }
+        }
+
+        // Sort (begin sorting least prioritized first)
+        dataList.sort(new DriveRatingComparator());
+        dataList.sort(new DepartureTimeComparator());
+
+        List<Drive> prioritizedList = new ArrayList<>();
+        for (Data d : dataList) {
+            prioritizedList.add(d.getDrive());
+        }
+        return prioritizedList;
+    }
+
+    private List<DriveMilestone> getMilestonesIncludingStartStop(Drive drive) {
+        List<DriveMilestone> driveMilestones = driveMilestoneDao.getMilestonesForDrive(drive.getDriveId());
+        driveMilestones.add(0, new DriveMilestone(-1, drive.getDriveId(), drive.getStart(), drive.getDepartureTime()));
+        driveMilestones.add(new DriveMilestone(-1, drive.getDriveId(), drive.getStop(), drive.getArrivalTime()));
+        return driveMilestones;
+    }
+
+    private class Data {
+        private Drive drive;
+        private long departureTimeDifference;
+        private double driverRating;
+
+        public Data(Drive drive, long departureTimeDifference, double driverRating) {
+            this.drive = drive;
+            this.departureTimeDifference = departureTimeDifference;
+            this.driverRating = driverRating;
+        }
+
+        public Drive getDrive() {
+            return drive;
+        }
+
+        long getDepartureTimeDifference() {
+            return departureTimeDifference;
+        }
+    }
+
+    private class DepartureTimeComparator implements Comparator<Data> {
+        @Override
+        public int compare(Data o1, Data o2) {
+            if (o1.getDepartureTimeDifference() == -1 && o2.getDepartureTimeDifference() == -1) {
+                return 0;
+            } else if (o1.getDepartureTimeDifference() == -1) {
+                return 1;
+            } else if (o2.getDepartureTimeDifference() == -1) {
+                return -1;
+            } else {
+                return Long.compare(o1.getDepartureTimeDifference(), o2.getDepartureTimeDifference());
+            }
+        }
+    }
+
+    private class DriveRatingComparator implements Comparator<Data> {
+        @Override
+        public int compare(Data o1, Data o2) {
+            return Double.compare(o1.driverRating, o2.driverRating) * -1;
+        }
+    }
+
     private void removeDrivesWithTooManyDriveUsers(List<Drive> drives) {
         Iterator<Drive> iterator = drives.iterator();
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
             int numberOfSeats = drive.getCarNumberOfSeats();
-            int usersInDrive = driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()) - 1; // Remove driver
+            int usersInDrive = driveUserDao.getNumberOfUsersInDrive(drive.getDriveId());
             if (numberOfSeats == usersInDrive) {
                 iterator.remove();
             }
@@ -126,8 +261,9 @@ public class SearchResource {
     }
 
     private List<Drive> filterDrivesMatchingTrip(String tripStart, String tripStop, Timestamp departureTime) {
-        // Get all drives
-        List<Drive> drives = driveDao.getDrives();
+        // Filter out all past drives
+        List<Drive> drives = driveDao.getDrives().stream().filter(d -> new Timestamp(d.getDepartureTime()).getTime() > new Timestamp(System.currentTimeMillis()).getTime()).collect(Collectors.toList());
+
         Iterator<Drive> iterator = drives.iterator();
 
         if ((tripStart == null || tripStart.isEmpty()) && (tripStop == null || tripStop.isEmpty()) && departureTime == null) {
@@ -136,9 +272,12 @@ public class SearchResource {
             return drives;
         }
 
+        boolean resetStart = tripStart == null;
+        boolean resetStop = tripStop == null;
         // Loop through all drives
         while (iterator.hasNext()) {
             Drive drive = iterator.next();
+
             // Create drive stop and start as "DriveMilestones" and add the to the list
             // Milestone id is not of interest and is therefore set to -1
             DriveMilestone driveStart = new DriveMilestone(-1, drive.getDriveId(), drive.getStart(), drive.getDepartureTime());
@@ -148,11 +287,11 @@ public class SearchResource {
             driveMilestones.add(0, driveStart);
             driveMilestones.add(driveStop);
 
-            if (tripStart == null) {
+            if (resetStart) {
                 tripStart = driveMilestones.get(0).getMilestone();
             }
 
-            if (tripStop == null) {
+            if (resetStop) {
                 tripStop = driveMilestones.get(driveMilestones.size() - 1).getMilestone();
             }
 
@@ -257,6 +396,11 @@ public class SearchResource {
         for (DriveMilestone driveMilestone : driveMilestones) {
             if (driveMilestone.getMilestone().toLowerCase().trim().equals(startMilestone.toLowerCase().trim())) {
                 Timestamp milestoneDepartureTime = new Timestamp(driveMilestone.getDepartureTime());
+
+                // Remove drives that have passed
+                if (milestoneDepartureTime.getTime() < departureTime.getTime()) {
+                    return false;
+                }
 
                 Timestamp timeMargin = new Timestamp(milestoneDepartureTime.getTime() - searchMinutesMargin * 60 * 1000);
                 if ((timeMargin.before(departureTime) || timeMargin.equals(departureTime)) &&

@@ -1,14 +1,22 @@
-<div class="row text-center pt-1">
-    <div class="col" id="drive-header-col">
-        <p id="drive-header"></p>
+<div class="row text-left">
+    <div class="col-md-7">
+        <div class="col" id="drive-header-col">
+            <div class="col">
+                <h3 class="text-muted" id="drive-header"></h3>
+            </div>
+        </div>
     </div>
-    <div class="col" id="passenger-header">
-        <p>Passengers</p>
+    <div class="col-md-5">
+        <div class="col" id="passenger-header">
+            <div class="col">
+                <h3 class="text-muted">Passengers</h3>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col" id="drive-col">
+<div class="row">
+    <div class="col-md-7" id="drive-col">
         <form id="user-form" class="col-md">
             <div id="user-settings" class="form-group">
                 <div class="row mt-2">
@@ -31,7 +39,7 @@
                     <div class="col">
                         <label for="set-date" class="col-md">Date</label>
                         <div class="col-md">
-                            <input type="text" class="form-control" id="set-date" required placeholder="YYYY-MM-DD">
+                            <input type="text" class="form-control" id="set-date" placeholder="YYYY-MM-DD" pattern="(?:\d{4}/\d{2}/\d{2})|(?:\d{4}-\d{2}-\d{2})">
                         </div>
                     </div>
                 </div>
@@ -39,13 +47,13 @@
                     <div class="col">
                         <label for="set-time-leave" class="col-md">Time Leave</label>
                         <div class="col-md">
-                            <input type="text" class="form-control" id="set-time-leave" required placeholder="HH:MM">
+                            <input type="text" class="form-control" id="set-time-leave"  placeholder="HH:MM" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$">
                         </div>
                     </div>
                     <div class="col">
                         <label for="set-time-arrival" class="col-md">Time Arrival</label>
                         <div class="col-md">
-                            <input type="text" class="form-control" id="set-time-arrival" required placeholder="HH:MM">
+                            <input type="text" class="form-control" id="set-time-arrival" placeholder="HH:MM" pattern="^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$">
                         </div>
                     </div>
                 </div>
@@ -115,7 +123,7 @@
                     <div class="col">
                         <label for="set-seats" class="col-md">Number of available seats</label>
                         <div class="col-md">
-                            <input type="number" class="form-control" id="set-seats" required>
+                            <input type="number" class="form-control" id="set-seats" required min="1" max="10">
                         </div>
                     </div>
                 </div>
@@ -178,12 +186,12 @@
             </div>
         </form>
     </div>
-    <div class="col text-center" id="passenger-col">
+    <div class="col-md-5 text-center" id="passenger-col">
         <div class="row my-3" id="passenger-row">
         </div>
         <div class="row mt-5">
             <div class="col my-5">
-                <button id="delete-drive-btn" type="button" class="btn btn-danger w-100 mt-4">Delete Drive</button>
+                <button id="delete-drive-btn" style="display: none;" type="button" class="btn btn-danger w-100 mt-4">Delete Drive</button>
             </div>
         </div>
     </div>

@@ -94,7 +94,7 @@ public class User implements Principal {
 		return drivingLicense;
 	}
 
-	int getRatingTotalScore() {
+    public int getRatingTotalScore() {
 		return ratingTotalScore;
 	}
 

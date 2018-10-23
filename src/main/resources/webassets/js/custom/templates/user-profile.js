@@ -18,13 +18,9 @@ window.base.userProfileController = (() => {
             model.user = u;
             return u;
         }).then(() => {
-            document.getElementById('set-email').value = model.user.email;
             document.getElementById('set-firstname').value = model.user.firstName;
             document.getElementById('set-lastname').value = model.user.lastName;
             document.getElementById('set-phone-number').value = model.user.phoneNumber;
-
-            let birthDate = new Date(model.user.dateOfBirth);
-            document.getElementById('set-date-of-birth').value = birthDate.getFullYear() + '-' + view.pad(birthDate.getMonth() + 1) + '-' + view.pad(birthDate.getDate());
 
             if (model.user.gender === 1) {
                 document.getElementById('set-female').checked = true;
@@ -68,11 +64,9 @@ window.base.userProfileController = (() => {
 
             let gender;
             let drivingLicense;
-            const email = document.getElementById('set-email').value;
             const firstName = document.getElementById('set-firstname').value;
             const lastName = document.getElementById('set-lastname').value;
             const phoneNumber = document.getElementById('set-phone-number').value;
-            const birthDate = Date.parse(document.getElementById('set-date-of-birth').value);
 
             if (document.getElementById('set-male').checked) {
                 gender = 0;
@@ -93,10 +87,10 @@ window.base.userProfileController = (() => {
             model.user.gender = gender;
             model.user.drivingLicense = drivingLicense;
             model.user.phoneNumber = phoneNumber;
-            model.user.dateOfBirth = birthDate;
 
             const password = document.getElementById('set-password').value;
             const repeatPassword = document.getElementById('set-password-confirm').value;
+            const email = model.user.email;
             const id = model.user.userId;
             const role = model.user.role.name;
             const roleObj = model.user.role;
@@ -116,7 +110,9 @@ window.base.userProfileController = (() => {
                         // TODO: implement alert box
                         alert(user.message);
                     } else {
-                        document.getElementById('navbar-first-name').textContent = firstName;
+                        if (!model.loadingWithId) {
+                            document.getElementById('navbar-first-name').textContent = firstName;
+                        }
                         view.render();
                     }
                 });
@@ -136,6 +132,11 @@ window.base.userProfileController = (() => {
 
         loadWithUserId: (id) => {
             model.userId = id;
+            model.loadingWithId = true;
+
+            // Change the hash without firing hashchange
+            history.pushState({}, '', '#/user-profile');
+
             controller.load();
         },
     };

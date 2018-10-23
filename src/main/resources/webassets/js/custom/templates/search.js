@@ -23,18 +23,32 @@ window.base.searchController = (() => {
                 const drive = model.searchResults[i].drive;
                 const driveId = drive.driveId;
                 const driveName = drive.start + ' to ' + drive.stop;
-                const dtd = new Date(drive.departureTime);
 
-                let departureTime = months[dtd.getMonth()] + ' ';
-                departureTime += dtd.getDate() + ' at ';
-                departureTime += dtd.getHours() + ':' + dtd.getMinutes();
+                const dtd = new Date(drive.departureTime);
+                const departureTime = months[dtd.getMonth()] + ' ' + dtd.getDate() + ' at ' + controller.parseTime(dtd);
 
                 const carBrand = drive.carBrand;
                 const carModel = drive.carModel;
                 const carColor = drive.carColor;
                 const carLicensePlate = drive.carLicensePlate;
                 const carNumberOfSeats = drive.carNumberOfSeats;
-                const optLuggage = drive.optLuggageSize > 0 ? optActive : optNotActive;
+                let luggageSize;
+
+                switch (drive.optLuggageSize) {
+                    case 0: {
+                        luggageSize = 'fa-briefcase';
+                        break;
+                    }
+                    case 1: {
+                        luggageSize = 'fa-suitcase';
+                        break;
+                    }
+                    case 2: {
+                        luggageSize = 'fa-luggage-cart';
+                        break;
+                    }
+                }
+
                 const optWinterTires = drive.optWinterTires ? optActive : optNotActive;
                 const optBicycle = drive.optBicycle ? optActive : optNotActive;
                 const optPets = drive.optPets ? optActive : optNotActive;
@@ -63,7 +77,7 @@ window.base.searchController = (() => {
 
                 for (let j = 0; j < users.length; j++) {
                     if (users[j].userId === model.user.userId) {
-                        requestButtonText = 'Requested';
+                        requestButtonText = users[j].accepted ? 'Accepted' : 'Requested';
                         requestButtonDisabled = 'disabled';
                     }
 
@@ -74,7 +88,8 @@ window.base.searchController = (() => {
                     confirmedPassengers += users[j].accepted ? 1 : 0;
                 }
 
-                const driveNumberOfSeatsLeft = carNumberOfSeats - confirmedPassengers;
+                // Don't count the driver
+                const driveNumberOfSeatsLeft = carNumberOfSeats - confirmedPassengers + 1;
                 let tripStart = model.searchQuery.tripStart;
                 tripStart = typeof tripStart === 'undefined' || tripStart == null ? drive.start : tripStart;
 
@@ -86,7 +101,7 @@ window.base.searchController = (() => {
                 for (let j = 0; j < milestones.length; j++) {
                     if (tripStart.toLowerCase().trim() === milestones[j].milestone.toLowerCase().trim()) {
                         const milestoneDepartureTime = new Date(milestones[j].departureTime);
-                        tripStartTime += milestoneDepartureTime.getHours() + ':' + milestoneDepartureTime.getMinutes();
+                        tripStartTime += controller.parseTime(milestoneDepartureTime);
                     }
                 }
 
@@ -116,7 +131,7 @@ window.base.searchController = (() => {
                 }
 
                 // language=HTML
-                searchResults += `\n        <div class="row mb-3 border bg-white shadow-sm">\n            <div class="col-2 border-right">\n                <h5 class="mt-3 mb-0 text-muted font-weight-bold">${driverFirstName}</h5>\n                <p class="text-muted">${driverGender}, ${driverAge}</p>\n                <div class="row mt-4">\n                    <div class="col-2">\n                        <p class="mb-0 text-muted"><i class="fas fa-car fa-sm"></i></p>\n                        <p class="text-muted mb-0"><i class="fas fa-star fa-sm"></i></p>\n                        <p class="text-muted"><i class="fas fa-chart-bar fa-sm"></i></p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted mb-0">${driverNumberDriven} driven</p>\n                        <p class="text-muted mb-0">${driverRating} rating</p>\n                        <p class="text-muted">${driverReviews} reviews</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-5 border-right">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <a class="drive-link" id="drive-${driveId}" href="">\n                                <h5 class="mt-3 mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                            </a>\n                            <div class="row">\n                                <div class="col-3">\n                                        <p class="text-muted">Leaving:</p>\n                                </div>\n                                <div class="col-9">\n                                    <p class="text-muted">${departureTime}</p>\n                                </div>\n                            </div>\n                        </td>\n                    </tr>\n                    <tr>\n                        <td class="align-bottom">\n                            <div class="row mb-0">\n                                <div class="col-3">\n                                    <p class="text-muted mb-0">Pickup:</p>\n                                    <p class="text-muted">Dropoff:</p>\n                                </div>\n                                <div class="col-9">\n                                    <p class="text-muted mb-0"><span>${tripStart}</span> (~<span>${tripStartTime}</span>)</p>\n                                    <p class="text-muted">${tripStop}</p>\n                                </div>\n                            </div>\n                        </td>\n                    </tr>\n                </table>\n            </div>\n            <div class="col-3 border-right">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <h5 class="mt-3 mb-0 text-muted font-weight-bold">${carBrand} ${carModel}</h5>\n                            <p class="text-muted mb-0">${carColor} | ${carLicensePlate}</p>\n                        </td>\n                    </tr>\n                    <td class="align-bottom">\n                        <p class="text-muted mb-0">Vehicle preferences</p>\n                        <p>\n                            <i class="fas fa-suitcase fa-lg ${optLuggage}"></i>\n                            <i class="fas fa-snowflake fa-lg ${optWinterTires}"></i>\n                            <i class="fas fa-bicycle fa-lg ${optBicycle}"></i>\n                            <i class="fas fa-paw fa-lg ${optPets}"></i>\n                        </p>\n                    </td>\n                </table>\n            </div>\n            <div class="col-2">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <h5 id="drive-seats-left" class="mt-3 text-muted font-weight-bold">${driveNumberOfSeatsLeft} seats left</h5>\n                            ${passengerIcons}\n                        </td>\n                    </tr>\n                    <td class="align-bottom">\n                        <button class="mb-3 btn btn-danger btn-sm btn-block request-btn" ${requestButtonDisabled}>${requestButtonText}</button>\n                    </td>\n                </table>\n            </div>\n        </div>`
+                searchResults += `\n        <div class="row mb-3 border bg-white shadow-sm">\n            <div class="col-2 border-right">\n                <h5 class="mt-3 mb-0 text-muted font-weight-bold">${driverFirstName}</h5>\n                <p class="text-muted">${driverGender}, ${driverAge}</p>\n                <div class="row mt-4">\n                    <div class="col-2">\n                        <p class="mb-0 text-muted"><i class="fas fa-car fa-sm"></i></p>\n                        <p class="text-muted mb-0"><i class="fas fa-star fa-sm"></i></p>\n                        <p class="text-muted"><i class="fas fa-chart-bar fa-sm"></i></p>\n                    </div>\n                    <div class="col-9">\n                        <p class="text-muted mb-0">${driverNumberDriven} driven</p>\n                        <p class="text-muted mb-0">${driverRating} rating</p>\n                        <p class="text-muted">${driverReviews} reviews</p>\n                    </div>\n                </div>\n            </div>\n            <div class="col-5 border-right">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <a class="drive-link" id="drive-${driveId}" href="">\n                                <h5 class="mt-3 mb-0 text-danger font-weight-bold">${driveName}</h5>     \n                            </a>\n                            <div class="row">\n                                <div class="col-3">\n                                        <p class="text-muted">Leaving:</p>\n                                </div>\n                                <div class="col-9">\n                                    <p class="text-muted">${departureTime}</p>\n                                </div>\n                            </div>\n                        </td>\n                    </tr>\n                    <tr>\n                        <td class="align-bottom">\n                            <div class="row mb-0">\n                                <div class="col-3">\n                                    <p class="text-muted mb-0">Pickup:</p>\n                                    <p class="text-muted">Dropoff:</p>\n                                </div>\n                                <div class="col-9">\n                                    <p class="text-muted mb-0"><span>${tripStart}</span> (~<span>${tripStartTime}</span>)</p>\n                                    <p class="text-muted">${tripStop}</p>\n                                </div>\n                            </div>\n                        </td>\n                    </tr>\n                </table>\n            </div>\n            <div class="col-3 border-right">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <h5 class="mt-3 mb-0 text-muted font-weight-bold">${carBrand} ${carModel}</h5>\n                            <p class="text-muted mb-0">${carColor} | ${carLicensePlate}</p>\n                        </td>\n                    </tr>\n                    <td class="align-bottom">\n                        <p class="text-muted mb-0">Vehicle preferences</p>\n                        <p>\n                            <i class="fas ${luggageSize} fa-lg text-info"></i>\n                            <i class="fas fa-snowflake fa-lg ${optWinterTires}"></i>\n                            <i class="fas fa-bicycle fa-lg ${optBicycle}"></i>\n                            <i class="fas fa-paw fa-lg ${optPets}"></i>\n                        </p>\n                    </td>\n                </table>\n            </div>\n            <div class="col-2">\n                <table class="h-100 w-100">\n                    <tr>\n                        <td class="align-top">\n                            <h5 id="drive-seats-left" class="mt-3 text-muted font-weight-bold">${driveNumberOfSeatsLeft} seats left</h5>\n                            ${passengerIcons}\n                        </td>\n                    </tr>\n                    <td class="align-bottom">\n                        <button class="mb-3 btn btn-danger btn-sm btn-block request-btn" ${requestButtonDisabled}>${requestButtonText}</button>\n                    </td>\n                </table>\n            </div>\n        </div>`
 
             }
 
@@ -154,6 +169,15 @@ window.base.searchController = (() => {
     };
 
     const controller = {
+        parseTime: date => {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            return hours + ':' + minutes;
+        },
+
         sanitizeDateTimeInput: field => {
             let input = field.value;
             input = input.replace(/[^\d]+/g, '');
@@ -188,7 +212,20 @@ window.base.searchController = (() => {
             stop = stop.length === 0 ? null : stop;
 
             let departureTime = document.getElementById('search-departure-time').value.trim();
-            departureTime = departureTime.length === 0 ? -1 : new Date(departureTime).getTime();
+
+            if (departureTime.length === 0) {
+                departureTime = -1;
+            } else {
+                const dateTime = departureTime.split(' ');
+                const dArr = dateTime[0].split('-');
+                const tArr = dateTime[1].split(':');
+                const year = parseInt(dArr[0]);
+                const month = parseInt(dArr[1]) - 1;
+                const day = parseInt(dArr[2]);
+                const hour = parseInt(tArr[0]);
+                const minute = parseInt(tArr[1]);
+                departureTime = new Date(year, month, day, hour, minute).getTime();
+            }
 
             model.searchQuery = {tripStart: start, tripStop: stop, tripDepartureTime: departureTime};
 

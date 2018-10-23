@@ -1,16 +1,15 @@
 package se.lth.base.server.data;
 
+import org.junit.Before;
 import org.junit.Test;
 import se.lth.base.server.Config;
 import se.lth.base.server.database.BaseDataAccessTest;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
-
 import java.util.List;
 
-import org.junit.Before;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class DriveUserDataAccessTest extends BaseDataAccessTest {
 
@@ -45,7 +44,7 @@ public class DriveUserDataAccessTest extends BaseDataAccessTest {
 	public void numberOfAcceptedUsers() {
 		driveUserDao.addDriveUser(drive.getDriveId(), ADMIN.getId(), drive.getStart(), drive.getStop(), true, true, false);
 		driveUserDao.addDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), false, false, false);
-		assertEquals(1, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
+        assertEquals(0, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
 	}
 	
 	@Test
@@ -59,7 +58,7 @@ public class DriveUserDataAccessTest extends BaseDataAccessTest {
 	@Test
 	public void updateDriveUser() {
 		driveUserDao.addDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), true, true, false);
-		assertEquals(1, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
+        assertEquals(0, driveUserDao.getNumberOfUsersInDrive(drive.getDriveId()));
 		driveUserDao.updateDriveUser(drive.getDriveId(), TEST.getId(), drive.getStart(), drive.getStop(), true, false, true);
 		assertTrue(!driveUserDao.getDriveUser(drive.getDriveId(), TEST.getId()).isAccepted());
 	}
