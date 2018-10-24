@@ -39,6 +39,12 @@ Maven will put an executable jar (with dependencies) in the folder "target". Thi
 
 One can also start the server by double-clicking the .jar (not recommended, the program will run quietly in the background).
 
+**Please note** that on first run, the database needs to be initialized. Either by running `CreateSchema.main()`, or by CLI:
+
+`java -jar database-initializer-jar-with-dependencies`
+
+You may also run this any time you want the database to be reset.
+
 #### Testing
 `mvn test` will run back-end tests.
 
