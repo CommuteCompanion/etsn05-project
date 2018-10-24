@@ -95,13 +95,13 @@ window.base.driveController = (() => {
 
             let luggageText = '';
             switch (drive.optLuggageSize) {
-                case 1:
+                case 0:
                     luggageText = 'Small sized luggage only';
                     break;
-                case 2:
+                case 1:
                     luggageText = 'Medium sized luggage only';
                     break;
-                case 3:
+                case 2:
                     luggageText = 'Big luggage ok';
                     break;
             }
